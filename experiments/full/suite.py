@@ -100,6 +100,41 @@ def jobs_for(track, smoke):
     raise ValueError(track)
 
 
+def resume_keys(previous, cases, settings, signature):
+    """Validate completed records before allowing them to skip inference."""
+    subjects = {case["instance_id"]: case for case in cases}
+    if len(subjects) != len(cases):
+        raise ValueError("Duplicate prepared case IDs")
+    conditions = set(jobs_for(settings["track"], settings["smoke"]))
+    done = set()
+    for row in previous:
+        case = subjects.get(row["instance_id"])
+        if case is None:
+            raise ValueError("Resume record is outside the selected shard")
+        expected = dict(
+            run_signature=signature,
+            track=settings["track"],
+            seed=settings["seed"],
+            model_id=("deterministic" if settings["track"] == "retrieval"
+                      else settings["model"]["id"]),
+            model_revision=settings["model"]["revision"],
+            repo=case["repo"],
+            revision=case["revision"],
+            report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
+            source_archive_sha256=case["archive_sha256"],
+        )
+        if any(row.get(key) != value for key, value in expected.items()):
+            raise ValueError("Resume record provenance differs")
+        condition = (row["variant"], row["budget"], row.get("window"))
+        if condition not in conditions:
+            raise ValueError("Unplanned resume condition")
+        key = (row["instance_id"], *condition)
+        if key in done:
+            raise ValueError("Duplicate completed resume record")
+        done.add(key)
+    return done
+
+
 def run(args):
     from experiments.full.inference import NativeModel
     from hpc.scripts.compact_models import compact
@@ -143,9 +178,9 @@ def run(args):
     config.parent.mkdir(parents=True, exist_ok=True)
     if config.exists() and json.loads(config.read_text()) != settings:
         raise ValueError("Resume settings changed")
-    config.write_text(json.dumps(settings, indent=2) + "\n")
     previous = read_rows(out) if out.exists() else []
-    done = {(r["instance_id"], r["variant"], r["budget"], r.get("window")) for r in previous}
+    done = resume_keys(previous, rows, settings, signature)
+    config.write_text(json.dumps(settings, indent=2) + "\n")
     expected = len(rows) * len(jobs_for(args.track, args.smoke))
     progress = results / "progress"
     progress.mkdir(exist_ok=True)
@@ -340,12 +375,26 @@ def score(args):
     results = Path(args.results)
     out = results / "scores"
     out.mkdir(exist_ok=True)
+    if args.pattern == "*.jsonl":
+        # Collection also consumes this directory directly. Remove derived
+        # tables whose prediction input no longer exists, including preflights.
+        current = {
+            path.stem for path in (results / "predictions").glob(args.pattern)
+            if not path.name.startswith("preflight__")
+        }
+        for cached in out.glob("*.csv"):
+            if cached.stem not in current:
+                cached.unlink()
     for path in sorted((results / "predictions").glob(args.pattern)):
         if path.name.startswith("preflight__"):
             continue
         dest = out / (path.stem + ".csv")
-        score_predictions(path, results / "data/labels.jsonl", dest)
         original = read_rows(path)
+        if not original:
+            # A failed cell can create a file before its first completed case.
+            dest.unlink(missing_ok=True)
+            continue
+        score_predictions(path, results / "data/labels.jsonl", dest)
         with dest.open() as f:
             rows = list(csv.DictReader(f))
         for row, pred in zip(rows, original):

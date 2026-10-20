@@ -29,7 +29,7 @@ def require_complete(results):
         raise ValueError("Paper promotion requires a complete, non-smoke evaluation")
     if report["planned"] != report["observed"]:
         raise ValueError("Planned/observed counts differ")
-    if set(report.get("benchmark_sizes", {}).values()) != {300, 500}:
+    if report.get("benchmark_sizes") != {"SWE-bench_Lite": 300, "SWE-bench_Verified": 500}:
         raise ValueError("Full Lite/Verified benchmark size verification failed")
     return report
 
@@ -44,13 +44,21 @@ def update(results, paper):
     # Require every pinned model, six workflow cells per benchmark, and three seeds.
     pinned_models = json.loads((Path(__file__).parent / "pins.json").read_text())["models"]
     expected_models = {m["id"] for m in pinned_models}
+    from experiments.full.suite import CORE
+
+    expected_cells = {(model, variant) for model in expected_models for variant in CORE}
     for benchmark in status["benchmark_sizes"]:
         subset = [r for r in main if r["benchmark"] == benchmark]
-        if {r["model"] for r in subset} != expected_models or len(subset) != 6 * len(expected_models):
+        if (
+            {(r["model"], r["variant"]) for r in subset} != expected_cells
+            or len(subset) != len(expected_cells)
+        ):
             raise ValueError("Main table is missing model/method cells")
         if any(
             int(r["observed_seeds"]) != 3
             or int(r["unique_cases"]) != status["benchmark_sizes"][benchmark]
+            or int(r["case_seed_records"]) != 3 * status["benchmark_sizes"][benchmark]
+            or int(r["budget"]) != 32000
             for r in subset
         ):
             raise ValueError("Main comparison missing full seed/subject coverage")

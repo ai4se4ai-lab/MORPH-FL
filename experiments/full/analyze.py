@@ -150,7 +150,16 @@ def analyze(results, smoke=False):
 
     score(SimpleNamespace(results=str(results), pattern="*.jsonl"))
     scored = []
-    for path in sorted((results / "scores").glob("*.csv")):
+    # Only consume scores regenerated from this analysis's prediction inputs.
+    # Cached CSVs from removed cells or preflights must never enter the tables.
+    score_paths = [
+        results / "scores" / (path.stem + ".csv")
+        for path in sorted((results / "predictions").glob("*.jsonl"))
+        if not path.name.startswith("preflight__")
+    ]
+    for path in score_paths:
+        if not path.exists():
+            continue
         with path.open() as f:
             scored.extend(csv.DictReader(f))
     groups = defaultdict(list)
@@ -194,11 +203,15 @@ def analyze(results, smoke=False):
         )
         row.update({metric: numeric([r.get(metric) for r in rows]) for metric in metrics})
         summary.append(row)
-    if summary:
-        with (out / "summary.csv").open("w") as f:
-            w = csv.DictWriter(f, fieldnames=list(summary[0]))
-            w.writeheader()
-            w.writerows(summary)
+    fields = ["benchmark", "track", "model", "variant", "budget", "window",
+              "case_seed_records", "unique_cases", "observed_seeds", "file_eligible",
+              "function_eligible", *metrics]
+    # A zero-record failed run still needs a declared collection artifact.
+    # Overwrite any prior summary instead of leaving stale measurements behind.
+    with (out / "summary.csv").open("w") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        w.writerows(summary)
     paired = []
     for benchmark in membership:
         for model in {r["model_id"] for r in scored}:

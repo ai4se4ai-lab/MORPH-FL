@@ -12,6 +12,45 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class FiveFamilyTests(unittest.TestCase):
+    def test_reused_data_checks_actual_coverage_before_linking(self):
+        pins = json.loads((ROOT / 'experiments/full/pins.json').read_text())
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / 'source'
+            source.mkdir()
+            archive = source / 'case.tar.gz'
+            archive.touch()
+            membership = {
+                'SWE-bench_Lite': [f'case-{i}' for i in range(300)],
+                'SWE-bench_Verified': [f'case-{i}' for i in range(207, 707)],
+            }
+            manifest = dict(datasets=pins['datasets'], smoke=False,
+                            benchmark_sizes={k: len(v) for k, v in membership.items()},
+                            unique_cases=707, overlap=93)
+            (source / 'manifest.json').write_text(json.dumps(manifest))
+            (source / 'membership.json').write_text(json.dumps(membership))
+            cases = [dict(instance_id=f'case-{i}', revision='v', archive=str(archive))
+                     for i in range(707)]
+            labels = [dict(instance_id=r['instance_id'], revision='v') for r in cases]
+
+            def write(name, rows):
+                (source / name).write_text(''.join(json.dumps(r) + '\n' for r in rows))
+
+            write('cases.jsonl', cases)
+            write('labels.jsonl', labels)
+            for index, broken in enumerate([labels[:-1], labels + [labels[0]],
+                                             [dict(r, revision='wrong') for r in labels], labels]):
+                write('labels.jsonl', broken)
+                out = Path(tmp) / f'data-{index}'
+                process = subprocess.run(
+                    [sys.executable, str(ROOT / 'hpc/ufv/reuse_data.py'),
+                     '--source', str(source), '--out', str(out)], capture_output=True, text=True)
+                if index < 3:
+                    self.assertNotEqual(process.returncode, 0)
+                    self.assertFalse(out.exists())
+                else:
+                    self.assertEqual(process.returncode, 0, process.stderr)
+                    self.assertEqual(out.resolve(), source)
+
     def test_all_five_families_and_complete_resource_matrix(self):
         pins = json.loads((ROOT / 'experiments/full/pins.json').read_text())
         models = pins['models']

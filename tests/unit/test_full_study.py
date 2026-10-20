@@ -12,6 +12,31 @@ from experiments.full.suite import jobs_for, selected_cases
 
 
 class FullStudyTests(unittest.TestCase):
+    def test_resume_rejects_changed_provenance_duplicate_and_unplanned_records(self):
+        import hashlib
+
+        from experiments.full.suite import resume_keys
+
+        case = dict(instance_id="unit", repo="unit/repo", revision="v",
+                    report="public report", archive_sha256="archive-hash")
+        settings = dict(track="main", seed=1, smoke=False,
+                        model=dict(id="model", revision="model-commit"))
+        row = dict(instance_id="unit", repo=case["repo"], revision="v",
+                   report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
+                   source_archive_sha256="archive-hash", run_signature="signature",
+                   track="main", seed=1, model_id="model", model_revision="model-commit",
+                   variant="morph", budget=32000, window=None)
+        self.assertEqual(resume_keys([row], [case], settings, "signature"),
+                         {("unit", "morph", 32000, None)})
+        for field, value in [("revision", "changed"), ("report_digest", "changed"),
+                             ("source_archive_sha256", "changed"), ("seed", 2),
+                             ("model_revision", "changed"), ("run_signature", "changed"),
+                             ("budget", 16000), ("instance_id", "another-shard")]:
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                resume_keys([dict(row, **{field: value})], [case], settings, "signature")
+        with self.assertRaisesRegex(ValueError, "Duplicate"):
+            resume_keys([row, row], [case], settings, "signature")
+
     def test_json_fence_nested_brace_and_trailing_prose(self):
         self.assertEqual(
             decode_object('explain {bad}\n```json\n{"hypotheses":[{"x":"}"}]}\n```'),
@@ -61,6 +86,37 @@ if __name__ == "__main__":
 
 
 class PaperPromotionTests(unittest.TestCase):
+    def test_reject_duplicate_workflows_and_incomplete_seed_counts(self):
+        import csv
+        import json
+
+        from experiments.full.paper_update import update
+        from experiments.full.suite import CORE
+
+        pins = json.loads((Path(__file__).resolve().parents[2] /
+                           "experiments/full/pins.json").read_text())
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "analysis").mkdir()
+            sizes = {"SWE-bench_Lite": 300, "SWE-bench_Verified": 500}
+            (root / "analysis/completeness.json").write_text(json.dumps(dict(
+                complete=True, smoke=False, planned={"main": 63630},
+                observed={"main": 63630}, benchmark_sizes=sizes)))
+            rows = [dict(track="main", benchmark=b, model=m["id"], variant=v,
+                         observed_seeds=3, unique_cases=n, case_seed_records=3*n, budget=32000)
+                    for b, n in sizes.items() for m in pins["models"] for v in CORE]
+            for field, value in [("variant", "no_forgetting"), ("case_seed_records", 899),
+                                 ("budget", 16000)]:
+                broken = [dict(row) for row in rows]
+                broken[0][field] = value
+                with (root / "analysis/summary.csv").open("w") as stream:
+                    writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+                    writer.writeheader()
+                    writer.writerows(broken)
+                with self.assertRaises(ValueError):
+                    update(root, root / "paper")
+                self.assertFalse((root / "paper").exists())
+
     def test_reject_partial_and_smoke_results(self):
         import json
 
@@ -146,7 +202,15 @@ class FullAnalysisTests(unittest.TestCase):
                 (root / "predictions" / (track + ".jsonl")).write_text(
                     json.dumps(dict(**row, track=track)) + "\n"
                 )
+            # Empty failed cells and scores left by a removed cell must not
+            # crash partial analysis or inflate its scientific summaries.
+            (root / "predictions/empty.jsonl").touch()
+            (root / "scores").mkdir()
+            (root / "scores/empty.csv").write_text("invalid stale scores\n")
+            (root / "scores/removed.csv").write_text("invalid stale scores\n")
             analyze(root, smoke=True)
+            self.assertFalse((root / "scores/empty.csv").exists())
+            self.assertFalse((root / "scores/removed.csv").exists())
             completeness = json.loads((root / "analysis/completeness.json").read_text())
             self.assertFalse(completeness["complete"])
             self.assertGreater(completeness["missing_keys"], 0)
@@ -158,11 +222,19 @@ class FullAnalysisTests(unittest.TestCase):
             with (root / "analysis/summary.csv").open() as f:
                 rows = list(csv.DictReader(f))
             self.assertEqual({r["benchmark"] for r in rows}, set(memberships))
+            self.assertTrue(all(int(r["case_seed_records"]) == 1 for r in rows))
             # A missing retained observation is a verification failure, not silent success.
             broken = dict(row, observations=[], track="main")
             (root / "predictions/main.jsonl").write_text(json.dumps(broken) + "\n")
             with self.assertRaisesRegex(ValueError, "retention"):
                 analyze(root, smoke=True)
+            for path in (root / "predictions").glob("*.jsonl"):
+                path.unlink()
+            analyze(root, smoke=True)
+            with (root / "analysis/summary.csv").open() as stream:
+                self.assertEqual(list(csv.DictReader(stream)), [])
+            self.assertFalse(json.loads(
+                (root / "analysis/completeness.json").read_text())["complete"])
 
 
 class ProgressDenominatorTests(unittest.TestCase):
