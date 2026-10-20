@@ -284,6 +284,9 @@ class LocalizationController:
                 )
             if not isinstance(response, dict) or not isinstance(
                 response.get("hypotheses"), list
+            ) or any(
+                key in response and not isinstance(response[key], list)
+                for key in ("invariants", "ambiguities")
             ):
                 invalid += 1
                 artifact, digest = store.put(raw.encode())
@@ -291,7 +294,7 @@ class LocalizationController:
                     dict(
                         type="invalid_response",
                         step=step,
-                        error="Expected object with hypothesis list",
+                        error="Expected object with hypothesis list and list-valued invariants/ambiguities",
                         role=role,
                         artifact=artifact,
                         digest=digest,

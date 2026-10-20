@@ -20,6 +20,23 @@ with node_type and contains. Dynamic probes choose only supplied procedure_id va
 Causal edges need source, target, kind; they remain conjectures until verified.
 Never infer runtime causality from source presence or agent agreement."""
 
+TASK = """Localize the fault described in the supplied issue report using the numbered source
+and recorded observations supplied in this request. Perform the investigation;
+do not explain the input or output schema and do not reproduce the input state.
+Return only one valid JSON object with these root keys: expected, observed,
+trigger, invariants, ambiguities, hypotheses. The hypotheses value must be a list
+of at most four concrete hypotheses about the supplied source. Each hypothesis
+must have path (a file-path string, not a list or an object), mechanism,
+prediction, causal_chain, and probe. A source_quote probe must have kind,
+path (a string), line (an integer), and quote copied from the numbered source.
+Use an empty hypotheses list if no grounded hypothesis is possible. The expected,
+observed and trigger values must be strings or null when unknown. The invariants
+and ambiguities values must be lists of strings; use [] when unknown or empty,
+never null or an object. Each causal_chain must be a list; use [] when unknown.
+Do not include prose, Markdown fences, JSON comments,
+ellipsis placeholders, or copies of behavior, source, relations or retrieval_rank
+in the output. Hypotheses remain conjectures, not confirmed causes."""
+
 
 class InvestigatorSessions:
     def __init__(self):
@@ -30,7 +47,8 @@ class InvestigatorSessions:
         return (
             [{"role": "system", "content": SYSTEM + "\n" + GUIDANCE[role]}]
             + ([] if stateless else self.dialogues.get(role, []))
-            + [{"role": "user", "content": json.dumps(payload, sort_keys=True)}]
+            + [{"role": "user", "content": TASK + "\n\nINPUT DATA (JSON):\n"
+                + json.dumps(payload, sort_keys=True)}]
         )
 
     def record(self, role: str, messages: list[dict], response: str) -> None:

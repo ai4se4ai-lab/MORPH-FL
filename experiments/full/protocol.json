@@ -1,5 +1,5 @@
 {
-  "study": "morph-full-five-families-v5",
+  "study": "morph-full-five-families-v13",
   "phase": "prospective protocol, no full results yet",
   "models": 5,
   "seeds": [
@@ -21,21 +21,21 @@
     "rgfl_adapted"
   ],
   "source_files": {
-    "experiments/full/analyze.py": "7c0406d0004e42f345b0a7fdd252502d827695e997757808f8345f2ce0367cb0",
+    "experiments/full/analyze.py": "ccf9520a6170eddaea6be01812f52c0d0e2b6fd047a130aca1d4cf21ed8493c3",
     "experiments/full/export_bundle.py": "c82448aa41ee9937ab10afb09ca607ee26ca0271430b8210a1480e70a92fb792",
     "experiments/full/extended_analysis.py": "9daa224766006c054249d85075fe959fc04a9bef34e8b89b8c9649233ce33530",
-    "experiments/full/inference.py": "8468bc456a85eeacca0019792c690e049edaa68faa95de9664065bb41543176d",
+    "experiments/full/inference.py": "ed3e38209841cd211b3766ceb4d707f1d498a24dc68f249c57e798bc66e36826",
     "experiments/full/paper_update.py": "e23a3b4515fbe1414106213ea9558eeff416ece2f4160a1b6b51120dccd58f78",
     "experiments/full/pins.json": "587604c9b91bee2e1863693d4e56d6e06386ac757fbf4185b0b07e0d478badc0",
     "experiments/full/prepare.py": "2357c517d44a31147ff594576c1787782e8cfcdc082964966313364a7b2e57e1",
-    "experiments/full/suite.py": "dd08516d63f8b69e6e966c7ef0bebcae36a29bbec072d915357acf77280b57b6",
+    "experiments/full/suite.py": "a0bcde7a2b184a314609fc908b12139fd6d2cd495ea3f8ddc0e01852e3bf0f86",
     "experiments/full/typeset.py": "1feb1bd449374b2a5656225e3dd165a7c571ba6f207a42bd6ea022f27bd0c85a",
     "src/morph_fl/__init__.py": "5df9b9c1bc5e3e7b8e43d5686715a1499dcd4d081792208a8e63aec753d377a3",
     "src/morph_fl/__main__.py": "c88c3b891af5cb31911df6df19138d0b512b088877a30c15d31063fb9c8f86bf",
     "src/morph_fl/agents/__init__.py": "dcad7a01bbe8c57721d1e4460aca37dd9358bf1fe55b52a437be4826b76a537f",
-    "src/morph_fl/agents/sessions.py": "39ae5c3eb7cfb33e9131442306707f1bbe893c91dccd69e6a6d4f7175e59b012",
+    "src/morph_fl/agents/sessions.py": "0d6268050bc064e346e824e2d509c7a671b6e586f059eddc52664c5c52998d5c",
     "src/morph_fl/analysis.py": "31f68fe9ca8cbb30f25247bc9df6a0d4cf98d5b18c1824f788a701abed9fdea5",
-    "src/morph_fl/application.py": "a2dd870912ae55a4c6f65d421bd31efa51326d9987f5094db3ef76e08c8c747d",
+    "src/morph_fl/application.py": "dd24378bb8c14e13a79375effca23220225aa7f9a2debc6c86aa2461da7207b4",
     "src/morph_fl/backend.py": "299b5a2257c1b5a00f693e7870e7802fb42a9a6a74a6b6ba7d5b267da231f1cc",
     "src/morph_fl/baselines/__init__.py": "75feb1a592d790eddabec1efa6e9dfac61d48fafd553371cdd6598ea51f54083",
     "src/morph_fl/baselines/local.py": "4ba222f66d4e16d6b57dc6d1be4c269529717426a60ef7c7394af4388f256e5f",
@@ -74,10 +74,10 @@
     "src/morph_fl/retrieval.py": "62e4e89d0b37032b194ea3969a87f0e3e879b5e5b3d80566068d1b50364f1e48",
     "src/morph_fl/search/__init__.py": "54873e1139545c98f572a3e90bf32eb9628729a991eb0b7125dd37acdcb1e1c8",
     "src/morph_fl/search/config.py": "7534956d31f102a3f3d7aaed2385de975e4a6abed6511b4298d74d86472ebc5d",
-    "src/morph_fl/search/controller.py": "ed52a692431e869cbc29bc24cd0639365d95a01b82742e653f5b091983d7f69f",
+    "src/morph_fl/search/controller.py": "2cc5474a5f9d5145d1aa62531a553b109c14b720eb9af681e5b0a0e846fd1e8e",
     "src/morph_fl/search/policies.py": "dae82a302782f3a41fd3c32c3dae10b91ca9d1f696b8958e3519ac5858ad396d",
     "src/morph_fl/transformations/__init__.py": "ea8483ffc368d720d05a2aee24af24811ef81087faa41a49de1488fbc23e4ed8",
-    "src/morph_fl/transformations/pipeline.py": "9f688ab795c811306524591f20a54ed14f8612fc078d3cff46e2de2b4802774b"
+    "src/morph_fl/transformations/pipeline.py": "93d74967ad17b8c38a17f87c45cec187f760897e7f569ac6b407871f680f1dfb"
   },
   "note": "Patches remain evaluator-only. Benchmarks overlap. Static observations and unreviewed patch proxies; no human/calibration/causal claims.",
   "top_p": 0.95,
@@ -98,6 +98,21 @@
     },
     "preflight_budget_revision": {
       "reason": "All archived MORPH preflights exhausted the 6000-token smoke envelope before a second generation. Match the primary budget for the gate only; primary experiments, prompts and sampling are unchanged. Requires fresh GPU validation."
+    },
+    "gate_coverage_revision": {
+      "reason": "Validate all six workflow interfaces and all four structured outputs, rather than checking MORPH alone. New local guard checked against recovered real v5 records: Qwen passes, DeepSeek fails. Active v5 GPU jobs remain frozen and unchanged."
+    },
+    "parser_revision": {
+      "reason": "Real Mistral output contained invalid outer JSON; previous scanning returned a valid nested behavior object. Decode complete outer candidates, require the hypothesis list, and reject malformed/truncated containers without rescuing their nested fragments. Active v5 GPU jobs remain frozen."
+    },
+    "semantic_validation_revision": {
+      "reason": "Reject non-list invariants/ambiguities before extraction to avoid crashing on null. Reject null/numeric/list predictions and nontext descriptions instead of converting them to apparently valid strings. Active v8 deployment remains frozen."
+    },
+    "analysis_revision_guard": {
+      "reason": "Coverage keys include model IDs but not checkpoint revisions; analysis now rejects missing or mismatched revisions for LLM records before counting scientific completeness. Regression coverage preserves the genuine pinned-revision path."
+    },
+    "streaming_resume_revision": {
+      "reason": "Observed retrieval raw predictions exceeded 23 GB with only 294 records, larger than its 16 GB allocation. Future source repairs tails and validates completed records as streams rather than loading all model payloads. Active full v12 inference source/protocol stays frozen; its retrieval job is held for externally verified lossless packing before restart."
     }
   },
   "preflight": {
@@ -105,6 +120,13 @@
     "round_limit": 2,
     "budget": 32000,
     "workflows": "all six primary workflows",
-    "note": "Use primary cumulative budget; ordinary smoke remains 6000. Separate preflight namespace and resume signature. Success still requires generated tokens and valid MORPH hypotheses."
+    "note": "Use primary cumulative budget; ordinary smoke remains 6000. Require exactly six workflows on one issue, pinned model/revision, seed 1, actual input/output tokens for every workflow and valid hypotheses in all four structured workflows. Separate namespace and resume signature."
+  },
+  "structured_output_revision": {
+    "scope": "Same explicit user-task instruction for all structured workflows and all five model families; prior runs preserved. External adaptation prompts remain their own interfaces.",
+    "change": "Require direct localization JSON with a root hypothesis list, string paths, real source quotes and no prose, schema explanation, input echo, comments or ellipsis placeholders. No decoder constraint or generated-output repair.",
+    "evidence": "v5 DeepSeek/CodeLlama produced prose, Mistral echoed input/malformed JSON; revised prompt requires genuine per-model validation before full execution.",
+    "instruction_boundary": "Explicit natural-language task precedes a labeled JSON input-data block in every structured user request. It is no longer a key embedded inside input state. Same task text, models and workflow policies; all five families must be revalidated.",
+    "field_types": "Only expected/observed/trigger may be unknown null. Invariants/ambiguities are arrays of strings, empty [] when unknown; causal_chain is an array. Clarifies ambiguous v11 null instruction; same types/instruction for every model and structured workflow."
   }
 }

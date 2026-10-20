@@ -23,21 +23,29 @@ def repair_interrupted_tail(path: Path) -> None:
     """Recover only a truncated final JSON record; reject corruption elsewhere."""
     if not path.exists():
         return
-    lines = path.read_bytes().splitlines(keepends=True)
     offset = 0
-    for index, line in enumerate(lines):
-        try:
-            json.loads(line)
-        except (json.JSONDecodeError, UnicodeDecodeError):
-            if index != len(lines) - 1 or line.endswith(b"\n"):
-                raise ValueError("Corrupt completed result record")
-            with path.open("r+b") as stream:
-                stream.truncate(offset)
-            return
-        offset += len(line)
-    if lines and not lines[-1].endswith(b"\n"):
+    last = b""
+    with path.open("rb") as source:
+        for line in source:
+            try:
+                json.loads(line)
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                # A binary readline without a newline is necessarily the final
+                # fragment. Completed-line corruption must never be repaired.
+                if line.endswith(b"\n"):
+                    raise ValueError("Corrupt completed result record") from None
+                with path.open("r+b") as stream:
+                    stream.truncate(offset)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                return
+            offset += len(line)
+            last = line
+    if last and not last.endswith(b"\n"):
         with path.open("ab") as stream:
             stream.write(b"\n")
+            stream.flush()
+            os.fsync(stream.fileno())
 
 
 def run_cases(

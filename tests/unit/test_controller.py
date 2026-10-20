@@ -17,7 +17,7 @@ class RecordingBackend:
     def ask(self, messages, remaining):
         self.input_tokens += 50
         self.output_tokens += 25
-        payload = json.loads(messages[-1]["content"])
+        payload = json.loads(messages[-1]["content"].split("\n\nINPUT DATA (JSON):\n", 1)[1])
         self.requests.append(payload)
         if self.malformed:
             raise ValueError("Generated JSON is malformed")
@@ -37,6 +37,31 @@ class RecordingBackend:
 
 
 class ControllerTests(unittest.TestCase):
+    def test_invalid_behavior_lists_do_not_crash_investigation(self):
+        class InvalidLists(RecordingBackend):
+            def ask(self, messages, remaining):
+                response, _ = super().ask(messages, remaining)
+                response["invariants"] = None
+                return response, json.dumps(response)
+
+        result = localize(self.root, "total", "v", InvalidLists(), rounds=1)
+        self.assertEqual(result["invalid_probes"], 1)
+        self.assertFalse(result["hypotheses"])
+        self.assertEqual(result["output_tokens"], 25)
+
+    def test_null_or_nontext_predictions_are_not_valid_hypotheses(self):
+        for prediction in [None, 42, [], {"description": None}, {"description": 42}, " "]:
+            class InvalidPrediction(RecordingBackend):
+                def ask(self, messages, remaining):
+                    response, _ = super().ask(messages, remaining)
+                    response["hypotheses"][0]["prediction"] = prediction
+                    return response, json.dumps(response)
+
+            with self.subTest(prediction=prediction):
+                result = localize(self.root, "total", "v", InvalidPrediction(), rounds=1)
+                self.assertFalse(result["hypotheses"])
+                self.assertEqual(result["invalid_probes"], 1)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)

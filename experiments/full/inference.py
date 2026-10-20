@@ -13,15 +13,43 @@ from morph_fl.inference.local import BudgetExceeded, InvalidModelResponse
 
 def decode_object(text):
     decoder = json.JSONDecoder()
+    start = None
+    depth = 0
+    quoted = escaped = False
     for index, char in enumerate(text):
-        if char == "{":
+        if start is None:
+            if char != "{":
+                continue
+            start, depth = index, 1
+            quoted = escaped = False
+            continue
+        if quoted:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                quoted = False
+            continue
+        if char == '"':
+            quoted = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth:
+                continue
+            candidate = text[start:index + 1]
+            start = None
             try:
-                value, _ = decoder.raw_decode(text[index:])
+                value = decoder.decode(candidate)
             except json.JSONDecodeError:
                 continue
-            if isinstance(value, dict):
+            # Never rescue a nested fragment from a malformed/truncated outer
+            # response, or confuse an echoed behavior object with localization.
+            if isinstance(value, dict) and isinstance(value.get("hypotheses"), list):
                 return value
-    raise InvalidModelResponse("No valid JSON object in generated output", text)
+    raise InvalidModelResponse("No valid localization JSON object with a hypothesis list", text)
 
 
 class NativeModel:

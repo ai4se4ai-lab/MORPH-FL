@@ -124,10 +124,25 @@ setup_python() {
 
 # ── multi-node (only when the stage asks for nodes > 1) ──────────────────────
 setup_distributed() {
-    export MASTER_ADDR; MASTER_ADDR=$(scontrol show hostnames "${SLURM_JOB_NODELIST:-$(hostname)}" | head -1)
+    if [ -z "${MASTER_ADDR:-}" ]; then
+        if command -v scontrol >/dev/null 2>&1; then
+            MASTER_ADDR=$(scontrol show hostnames "${SLURM_JOB_NODELIST:-$(hostname)}" | head -1)
+        elif [ "${SLURM_NNODES:-1}" -le 1 ]; then
+            MASTER_ADDR=$(hostname)
+        else
+            log_error "multi-node setup requires scontrol or an explicit MASTER_ADDR"
+            return 1
+        fi
+    fi
+    if [ -z "$MASTER_ADDR" ]; then
+        log_error "could not resolve MASTER_ADDR"
+        return 1
+    fi
+    export MASTER_ADDR
     export MASTER_PORT=$(( 20000 + ${SLURM_JOB_ID:-0} % 20000 ))
     export WORLD_SIZE="${SLURM_NTASKS:-1}" NNODES="${SLURM_NNODES:-1}"
     [ "${SLURM_NNODES:-1}" -gt 1 ] && log_info "distributed: $NNODES nodes, $WORLD_SIZE tasks, master $MASTER_ADDR:$MASTER_PORT"
+    return 0
 }
 
 # ── optional service hooks: hpc/slurm/hooks/<stage>.sh or hooks/all.sh ──────

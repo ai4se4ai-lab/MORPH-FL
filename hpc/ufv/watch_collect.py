@@ -9,15 +9,18 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from study_tracker import DOCUMENT, update_document
+
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--deployment', default='/home/babaei/projects/MORPH-FL-ufv-fivefam-20261020')
-parser.add_argument('--run-id', default='ufv-fivefam-20261020-01')
+parser.add_argument('--deployment', default='/home/babaei/projects/MORPH-FL-full-v12-20261020')
+parser.add_argument('--run-id', default='ufv-full-v12-20261020-01')
 parser.add_argument('--destination', type=Path)
+parser.add_argument('--tracker-document', type=Path, default=DOCUMENT)
 args = parser.parse_args()
 if not re.fullmatch(r'[A-Za-z0-9_.-]+', args.run_id):
     parser.error('Invalid run identifier')
 LOCAL = Path(__file__).resolve().parents[2]
-DEST = args.destination or LOCAL / 'hpc/logs/ufv-fivefam-20261020'
+DEST = args.destination or LOCAL / 'hpc/logs/ufv-full-v12-20261020'
 DEST.mkdir(parents=True, exist_ok=True)
 REMOTE = args.deployment
 RUN = args.run_id
@@ -38,8 +41,11 @@ artifacts = {str(p.relative_to(collected)): p.stat().st_size for p in collected.
 report = collected / 'raw/analysis/completeness.json'
 complete = json.loads(report.read_text()) if report.exists() else None
 done = bool(ids) and not (set(ids) & active_ids) and active.returncode == 0
-print(json.dumps(dict(run=run, done=done, scientific_completeness=complete, active='\n'.join(lines), jobs=ids, remote_results=str(collected), artifacts=artifacts)))
+state = dict(run=run, done=done, scientific_completeness=complete, active='\n'.join(lines), jobs=ids, remote_results=str(collected), artifacts=artifacts)
+state['tracker'] = inspect_run(root_path, run)
+print(json.dumps(state))
 '''
+SCRIPT = Path(__file__).with_name('tracker_snapshot.py').read_text() + '\n' + SCRIPT
 
 
 def copy_results():
@@ -70,11 +76,18 @@ while True:
         state = json.loads(process.stdout)
         state['checked_utc'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
         status_path.write_text(json.dumps(state, indent=2) + '\n')
-        print(json.dumps(state), flush=True)
+        (DEST / 'study-progress.json').write_text(json.dumps(state, indent=2) + '\n')
+        update_document(state, args.tracker_document)
+        progress = state.get('tracker', {}).get('progress', {})
+        print(json.dumps(dict(run=state['run'], done=state['done'], checked_utc=state['checked_utc'],
+                              study_progress_records=sum(v.get('completed', 0) for k,v in progress.items()
+                                                         if not k.startswith('preflight__')))), flush=True)
         if state['done']:
             copy_results()
             state['collected_locally'] = str((DEST / RUN).resolve())
             status_path.write_text(json.dumps(state, indent=2) + '\n')
+            (DEST / 'study-progress.json').write_text(json.dumps(state, indent=2) + '\n')
+            update_document(state, args.tracker_document)
             break
     except Exception as error:
         print(str(error), flush=True)

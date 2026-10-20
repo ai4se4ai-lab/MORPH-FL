@@ -12,6 +12,27 @@ from experiments.full.suite import jobs_for, selected_cases
 
 
 class FullStudyTests(unittest.TestCase):
+    def test_preflight_checks_all_workflows_not_only_morph(self):
+        from experiments.full.suite import BUDGET_CORE, CORE, validate_preflight
+
+        spec = dict(id="unit-model", revision="unit-commit")
+        rows = [dict(variant=v, instance_id="unit", model_id=spec["id"],
+                     model_revision=spec["revision"], seed=1, budget=32000, track="main",
+                     input_tokens=100, output_tokens=50,
+                     hypotheses=[{"id": "unit-hypothesis"}] if v in BUDGET_CORE else [])
+                for v in CORE]
+        self.assertEqual(set(validate_preflight(rows, spec)), set(CORE))
+        for variant, field, value in [("fixed_reset", "hypotheses", []),
+                                      ("agentless_adapted", "output_tokens", 0),
+                                      ("morph", "model_revision", "different"),
+                                      ("morph", "budget", 6000)]:
+            broken = [dict(row, **{field: value}) if row["variant"] == variant else dict(row)
+                      for row in rows]
+            with self.subTest(variant=variant, field=field), self.assertRaises(ValueError):
+                validate_preflight(broken, spec)
+        with self.assertRaises(ValueError):
+            validate_preflight(rows[:-1] + [rows[0]], spec)
+
     def test_preflight_uses_primary_budget_without_changing_ordinary_smoke(self):
         from experiments.full.suite import CORE, resume_keys
 
@@ -70,6 +91,20 @@ class FullStudyTests(unittest.TestCase):
         with self.assertRaises(InvalidModelResponse) as failure:
             decode_object("original malformed generation")
         self.assertEqual(failure.exception.raw, "original malformed generation")
+
+    def test_parser_rejects_nested_fragments_of_malformed_outer_responses(self):
+        from morph_fl.inference.local import InvalidModelResponse
+
+        for text in [
+            '{"behavior":{"expected":null},"hypotheses":[],"relations":[...]}',
+            '{"hypotheses":[{"path":"a.py"}]',
+            '{"wrapper":{"hypotheses":[]}}',
+        ]:
+            with self.subTest(text=text), self.assertRaises(InvalidModelResponse) as failure:
+                decode_object(text)
+            self.assertEqual(failure.exception.raw, text)
+        self.assertEqual(decode_object('{"metadata":{}} then {"hypotheses":[]}'),
+                         {"hypotheses": []})
 
     def test_snapshot_extract_rejects_escape_links_and_non_python(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -209,6 +244,8 @@ class FullAnalysisTests(unittest.TestCase):
                 variant="morph",
                 seed=1,
                 model_id="Qwen/Qwen2.5-Coder-7B-Instruct",
+                model_revision=json.loads((Path(__file__).resolve().parents[2] /
+                                           "experiments/full/pins.json").read_text())["models"][0]["revision"],
                 budget=6000,
                 window=None,
                 ranking=["right.py"],
@@ -249,6 +286,10 @@ class FullAnalysisTests(unittest.TestCase):
                 rows = list(csv.DictReader(f))
             self.assertEqual({r["benchmark"] for r in rows}, set(memberships))
             self.assertTrue(all(int(r["case_seed_records"]) == 1 for r in rows))
+            mismatched = dict(row, track="main", model_revision="wrong-checkpoint")
+            (root / "predictions/main.jsonl").write_text(json.dumps(mismatched) + "\n")
+            with self.assertRaisesRegex(ValueError, "model revision"):
+                analyze(root, smoke=True)
             # A missing retained observation is a verification failure, not silent success.
             broken = dict(row, observations=[], track="main")
             (root / "predictions/main.jsonl").write_text(json.dumps(broken) + "\n")

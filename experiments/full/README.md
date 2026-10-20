@@ -1,6 +1,11 @@
 # Full Lite + Verified evaluation (prospective)
 
-**Status:** configured and smoke submitted; no full-run results are claimed. The user selected complete SWE-bench Lite (300) and Verified (500) first. Other ecosystems remain a subsequent implementation effort. Original exploratory measurements and the paper remain available unchanged.
+**Status:** all five v12 checkpoints passed genuine six-workflow GPU gates.
+Corrected full run `ufv-full-v12-20261020-01` is submitted on UFV (34 stages,
+733 cells); no full-run performance or completeness is claimed. The user-selected
+complete Lite (300) and Verified (500) splits remain unchanged. See the
+[current review and execution evidence](../../docs/UFV/five_family_transition.md).
+Other ecosystems remain subsequent work; historical measurements are preserved.
 
 ## Frozen design
 

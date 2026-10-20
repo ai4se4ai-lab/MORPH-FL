@@ -181,8 +181,12 @@ def run(args):
     config.parent.mkdir(parents=True, exist_ok=True)
     if config.exists() and json.loads(config.read_text()) != settings:
         raise ValueError("Resume settings changed")
-    previous = read_rows(out) if out.exists() else []
-    done = resume_keys(previous, rows, settings, signature)
+    if out.exists():
+        with out.open() as completed:
+            done = resume_keys((json.loads(line) for line in completed if line.strip()),
+                               rows, settings, signature)
+    else:
+        done = resume_keys([], rows, settings, signature)
     config.write_text(json.dumps(settings, indent=2) + "\n")
     conditions = jobs_for(args.track, args.smoke, settings.get("preflight", False))
     expected = len(rows) * len(conditions)
@@ -347,6 +351,33 @@ def model_assets(args):
     (target.parent / (str(args.model) + ".pin.json")).write_text(json.dumps(spec, indent=2) + "\n")
 
 
+def validate_preflight(rows, spec):
+    """Require genuine inference across the complete six-workflow gate."""
+    if len(rows) != len(CORE) or {r.get("variant") for r in rows} != set(CORE):
+        raise ValueError("Preflight requires exactly one record for every primary workflow")
+    if len({r.get("instance_id") for r in rows}) != 1:
+        raise ValueError("Preflight workflows must use the same subject")
+    workflows = {}
+    for row in rows:
+        if (
+            row.get("model_id") != spec["id"]
+            or row.get("model_revision") != spec["revision"]
+            or row.get("seed") != 1
+            or row.get("budget") != 32000
+            or row.get("track") != "main"
+        ):
+            raise ValueError("Preflight record differs from pinned model/seed/primary budget")
+        if not row.get("input_tokens") or not row.get("output_tokens"):
+            raise ValueError("Preflight requires real inference for " + row["variant"])
+        if row["variant"] in BUDGET_CORE and not row.get("hypotheses"):
+            raise ValueError("Preflight produced no valid hypotheses for " + row["variant"])
+        workflows[row["variant"]] = dict(
+            input_tokens=row["input_tokens"], output_tokens=row["output_tokens"],
+            valid_hypotheses=len(row.get("hypotheses", [])),
+        )
+    return workflows
+
+
 def preflight(args):
     # Independent gate for every model; separate namespace protects preflight provenance.
     args.track = "main"
@@ -358,11 +389,9 @@ def preflight(args):
     run(args)
     path = Path(args.results) / "predictions" / f"preflight__main__m{args.model}__s1__p0.jsonl"
     rows = read_rows(path)
+    pins = json.loads((ROOT / "experiments/full/pins.json").read_text())
+    workflows = validate_preflight(rows, pins["models"][args.model])
     morph = next(r for r in rows if r["variant"] == "morph")
-    if not morph.get("output_tokens") or not morph.get("hypotheses"):
-        raise RuntimeError(
-            "Preflight produced no valid MORPH-FL hypothesis; full evaluation is gated"
-        )
     (Path(args.results) / "models" / (str(args.model) + ".preflight.json")).write_text(
         json.dumps(
             dict(
@@ -370,6 +399,7 @@ def preflight(args):
                 output_tokens=morph["output_tokens"],
                 budget=morph["budget"],
                 protocol_sha256=digest(ROOT / "experiments/full/protocol.json"),
+                workflows=workflows,
                 complete=True,
             )
         )

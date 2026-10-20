@@ -67,16 +67,19 @@ def synthesize(item: dict[str, Any], system: SystemModel) -> tuple[FaultHypothes
     hid = identity((path, mechanism.casefold(), parameters.get("kind", "source_quote")))
     prediction_data = item.get("prediction", "")
     if isinstance(prediction_data, dict):
+        description = prediction_data.get("description", "")
+        if not isinstance(description, str) or not description.strip():
+            raise ValueError("A hypothesis must predict an observation")
         prediction = Prediction(
             identity((hid, prediction_data)),
-            str(prediction_data.get("description", "")),
+            description,
             prediction_data.get("predicate", "source_contains"),
             prediction_data.get("expected", True),
             list(prediction_data.get("assumptions", [])),
         )
+    elif isinstance(prediction_data, str) and prediction_data.strip():
+        prediction = Prediction(identity((hid, prediction_data)), prediction_data)
     else:
-        prediction = Prediction(identity((hid, prediction_data)), str(prediction_data))
-    if not prediction.description:
         raise ValueError("A hypothesis must predict an observation")
     chain = item.get("causal_chain", [])
     # Synthesis is conjectural even when a model labels itself "confirmed".

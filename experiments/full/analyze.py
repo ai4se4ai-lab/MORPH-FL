@@ -31,6 +31,7 @@ def analyze(results, smoke=False):
     manifest = json.loads((results / "data/manifest.json").read_text())
     pins = json.loads(Path("experiments/full/pins.json").read_text())
     models = 1 if smoke else len(pins["models"])
+    model_revisions = {model["id"]: model["revision"] for model in pins["models"][:models]}
     seeds = 1 if smoke else 3
     cases = read_rows(results / "data/cases.jsonl")
     planned = {
@@ -48,6 +49,11 @@ def analyze(results, smoke=False):
         if path.name.startswith("preflight__"):
             continue
         for row in read_rows(path):
+            if row["track"] != "retrieval" and (
+                row["model_id"] not in model_revisions
+                or row.get("model_revision") != model_revisions[row["model_id"]]
+            ):
+                raise ValueError("Prediction model revision differs from the pinned study")
             key = (
                 row["track"],
                 row["model_id"],

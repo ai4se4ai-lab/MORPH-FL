@@ -1,5 +1,6 @@
 {
   "previously_inspected": [
+    "astropy__astropy-12907",
     "astropy__astropy-14995",
     "django__django-17051",
     "marshmallow-code__marshmallow-1343",
@@ -13,5 +14,6 @@
     "pylint-dev__pylint-7993",
     "pytest-dev__pytest-5692"
   ],
-  "note": "Full benchmark evaluation includes any of these present in the pinned test splits; it is not an untouched held-out sample."
+  "note": "Full benchmark evaluation includes any of these present in the pinned test splits; it is not an untouched held-out sample.",
+  "preflight_inspection_note": "astropy__astropy-12907 was repeatedly used for real inference gates; model responses and failure diagnostics were inspected during v5/v8 prompt/runtime revisions. Its inclusion in later benchmark summaries must be disclosed as prior exposure, not an untouched holdout."
 }

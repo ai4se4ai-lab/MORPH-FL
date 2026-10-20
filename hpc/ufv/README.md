@@ -1,5 +1,23 @@
 # Active UFV five-family study
 
+The [living phase tracker](../../docs/UFV/study_progress.md) updates every minute
+from the active monitor's read-only metadata snapshot. Its table covers each
+experiment, rationale, receipt-backed status, result overview and output paths.
+Edit `hpc/ufv/study_tracker.py` to change the generated plan; manual edits to the
+generated Markdown are overwritten. The snapshot is saved as
+`hpc/logs/ufv-full-v12-20261020/study-progress.json`. No active compute code or
+scientific settings are changed by this reporting feature.
+
+**Active corrected run:** `ufv-full-v12-20261020-01`, deployment
+`/home/babaei/projects/MORPH-FL-full-v12-20261020`, collection job **17962**.
+All five in-run GPU gates passed. Retrieval 17935 resumed after lossless packing
+of 315 records (exact before/after logical hashes); its scheduler limit is now
+12 hours. Latest audited progress: 318/1,414 retrieval records at 09:46:03 UTC
+on October 20. Primary jobs remain dependency-pending. See
+[current review and evidence](../../docs/UFV/five_family_transition.md).
+
+The identifiers below describe the preserved, failed original run.
+
 Run: `ufv-fivefam-20261020-01`
 Host: `babaei@slurm.soc.ufv.ca`
 Deployment: `/home/babaei/projects/MORPH-FL-ufv-fivefam-20261020`
@@ -49,12 +67,14 @@ per-model gates provide that evidence. No smoke result is promoted to a full res
 Monitoring and collection:
 
 ```bash
-python3 -u hpc/ufv/watch_collect.py
-# For another run, use --deployment PATH --run-id ID --destination LOCAL_PATH.
+python3 -u hpc/ufv/watch_collect.py \
+  --deployment /home/babaei/projects/MORPH-FL-full-v12-20261020 \
+  --run-id ufv-full-v12-20261020-01 \
+  --destination hpc/logs/ufv-full-v12-20261020
 ```
 
 The existing detached collector PID is in
-`hpc/logs/ufv-fivefam-20261020/monitor.pid`; do not launch a duplicate.
+`hpc/logs/ufv-full-v12-20261020/monitor.pid`; do not launch a duplicate.
 It polls once/minute, saves `status.json`, and transfers terminal logs, tables,
 figures, predictions and metadata with an SSH tar stream. Remote rsync is absent.
 Graphs/evidence archives remain remote; their paths and sizes are inventoried.
