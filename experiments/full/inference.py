@@ -31,7 +31,9 @@ class NativeModel:
 
         if not torch.cuda.is_available():
             raise RuntimeError("HPC inference requires an allocated GPU")
-        self.hf_tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True)
+        self.hf_tokenizer = AutoTokenizer.from_pretrained(
+            path, local_files_only=True, **spec.get("tokenizer_kwargs", {})
+        )
         placement = {}
         if os.environ.get("MORPH_MULTI_GPU") == "1" and torch.cuda.device_count() > 1:
             placement = dict(
@@ -49,7 +51,9 @@ class NativeModel:
         if not placement:
             self.model = self.model.to("cuda")
         self.model.eval()
-        self.context = min(context, self.model.config.max_position_embeddings)
+        if self.model.config.max_position_embeddings < context:
+            raise RuntimeError("Model native context is below the common study context")
+        self.context = context
         self.temperature = temperature
         self.input_tokens = self.output_tokens = 0
         self.text_mode = False

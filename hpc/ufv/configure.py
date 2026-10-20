@@ -38,7 +38,7 @@ export MORPH_MULTI_GPU=1
 ''')
 protocol_path = root / 'experiments/full/protocol.json'
 protocol = json.loads(protocol_path.read_text())
-protocol.update(runtime_libcst='1.8.6', deployment_hardware='UFV A30 24GB; one GPU for 7B/6.7B, three GPU BF16 sharding for 32B/30B')
+protocol.update(runtime_libcst='1.8.6', deployment_hardware='UFV A30 24GB; model-specific one/two GPU BF16 placement from pins.json')
 protocol_path.write_text(json.dumps(protocol, indent=2) + '\n')
 # UFV requires --gres rather than --gpus.
 submit = root / 'hpc/slurm/submit.py'

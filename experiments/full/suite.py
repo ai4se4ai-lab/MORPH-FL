@@ -278,6 +278,18 @@ def model_assets(args):
     spec = pins["models"][args.model]
     target = Path(args.results) / "models" / str(args.model)
     target.parent.mkdir(parents=True, exist_ok=True)
+    reuse = os.environ.get("MORPH_REUSE_RESULTS")
+    if reuse and not target.exists():
+        for receipt in sorted((Path(reuse) / "models").glob("*.pin.json")):
+            cached = json.loads(receipt.read_text())
+            if all(cached.get(k) == spec[k] for k in ("id", "revision")):
+                source = receipt.parent / receipt.name.removesuffix(".pin.json")
+                if source.is_dir():
+                    target.symlink_to(source.resolve(), target_is_directory=True)
+                    (target.parent / (str(args.model) + ".pin.json")).write_text(
+                        json.dumps(spec, indent=2) + "\n"
+                    )
+                    return
     old = Path("/scratch/mbabaei/morph-fl/runs/am-smoke-20261019-012041/results/model")
     if (
         args.model == 0

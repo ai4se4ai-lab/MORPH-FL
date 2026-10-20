@@ -1,12 +1,39 @@
-# Prospective model selection, verified 2026-10-19
+# Five-family model selection (2026-10-20)
 
-Models are pinned in `pins.json`. Nibi uses original instruction checkpoints in BF16, **not Ollama quantizations**. Names alone are not evidence of a best model. The aim is two competitive dense/MoE code configurations, continuity with the pilot, and an independent-family historical control.
+The revised study uses exactly five independently trained model families from five
+organizations. Exact checkpoint commits and UFV GPU requests are in `pins.json`.
+Selection uses published software-engineering evidence and available A30 hardware;
+it is not a claim that these are the newest or universally strongest models.
 
-| Checkpoint | Role | Verified SE-study evidence | Limits of the evidence |
-|---|---|---|---|
-| Qwen/Qwen2.5-Coder-7B-Instruct | Small code-model/pilot continuity | [PROBE, EMSE 2026](https://doi.org/10.1007/s10664-026-10904-5) evaluates Qwen2.5-Coder 7B and 14B. | Code generation study; its quantization/settings are not ours. |
-| Qwen/Qwen2.5-Coder-32B-Instruct | Strong dense code model | [FLAMES author paper, ICSE 2026](https://rest.mars-prod.its.unimelb.edu.au/server/api/core/bitstreams/90394387-3965-45fb-91da-d0d1c78da479/content) includes Qwen2.5-Coder-32B in program-repair comparisons; [ICSE 2026 interoperability study](https://conf.researchr.org/details/icse-2026/icse-2026-research-track/209/Evaluating-the-effectiveness-of-LLM-based-interoperability) uses qwen2.5-coder:32b. | Different SE tasks; no claim that their success transfers to fault localization. |
-| Qwen/Qwen3-Coder-30B-A3B-Instruct | Newer MoE code configuration | [Falcão and Canedo, EMSE 31:184 (2026)](https://doi.org/10.1007/s10664-026-10919-y) includes qwen3-coder:30b-a3b-q4_K_M. | PII detection study, not fault localization; BF16 here differs from its quantization. |
-| deepseek-ai/deepseek-coder-6.7b-instruct | Historical cross-family control | [PInG official ICSE 2025 artifact](https://github.com/NecoraNyaru/PInG) explicitly runs this checkpoint for code generation/refinement. | Not presented as a top current model; intentionally tests family robustness. |
+| Family / checkpoint | Evidence and its scope | License |
+|---|---|---|
+| Alibaba Qwen: `Qwen/Qwen2.5-Coder-7B-Instruct` | COSMosFL explicitly evaluates Qwen2.5-Coder 7B for method-level fault localization on Defects4J. | Apache-2.0 |
+| DeepSeek: `deepseek-ai/deepseek-coder-6.7b-instruct` | PInG uses this exact checkpoint for code generation/refinement. MLM4DNN evaluates it in DNN repair without supplied bug locations. This is related repair/debugging evidence, not evidence of widespread standalone file/function-localization use. | DeepSeek model license (custom) |
+| Meta CodeLlama: `codellama/CodeLlama-7b-Instruct-hf` | COSMosFL evaluates CodeLlama 7B for fault localization. The PLofLBFL artifact explicitly lists the 7B instruction checkpoint for novice-program localization. | Llama 2 community license (custom) |
+| Mistral: `mistralai/Mistral-Nemo-Instruct-2407` (12B) | COSMosFL evaluates Mistral NeMo 12B for fault localization. | Apache-2.0 |
+| IBM Granite: `ibm-granite/granite-3.1-8b-instruct` | COSMosFL includes Granite 3.0 8B. We use its 3.1 8B successor because 3.0 has only 4,096 native context tokens; 3.1 supports the common 16,384-token study limit. This is family-level evidence, not evaluation of this exact checkpoint in that paper. | Apache-2.0 |
 
-No unverified TSE attribution is made. The user-supplied `docs/ollama-se.txt` is a candidate list, not verified venue evidence. StarCoder2 and base/completion checkpoints are omitted because this experiment needs instruction dialogues; Devstral is a reasonable follow-up but would add a fifth checkpoint and another tokenizer/runtime preflight. Its use in the same EMSE PII study does not establish superiority for this task.
+Primary sources:
+
+- [COSMosFL author paper](https://coinse.github.io/publications/pdfs/Cho2025aa.pdf) and [artifact](https://github.com/coinse/cosmosfl).
+- [PLofLBFL author artifact](https://github.com/Xucranger/PLofLBFL).
+- [PInG official artifact](https://github.com/NecoraNyaru/PInG).
+- [MLM4DNN author paper / publisher](https://doi.org/10.1145/3715716).
+- [Granite 3.1 official model card](https://huggingface.co/ibm-granite/granite-3.1-8b-instruct).
+- [Mistral NeMo official model card](https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407).
+
+All five checkpoints are publicly downloadable without gated access at verification.
+They are open-weight models; the custom DeepSeek and Llama licenses must not be
+presented as Apache/OSI licenses. Published use establishes relevant research
+precedent, not a measured claim that all five checkpoints are widely used for FL.
+COSMosFL used different quantization and task conditions; its scores are not ours.
+
+BF16, sampling, seeds, token budgets, workflows and benchmark subjects remain
+unchanged. CodeLlama and Mistral NeMo reserve two A30s; the other models reserve
+one. Per-model real-inference preflights gate the primary and side studies. The
+old three-Qwen design and its outputs remain archived in the original deployment;
+its model jobs were cancelled, with only identical benchmark preparation retained.
+
+Runtime tokenizer validation on UFV supports all five native chat templates and
+contexts. Mistral NeMo explicitly uses `fix_mistral_regex=True` for Transformers
+4.57.6; this correction is pinned and recorded before any five-family inference.

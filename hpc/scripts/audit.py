@@ -4,6 +4,7 @@
     python3 hpc/scripts/audit.py [RUN_ID]                 snapshot (default: newest run in hpc/logs/)
     python3 hpc/scripts/audit.py RUN_ID --watch 120       redraw every 120 s (minimum 60); stops when nothing is queued/running
     python3 hpc/scripts/audit.py RUN_ID --only failed     only failed / cancelled / timed-out rows (also: running, pending)
+    python3 hpc/scripts/audit.py RUN_ID --watch --only running,completed
     python3 hpc/scripts/audit.py RUN_ID --steps           add one line per step under every row
     python3 hpc/scripts/audit.py RUN_ID --no-color
 
@@ -200,12 +201,26 @@ def bar(p, width=10) -> str:
     return c("bar", "█" * full) + c("dim", "░" * (width - full)) + f" {100 * frac:3.0f}% {done}/{int(total)}"
 
 
+def parse_states(value: str) -> str:
+    """Validate comma-separated display states; completed cells are labelled OK."""
+    if not value:
+        return ""
+    aliases = {"COMPLETE": "OK", "COMPLETED": "OK"}
+    states = [aliases.get(s.strip().upper(), s.strip().upper()) for s in value.split(",")]
+    if any(s not in SYM for s in states):
+        raise argparse.ArgumentTypeError(
+            "use comma-separated states: " + ", ".join(sorted(SYM)) + " (complete/completed also mean OK)"
+        )
+    return ",".join(states)
+
+
 def render(a: dict, only: str, show_steps: bool) -> str:
     rows = a["rows"]
-    if only == "failed":
-        rows = [r for r in rows if r["state"] in ("FAILED", "PARTIAL", "CANCELLED", "TIMEOUT", "OUT_OF_MEMORY", "NODE_FAIL") or r["failed"]]
-    elif only in ("running", "pending"):
-        rows = [r for r in rows if r["state"].lower() == only]
+    if only:
+        states = set(parse_states(only).split(","))
+        failures = {"FAILED", "PARTIAL", "CANCELLED", "TIMEOUT", "OUT_OF_MEMORY", "NODE_FAIL"}
+        rows = [r for r in rows if r["state"] in states
+                or ("FAILED" in states and (r["state"] in failures or r["failed"]))]
     counts: dict = {}
     for r in a["rows"]:
         counts[r["state"]] = counts.get(r["state"], 0) + 1
@@ -284,7 +299,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("run_id", nargs="?", default="")
     ap.add_argument("--watch", type=int, nargs="?", const=60, default=0)
-    ap.add_argument("--only", default="")
+    ap.add_argument("--only", default="", type=parse_states,
+                    help="comma-separated states, e.g. running,completed; completed means OK; failed includes failure states")
     ap.add_argument("--steps", action="store_true")
     ap.add_argument("--no-color", action="store_true")
     a = ap.parse_args()

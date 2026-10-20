@@ -1,7 +1,7 @@
 {
-  "study": "morph-full-v1",
+  "study": "morph-full-five-families-v2",
   "phase": "prospective protocol, no full results yet",
-  "models": 4,
+  "models": 5,
   "seeds": [
     1,
     2,
@@ -23,12 +23,12 @@
   "source_files": {
     "experiments/full/analyze.py": "ead9b92d14e09b261be3a3151e429dd4ad00631e21275df186b718e47464af2f",
     "experiments/full/export_bundle.py": "c82448aa41ee9937ab10afb09ca607ee26ca0271430b8210a1480e70a92fb792",
-    "experiments/full/extended_analysis.py": "21dbab69aeffa376eabd7d08eac798a645232354b2917eaa4887b48463646b1b",
-    "experiments/full/inference.py": "752baf09aae7acdf4995ee8fa3fc5cd394418090248f1166ba92b575b46231ec",
-    "experiments/full/paper_update.py": "d45ae27880e88a284d873d49bdb6573ad427d71c6d9811dab3b748c02961845b",
-    "experiments/full/pins.json": "25689d2c75fd97cf0a61f27ff6004fe5396d1c363a9d16b3883812c541be0154",
+    "experiments/full/extended_analysis.py": "9daa224766006c054249d85075fe959fc04a9bef34e8b89b8c9649233ce33530",
+    "experiments/full/inference.py": "6185f330cb81095729b1175f73fcbefe698924c7326d82a7d2fccc6d0dbb4a49",
+    "experiments/full/paper_update.py": "79637e212bdb2893ee337f878ee43896952b757635f81743be62a54bf0b81ef6",
+    "experiments/full/pins.json": "587604c9b91bee2e1863693d4e56d6e06386ac757fbf4185b0b07e0d478badc0",
     "experiments/full/prepare.py": "2357c517d44a31147ff594576c1787782e8cfcdc082964966313364a7b2e57e1",
-    "experiments/full/suite.py": "93b64c4d299d92401fb99c2ddb014a59f9aaefa7c2ff556307635be95503c23f",
+    "experiments/full/suite.py": "d79b2bfd833ad336b9650e04b76d48c0bae1b256b3aa60f100a0ad5299afaa54",
     "experiments/full/typeset.py": "1feb1bd449374b2a5656225e3dd165a7c571ba6f207a42bd6ea022f27bd0c85a",
     "src/morph_fl/__init__.py": "5df9b9c1bc5e3e7b8e43d5686715a1499dcd4d081792208a8e63aec753d377a3",
     "src/morph_fl/__main__.py": "c88c3b891af5cb31911df6df19138d0b512b088877a30c15d31063fb9c8f86bf",
@@ -82,7 +82,10 @@
   "note": "Patches remain evaluator-only. Benchmarks overlap. Static observations and unreviewed patch proxies; no human/calibration/causal claims.",
   "top_p": 0.95,
   "top_k": 50,
-  "runtime_libcst": "1.8.6+computecanada",
-  "primary_family": "File Top1: five comparators x four models x two benchmarks, repository sign flips, Holm family adjustment; functions/costs secondary descriptive",
-  "attempt_cost_note": "Completed-case token metrics exclude interrupted attempts; attempt time/cost must also be audited from Slurm and preserved per-case audit archives. Resets within a completed case preserve cumulative budgets."
+  "runtime_libcst": "1.8.6",
+  "primary_family": "File Top1: five comparators x five model families x two benchmarks, repository sign flips, Holm family adjustment; functions/costs secondary descriptive",
+  "attempt_cost_note": "Completed-case token metrics exclude interrupted attempts; attempt time/cost must also be audited from Slurm and preserved per-case audit archives. Resets within a completed case preserve cumulative budgets.",
+  "model_selection": "Five separately trained families: Qwen, DeepSeek, CodeLlama, Mistral, IBM Granite; study evidence and checkpoint caveats in models.md",
+  "tokenizer_note": "Mistral NeMo uses the Transformers fix_mistral_regex=True correction, validated before any five-family inference.",
+  "deployment_hardware": "UFV A30 24GB; model-specific one/two GPU BF16 placement from pins.json"
 }

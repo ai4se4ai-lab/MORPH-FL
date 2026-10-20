@@ -20,7 +20,7 @@ def write_csv(path, rows):
 def extend(scored, recovery, membership, cases, out, smoke, complete):
     import matplotlib.pyplot as plt
 
-    # File Top-1 primary family: 5 comparators x 4 models x 2 benchmarks.
+    # File Top-1 primary family: 5 comparators x all pinned models x 2 benchmarks.
     tests = []
     for benchmark, ids in membership.items():
         for model in sorted({r["model_id"] for r in scored if r["track"] == "main"}):

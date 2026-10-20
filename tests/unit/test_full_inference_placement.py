@@ -9,9 +9,9 @@ from experiments.full.inference import NativeModel
 
 
 class PlacementTests(unittest.TestCase):
-    def load(self, count, devices):
+    def load(self, count, devices, native_context=16384):
         model = MagicMock()
-        model.config.max_position_embeddings = 16384
+        model.config.max_position_embeddings = native_context
         model.parameters.return_value = [SimpleNamespace(device=SimpleNamespace(type=d)) for d in devices]
         model.to.return_value = model
         model.hf_device_map = {'layers': 0}
@@ -43,3 +43,8 @@ class PlacementTests(unittest.TestCase):
         loader, model = self.load(1, ['cuda'])
         self.assertNotIn('device_map', loader.call_args.kwargs)
         model.to.assert_called_once_with('cuda')
+
+    @patch.dict(os.environ, MORPH_MULTI_GPU='0')
+    def test_rejects_shorter_native_context(self):
+        with self.assertRaisesRegex(RuntimeError, 'common study context'):
+            self.load(1, ['cuda'], native_context=4096)
