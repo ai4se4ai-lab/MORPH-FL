@@ -5,6 +5,7 @@ Both structured and free-text workflows share the same weights and sampling.
 """
 
 import json
+import os
 from types import SimpleNamespace
 
 from morph_fl.inference.local import BudgetExceeded
@@ -31,17 +32,23 @@ class NativeModel:
         if not torch.cuda.is_available():
             raise RuntimeError("HPC inference requires an allocated GPU")
         self.hf_tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True)
-        self.model = (
-            AutoModelForCausalLM.from_pretrained(
-                path,
-                local_files_only=True,
-                torch_dtype=torch.bfloat16,
-                attn_implementation="sdpa",
-                low_cpu_mem_usage=True,
+        placement = {}
+        if os.environ.get("MORPH_MULTI_GPU") == "1" and torch.cuda.device_count() > 1:
+            placement = dict(
+                device_map="auto",
+                max_memory={i: "22GiB" for i in range(torch.cuda.device_count())},
             )
-            .to("cuda")
-            .eval()
+        self.model = AutoModelForCausalLM.from_pretrained(
+            path,
+            local_files_only=True,
+            torch_dtype=torch.bfloat16,
+            attn_implementation="sdpa",
+            low_cpu_mem_usage=True,
+            **placement,
         )
+        if not placement:
+            self.model = self.model.to("cuda")
+        self.model.eval()
         self.context = min(context, self.model.config.max_position_embeddings)
         self.temperature = temperature
         self.input_tokens = self.output_tokens = 0
@@ -56,6 +63,8 @@ class NativeModel:
             top_p=0.95,
             top_k=50,
             json_constraint=False,
+            gpu_names=[torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())],
+            device_map={k: str(v) for k, v in getattr(self.model, "hf_device_map", {}).items()},
         )
         # The pinned upstream adapter expects tokenizers' .encode(...).ids API.
         self.tokenizer = SimpleNamespace(
