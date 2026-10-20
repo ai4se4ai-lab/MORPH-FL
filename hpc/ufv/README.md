@@ -18,7 +18,8 @@ seeds and budgets are unchanged. GPU hardware differs from the prospective Nibi
 H100 design and is recorded in prediction metadata. Small models use one A30;
 large models shard across three A30s with a strict GPU-residency check. No CPU
 offload or quantization is silently substituted. Full model groups run serially
-and preserve all 587 cells across 28 scheduler submissions. Smoke uses one A30.
+and preserve all 587 cells across 28 scheduler submissions. Small-model arrays
+allow two concurrent tasks. Smoke uses one A30 per task, up to three tasks.
 The full preflights must still demonstrate actual large-model feasibility.
 
 Only results collection is configured. Manuscript compilation/export was removed
