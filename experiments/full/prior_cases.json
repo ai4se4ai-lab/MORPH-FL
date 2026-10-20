@@ -1,0 +1,17 @@
+{
+  "previously_inspected": [
+    "astropy__astropy-14995",
+    "django__django-17051",
+    "marshmallow-code__marshmallow-1343",
+    "matplotlib__matplotlib-23476",
+    "mwaskom__seaborn-3190",
+    "pallets__flask-4045",
+    "psf__requests-2317",
+    "pvlib__pvlib-python-1854",
+    "pydata__xarray-4094",
+    "pydicom__pydicom-901",
+    "pylint-dev__pylint-7993",
+    "pytest-dev__pytest-5692"
+  ],
+  "note": "Full benchmark evaluation includes any of these present in the pinned test splits; it is not an untouched held-out sample."
+}

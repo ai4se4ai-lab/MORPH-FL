@@ -1,0 +1,25 @@
+{
+  "created_utc": "2026-10-19T18:35:11.411774+00:00",
+  "source_sha256": "1ed7c1db0a642a6a0ad5b9c879706336f36a365a4cf389a3a1bccfa709a47258",
+  "case": "pydicom__pydicom-901",
+  "split": "original development",
+  "models": [
+    "qwen2.5-coder:7b",
+    "qwen3-coder:30b"
+  ],
+  "windows": [
+    3,
+    4,
+    5
+  ],
+  "min_fraction": 0.15,
+  "min_rounds": 4,
+  "remaining_thresholds": "unchanged defaults: gain=0, repetition>=0.5 or diversity<0.5; restart reserve256",
+  "budget": 48000,
+  "rounds": 8,
+  "seeds": [
+    1
+  ],
+  "purpose": "Operational sensitivity and measured reset diagnostics; no tuning or held-out effectiveness claim. Fraction0.15 comes from supplied design suggestion and has not been calibrated.",
+  "predecessor_source_sha256": "29ec0345852ccf7bbc82acaa6dbb2f8224375460a2e5cb29d5af80aa279683d9"
+}

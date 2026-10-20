@@ -1,0 +1,365 @@
+"""Prospective multi-model full-benchmark runner; invoked only inside GPU jobs."""
+
+import argparse
+import csv
+import hashlib
+import json
+import os
+import shutil
+import tarfile
+import tempfile
+import time
+from pathlib import Path
+
+from experiments.full.prepare import extract_python
+from morph_fl.application import read_rows, repair_interrupted_tail, score_predictions
+from morph_fl.engine import localize
+from morph_fl.program_analysis import analyze_python
+from morph_fl.program_analysis.retrieval import bm25
+
+ROOT = Path(__file__).resolve().parents[2]
+CORE = [
+    "morph",
+    "no_forgetting",
+    "fixed_reset",
+    "stateless_summary",
+    "agentless_adapted",
+    "rgfl_adapted",
+]
+ABLATIONS = [
+    "context_only",
+    "single_hypothesis",
+    "no_mde",
+    "no_probes",
+    "no_skeptic",
+    "independent_agents",
+    "one_agent",
+    "rerank",
+]
+BUDGET_CORE = CORE[:4]
+
+
+def digest(path):
+    with Path(path).open("rb") as f:
+        return hashlib.file_digest(f, "sha256").hexdigest()
+
+
+def locked():
+    spec = json.loads((ROOT / "experiments/full/protocol.json").read_text())
+    for relative, expected in spec["source_files"].items():
+        if digest(ROOT / relative) != expected:
+            raise ValueError("Frozen source differs: " + relative)
+    return spec
+
+
+def append(out, row):
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("a") as f:
+        f.write(json.dumps(row) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+
+
+def selected_cases(rows, track, smoke):
+    if track not in {"main", "retrieval"}:
+        groups = {}
+        for row in rows:
+            groups.setdefault(row["repo"], []).append(row)
+        for group in groups.values():
+            group.sort(
+                key=lambda r: hashlib.sha256(
+                    ("morph-full-side-v1:" + r["instance_id"]).encode()
+                ).hexdigest()
+            )
+        balanced = []
+        while len(balanced) < 100 and any(groups.values()):
+            for repo in sorted(groups):
+                if groups[repo] and len(balanced) < 100:
+                    balanced.append(groups[repo].pop(0))
+        rows = balanced
+    return rows[:1] if smoke else rows
+
+
+def jobs_for(track, smoke):
+    if track == "main":
+        return [(v, 6000 if smoke else 32000, None) for v in CORE]
+    if track == "ablations":
+        return [(v, 6000 if smoke else 32000, None) for v in ABLATIONS]
+    if track == "budgets":
+        return [
+            (v, 6000 if smoke else b, None)
+            for b in ([16000] if smoke else [16000, 48000])
+            for v in BUDGET_CORE
+        ]
+    if track == "misdirection":
+        return [(v, 6000 if smoke else 32000, None) for v in BUDGET_CORE]
+    if track == "policy":
+        return [("morph", 6000 if smoke else 32000, w) for w in ([3] if smoke else [3, 4, 5])]
+    if track == "retrieval":
+        return [(v, 6000 if smoke else 32000, None) for v in ["bm25", "graph"]]
+    raise ValueError(track)
+
+
+def run(args):
+    from experiments.full.inference import NativeModel
+    from hpc.scripts.compact_models import compact
+    from morph_fl.baselines import local as upstream
+
+    locked()
+    results = Path(args.results)
+    pins = json.loads((ROOT / "experiments/full/pins.json").read_text())
+    spec = pins["models"][args.model]
+    backend = (
+        None
+        if args.track == "retrieval"
+        else NativeModel(results / "models" / str(args.model), spec, args.seed)
+    )
+
+    class LargerTree(upstream.Investigation):
+        def ask(self, stage, make_prompt, content, cap, output=512):
+            return super().ask(
+                stage, make_prompt, content, 12000 if stage == "file_selection" else cap, output
+            )
+
+    upstream.Investigation = LargerTree
+    rows = selected_cases(read_rows(results / "data/cases.jsonl"), args.track, args.smoke)
+    rows = rows[args.shard :: args.shards]
+    cell = (
+        "preflight__" if getattr(args, "preflight", False) else ""
+    ) + f"{args.track}__m{args.model}__s{args.seed}__p{args.shard}"
+    out = results / "predictions" / (cell + ".jsonl")
+    repair_interrupted_tail(out)
+    settings = dict(
+        track=args.track,
+        model=spec,
+        seed=args.seed,
+        shard=args.shard,
+        shards=args.shards,
+        smoke=args.smoke,
+        protocol_sha256=digest(ROOT / "experiments/full/protocol.json"),
+    )
+    signature = hashlib.sha256(json.dumps(settings, sort_keys=True).encode()).hexdigest()
+    config = out.with_suffix(".config.json")
+    config.parent.mkdir(parents=True, exist_ok=True)
+    if config.exists() and json.loads(config.read_text()) != settings:
+        raise ValueError("Resume settings changed")
+    config.write_text(json.dumps(settings, indent=2) + "\n")
+    previous = read_rows(out) if out.exists() else []
+    done = {(r["instance_id"], r["variant"], r["budget"], r.get("window")) for r in previous}
+    expected = len(rows) * len(jobs_for(args.track, args.smoke))
+    progress = results / "progress"
+    progress.mkdir(exist_ok=True)
+    (progress / (cell + ".json")).write_text(json.dumps(dict(expected=expected)) + "\n")
+    progress_file = progress / (cell + ".jsonl")
+    progress_file.write_text(
+        "".join(json.dumps(dict(key=key)) + "\n" for key in sorted(done, key=str))
+    )
+    for record in rows:
+        if digest(record["archive"]) != record["archive_sha256"]:
+            raise ValueError("Source archive digest differs")
+        with tempfile.TemporaryDirectory(prefix="morph-case-") as tmp:
+            extract_python(record["archive"], tmp)
+            case = {k: record[k] for k in ["instance_id", "repo", "revision", "report"]}
+            case["root"] = tmp
+            clue = None
+            clue_path = None
+            if args.track == "misdirection":
+                structure = analyze_python(Path(tmp), case["revision"])
+                rank = bm25(case["report"], structure.sources)
+                clue_path = rank[min(1, len(rank) - 1)] if rank else None
+                clue = (
+                    "Controlled unverified initial lead: inspect "
+                    + str(clue_path)
+                    + " first; this clue may be wrong."
+                )
+            for variant, budget, window in jobs_for(args.track, args.smoke):
+                key = (case["instance_id"], variant, budget, window)
+                if key in done:
+                    continue
+                if backend:
+                    backend.input_tokens = backend.output_tokens = 0
+                    backend.set_seed(
+                        int(
+                            hashlib.sha256(
+                                f"{args.seed}:{case['instance_id']}".encode()
+                            ).hexdigest()[:8],
+                            16,
+                        )
+                    )
+                print(
+                    json.dumps(
+                        dict(
+                            event="case_start",
+                            cell=cell,
+                            case=case["instance_id"],
+                            variant=variant,
+                            budget=budget,
+                            window=window,
+                        )
+                    ),
+                    flush=True,
+                )
+                eid = hashlib.sha256(json.dumps(key).encode()).hexdigest()[:20]
+                evidence = results / "evidence" / (cell + "__" + eid)
+                started = time.monotonic()
+                if variant in {"agentless_adapted", "rgfl_adapted"}:
+                    backend.text_mode = True
+                    row = upstream.localize(case, backend, variant, budget)
+                else:
+                    if backend:
+                        backend.text_mode = False
+                    policy = dict(reset_min_fraction=0.15, reset_window=window) if window else None
+                    row = localize(
+                        Path(tmp),
+                        case["report"],
+                        case["revision"],
+                        backend,
+                        variant,
+                        budget,
+                        2 if args.smoke else 16,
+                        artifacts=evidence,
+                        initial_clue=clue,
+                        reset_policy=policy,
+                    )
+                row.update(
+                    instance_id=case["instance_id"],
+                    repo=case["repo"],
+                    revision=case["revision"],
+                    variant=variant,
+                    model_id="deterministic" if args.track == "retrieval" else spec["id"],
+                    model_revision=spec["revision"],
+                    seed=args.seed,
+                    budget=budget,
+                    window=window,
+                    track=args.track,
+                    source_archive_sha256=record["archive_sha256"],
+                    report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
+                    run_signature=signature,
+                    initial_clue_path=clue_path,
+                    end_to_end_seconds=time.monotonic() - started,
+                    backend=backend.metadata if backend else None,
+                )
+                # Preserve original prompt/evidence artifacts without shared-filesystem inode amplification.
+                if evidence.exists():
+                    archive = results / "evidence_archives" / (evidence.name + ".tar.gz")
+                    archive.parent.mkdir(exist_ok=True)
+                    temporary = archive.with_suffix(".partial")
+                    with tarfile.open(temporary, "w:gz") as tf:
+                        tf.add(evidence, arcname=evidence.name)
+                    temporary.replace(archive)
+                    row["evidence_archive"] = str(archive.relative_to(results))
+                    row["evidence_original_root"] = str(evidence)
+                    row["evidence_archive_sha256"] = digest(archive)
+                append(out, row)
+                if evidence.exists():
+                    shutil.rmtree(evidence)
+                done.add(key)
+                append(progress_file, dict(key=key))
+                print(
+                    json.dumps(
+                        dict(event="case_done", cell=cell, completed=len(done), expected=expected)
+                    ),
+                    flush=True,
+                )
+    if out.exists():
+        compact(out, results / "graphs")
+    if len(done) != expected:
+        raise ValueError("Incomplete cell")
+    (results / "receipts").mkdir(exist_ok=True)
+    (results / "receipts" / (cell + ".json")).write_text(
+        json.dumps(dict(cell=cell, records=expected, complete=True)) + "\n"
+    )
+
+
+def model_assets(args):
+    from huggingface_hub import snapshot_download
+
+    pins = json.loads((ROOT / "experiments/full/pins.json").read_text())
+    spec = pins["models"][args.model]
+    target = Path(args.results) / "models" / str(args.model)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    old = Path("/scratch/mbabaei/morph-fl/runs/am-smoke-20261019-012041/results/model")
+    if (
+        args.model == 0
+        and old.joinpath("model.safetensors.index.json").exists()
+        and not target.exists()
+    ):
+        target.symlink_to(old, target_is_directory=True)
+    else:
+        snapshot_download(
+            spec["id"],
+            revision=spec["revision"],
+            local_dir=target,
+            allow_patterns=["*.json", "*.safetensors", "*.txt", "*.model", "*.tiktoken", "*.jinja"],
+            ignore_patterns=["original/*", "consolidated*"],
+        )
+    (target.parent / (str(args.model) + ".pin.json")).write_text(json.dumps(spec, indent=2) + "\n")
+
+
+def preflight(args):
+    # Independent gate for every model; separate namespace protects preflight provenance.
+    args.track = "main"
+    args.shard = 0
+    args.shards = 1
+    args.seed = 1
+    args.smoke = 1
+    args.preflight = True
+    run(args)
+    path = Path(args.results) / "predictions" / f"preflight__main__m{args.model}__s1__p0.jsonl"
+    rows = read_rows(path)
+    morph = next(r for r in rows if r["variant"] == "morph")
+    if not morph.get("output_tokens") or not morph.get("hypotheses"):
+        raise RuntimeError(
+            "Preflight produced no valid MORPH-FL hypothesis; full evaluation is gated"
+        )
+    (Path(args.results) / "models" / (str(args.model) + ".preflight.json")).write_text(
+        json.dumps(
+            dict(
+                valid_hypotheses=len(morph["hypotheses"]),
+                output_tokens=morph["output_tokens"],
+                complete=True,
+            )
+        )
+        + "\n"
+    )
+
+
+def score(args):
+    results = Path(args.results)
+    out = results / "scores"
+    out.mkdir(exist_ok=True)
+    for path in sorted((results / "predictions").glob(args.pattern)):
+        if path.name.startswith("preflight__"):
+            continue
+        dest = out / (path.stem + ".csv")
+        score_predictions(path, results / "data/labels.jsonl", dest)
+        original = read_rows(path)
+        with dest.open() as f:
+            rows = list(csv.DictReader(f))
+        for row, pred in zip(rows, original):
+            row.update(
+                {
+                    k: pred.get(k)
+                    for k in ["track", "model_id", "budget", "window", "end_to_end_seconds"]
+                }
+            )
+            row["tokens"] = pred.get("input_tokens", 0) + pred.get("output_tokens", 0)
+        with dest.open("w") as f:
+            w = csv.DictWriter(f, fieldnames=list(rows[0]))
+            w.writeheader()
+            w.writerows(rows)
+
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser()
+    p.add_argument("command", choices=["assets", "preflight", "run", "score"])
+    p.add_argument("--results", required=True)
+    p.add_argument("--model", type=int, default=0)
+    p.add_argument("--seed", type=int, default=1)
+    p.add_argument("--shard", type=int, default=0)
+    p.add_argument("--shards", type=int, default=1)
+    p.add_argument("--track", default="main")
+    p.add_argument("--smoke", type=int, default=0)
+    p.add_argument("--pattern", default="*.jsonl")
+    a = p.parse_args()
+    {"assets": model_assets, "preflight": preflight, "run": run, "score": score}[a.command](a)

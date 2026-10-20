@@ -1,0 +1,91 @@
+{
+  "dataset_revision": "6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2",
+  "selection": "one case per declared repository; minimum SHA256(morph-local-v1:instance_id), no label inspection",
+  "cases": {
+    "dev": [
+      "marshmallow-code__marshmallow-1343",
+      "pydicom__pydicom-901",
+      "pvlib__pvlib-python-1854"
+    ],
+    "test": [
+      "psf__requests-2317",
+      "pallets__flask-4045",
+      "pytest-dev__pytest-5692"
+    ]
+  },
+  "development_only": [
+    "marshmallow-code__marshmallow-1343",
+    "pydicom__pydicom-901",
+    "pvlib__pvlib-python-1854"
+  ],
+  "held_out": [
+    "psf__requests-2317",
+    "pallets__flask-4045",
+    "pytest-dev__pytest-5692"
+  ],
+  "models": [
+    "qwen2.5-coder:7b",
+    "qwen3-coder:30b"
+  ],
+  "variants": [
+    "bm25",
+    "graph",
+    "rerank",
+    "stateless_summary",
+    "no_forgetting",
+    "morph"
+  ],
+  "seeds": [
+    1
+  ],
+  "tokens": 16000,
+  "rounds": 2,
+  "interpretation": "small exploratory localization pilot; unreviewed patch proxies; no significance claim",
+  "held_out_source_sha256": "c8084ee01c71a3bc0729fec28f283c81472136c4eab53efe8e683e61db83444a",
+  "held_out_source": "artifacts/local/revisions/validated-c8084ee01c71/src",
+  "tuning_notes": "Only development traces inspected. Freeze before held-out predictions. All attempted development source versions are retained.",
+  "superseded_pre_test_locks": [
+    {
+      "sha256": "317396be209d1d37981146616b8294d6adba3f8e4b1c4a58d757b4acd7f014ad",
+      "reason": "30B raw Qwen template compatibility rejected before held-out evaluation; no held-out results inspected"
+    },
+    {
+      "sha256": "819f05fbad74fa703b68b64ae6585b00e72ff598a498332b7d9883637cd3618e",
+      "reason": "Physical-probe cache/duplication accounting corrected using development traces; no held-out predictions exist"
+    },
+    {
+      "sha256": "5fd966d164b4a44d263ceec659ada5e315f07d21abb0dc68df3fc85c390b7aa9",
+      "reason": "Static-source support was incorrectly closing unresolved causal questions in investigator briefs; corrected before held-out work"
+    },
+    {
+      "sha256": "ea1b82b2842b8655163f88fb67eccc1820af3c18dbb9c0057445ad362a6057d7",
+      "reason": "Independent-agent behavior-model isolation fixed; no held-out results inspected"
+    }
+  ],
+  "held_out_before_comparison": {
+    "source": "/home/majid/Documents/PROJECTS/MORPH-FL/artifacts/local/revisions/before/src",
+    "sha256": "0d3941fbcadc6aabb77969e9f399dc89cdcaf5f69c9370469ba7aba0ae89dda2",
+    "models": [
+      "qwen2.5-coder:7b"
+    ],
+    "variants": [
+      "morph"
+    ],
+    "seed": 1,
+    "tokens": 16000,
+    "rounds": 2,
+    "declared_before_any_held_out_predictions": true
+  },
+  "development_stress": {
+    "instance_id": "pydicom__pydicom-901",
+    "model": "qwen2.5-coder:7b",
+    "variants": [
+      "no_forgetting",
+      "morph"
+    ],
+    "tokens": 48000,
+    "rounds": 8,
+    "selection_reason": "Short configuration issue supports repeated inspection; diagnostic for plateau/reset mechanics only, not a representative accuracy estimate",
+    "no_further_tuning": true
+  }
+}

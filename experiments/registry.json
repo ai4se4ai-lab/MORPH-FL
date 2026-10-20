@@ -1,0 +1,60 @@
+{
+  "tracks": [
+    {
+      "id": "upstream-pilot-and-fresh",
+      "source_sha256": "29ec0345852ccf7bbc82acaa6dbb2f8224375460a2e5cb29d5af80aa279683d9",
+      "cases": "3 original development +3 reused test +6 prospectively selected fresh",
+      "protocols": [
+        "experiments/baselines/protocol.json",
+        "experiments/baselines/fresh_protocol.json"
+      ],
+      "results": "experiments/baselines/results/report.md",
+      "questions": [
+        "RQ1",
+        "RQ3"
+      ],
+      "limitations": "one seed; patch-change proxies;2rounds; partial upstream adaptations"
+    },
+    {
+      "id": "upstream-tree-sensitivity",
+      "source_sha256": "29ec0345852ccf7bbc82acaa6dbb2f8224375460a2e5cb29d5af80aa279683d9",
+      "protocol": "experiments/baselines/full_tree_protocol.json",
+      "results": "experiments/baselines/results/report.md",
+      "questions": [
+        "RQ1",
+        "RQ3"
+      ],
+      "limitations": "post-hoc reuse of6fresh cases; same16000 totalbudget"
+    },
+    {
+      "id": "historical-reset-diagnostic",
+      "source_sha256": "29ec0345852ccf7bbc82acaa6dbb2f8224375460a2e5cb29d5af80aa279683d9",
+      "protocol": "experiments/baselines/mechanism_protocol.json",
+      "results": "experiments/baselines/results/report.md",
+      "questions": [
+        "RQ2",
+        "RQ3"
+      ],
+      "limitations": "one known development issue; no plantedlead; no general mechanism efficacy"
+    },
+    {
+      "id": "configurable-ppf-window-sensitivity",
+      "source_sha256": "1ed7c1db0a642a6a0ad5b9c879706336f36a365a4cf389a3a1bccfa709a47258",
+      "protocol": "experiments/alignment/protocol.json",
+      "results": "experiments/alignment/results/report.md",
+      "questions": [
+        "RQ2"
+      ],
+      "limitations": "one known development issue; one seed; not disjoint calibration or generalization; no optimum selected"
+    },
+    {
+      "id": "nibi-runtime-smoke",
+      "source_sha256": "c8084ee01c71a3bc0729fec28f283c81472136c4eab53efe8e683e61db83444a",
+      "results": "experiments/baselines/results/nibi_smoke/validation.json",
+      "questions": [],
+      "limitations": "partialvalidation; BF16Transformers; excludedfrom local efficacy tables"
+    }
+  ],
+  "canonical_algorithms": "docs/ALGORITHMS.md",
+  "claim_alignment": "docs/CLAIM_ALIGNMENT.md"
+}

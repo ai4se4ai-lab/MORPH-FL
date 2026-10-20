@@ -1,0 +1,9 @@
+torch
+transformers>=4.55,<5
+accelerate
+datasets
+huggingface_hub
+matplotlib
+
+libcst==1.8.6
+sentencepiece

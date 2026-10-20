@@ -1,0 +1,25 @@
+include LICENSE README.md CONTRIBUTING.md
+recursive-include docs *.md *.tex
+recursive-include tests *.py
+recursive-include hpc/config *.json *.env *.txt
+recursive-include hpc/scripts *.py *.sh
+recursive-include hpc/slurm *.py *.sh *.md
+recursive-include hpc/docs *.md
+include hpc/status.sh
+recursive-include experiments/local *.py *.md *.json *.csv
+recursive-include experiments/local *.tar.gz *.txt
+recursive-include experiments/local/results *.png *.pdf
+
+recursive-include experiments/baselines *.py *.md *.json *.jsonl *.csv *.png *.pdf
+recursive-include experiments/baselines/source-versions *.tar.gz
+recursive-include src/morph_fl/baselines/vendor *.LICENSE *.json
+
+recursive-include experiments/alignment *.py *.md *.json *.jsonl *.csv *.png *.pdf
+recursive-include experiments/alignment/source-versions *.tar.gz
+
+include experiments/registry.json
+
+recursive-include experiments/full *.py *.md *.json *.csv
+recursive-include docs/TSE *.bib *.pdf *.py *.sh *.json
+
+recursive-include docs/TSE/fonts *.otf COPYRIGHT AGPL-3

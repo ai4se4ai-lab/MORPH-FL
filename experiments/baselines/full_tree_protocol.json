@@ -1,0 +1,22 @@
+{
+  "created_utc": "2026-10-19T13:53:53.635373+00:00",
+  "track": "post-hoc context sensitivity; not fresh held-out validation",
+  "models": [
+    "qwen2.5-coder:7b",
+    "qwen3-coder:30b"
+  ],
+  "cases": [
+    "astropy__astropy-14995",
+    "django__django-17051",
+    "matplotlib__matplotlib-23476",
+    "mwaskom__seaborn-3190",
+    "pydata__xarray-4094",
+    "pylint-dev__pylint-7993"
+  ],
+  "source_sha256": "29ec0345852ccf7bbc82acaa6dbb2f8224375460a2e5cb29d5af80aa279683d9",
+  "runner_sha256": "1426d83383eb2b84de625e0d6baea2b1351203c901011dc16c96d23bfde2a600",
+  "change": "file-selection prompt cap raised from2600 to12000; all other stage caps and total16000 unchanged",
+  "reason": "initial tree truncation hides proxy target paths on3of6fresh cases; do not attribute this handicap to baseline reasoning quality",
+  "budget": 16000,
+  "seed": 1
+}

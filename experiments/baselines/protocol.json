@@ -1,0 +1,42 @@
+{
+  "created_utc": "2026-10-19T05:44:36.324386+00:00",
+  "source_sha256": "29ec0345852ccf7bbc82acaa6dbb2f8224375460a2e5cb29d5af80aa279683d9",
+  "models": [
+    "qwen2.5-coder:7b",
+    "qwen3-coder:30b"
+  ],
+  "variants": [
+    "agentless_adapted",
+    "rgfl_adapted"
+  ],
+  "budget": 16000,
+  "seed": 1,
+  "context": 16384,
+  "temperature": 0.2,
+  "phases": [
+    "dev",
+    "test"
+  ],
+  "cases": {
+    "dev": [
+      "marshmallow-code__marshmallow-1343",
+      "pvlib__pvlib-python-1854",
+      "pydicom__pydicom-901"
+    ],
+    "test": [
+      "pallets__flask-4045",
+      "psf__requests-2317",
+      "pytest-dev__pytest-5692"
+    ]
+  },
+  "notes": [
+    "Same six cases as prior pilot; previously inspected test set is reused comparison set, not fresh validation.",
+    "No algorithm tuning after this lock.",
+    "Upstream free-text decoding vs MORPH JSON schema; same weights, sampler, token ceiling, snapshots, source-only access; not identical tools or context selection.",
+    "Agentless: tree->top5 files->top3 skeletons->functions; no repair or fine-line stage.",
+    "RGFL: Agentless file candidates, per-file reasoning top3, rank, Agentless function shortlist, reasoning top3 functions then rank. Embedding retrieval omitted; per-element coverage capped.",
+    "Context truncated from tail to stage allowance, recorded; unavailable predictions score as failures.",
+    "Stage caps Agentless2600+3500, RGFL2600+3*2000+2000+3500+3*1200+1800 subject to shared16000. Earlier stages may exhaust later ones.",
+    "No dynamic execution, confidence calibration, dollar estimates, or significance claims."
+  ]
+}

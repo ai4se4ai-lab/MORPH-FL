@@ -1,0 +1,9 @@
+{
+  "reset_window": 4,
+  "reset_min_rounds": 4,
+  "reset_min_tokens": 256,
+  "reset_min_fraction": 0.15,
+  "reset_gain_rate": 0.0,
+  "reset_repetition": 0.5,
+  "reset_diversity": 0.5
+}
