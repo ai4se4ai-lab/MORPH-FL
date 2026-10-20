@@ -80,9 +80,9 @@ def selected_cases(rows, track, smoke):
     return rows[:1] if smoke else rows
 
 
-def jobs_for(track, smoke):
+def jobs_for(track, smoke, preflight=False):
     if track == "main":
-        return [(v, 6000 if smoke else 32000, None) for v in CORE]
+        return [(v, 6000 if smoke and not preflight else 32000, None) for v in CORE]
     if track == "ablations":
         return [(v, 6000 if smoke else 32000, None) for v in ABLATIONS]
     if track == "budgets":
@@ -105,7 +105,8 @@ def resume_keys(previous, cases, settings, signature):
     subjects = {case["instance_id"]: case for case in cases}
     if len(subjects) != len(cases):
         raise ValueError("Duplicate prepared case IDs")
-    conditions = set(jobs_for(settings["track"], settings["smoke"]))
+    conditions = set(jobs_for(settings["track"], settings["smoke"],
+                              settings.get("preflight", False)))
     done = set()
     for row in previous:
         case = subjects.get(row["instance_id"])
@@ -173,6 +174,8 @@ def run(args):
         smoke=args.smoke,
         protocol_sha256=digest(ROOT / "experiments/full/protocol.json"),
     )
+    if getattr(args, "preflight", False):
+        settings["preflight"] = True
     signature = hashlib.sha256(json.dumps(settings, sort_keys=True).encode()).hexdigest()
     config = out.with_suffix(".config.json")
     config.parent.mkdir(parents=True, exist_ok=True)
@@ -181,7 +184,8 @@ def run(args):
     previous = read_rows(out) if out.exists() else []
     done = resume_keys(previous, rows, settings, signature)
     config.write_text(json.dumps(settings, indent=2) + "\n")
-    expected = len(rows) * len(jobs_for(args.track, args.smoke))
+    conditions = jobs_for(args.track, args.smoke, settings.get("preflight", False))
+    expected = len(rows) * len(conditions)
     progress = results / "progress"
     progress.mkdir(exist_ok=True)
     (progress / (cell + ".json")).write_text(json.dumps(dict(expected=expected)) + "\n")
@@ -207,7 +211,7 @@ def run(args):
                     + str(clue_path)
                     + " first; this clue may be wrong."
                 )
-            for variant, budget, window in jobs_for(args.track, args.smoke):
+            for variant, budget, window in conditions:
                 key = (case["instance_id"], variant, budget, window)
                 if key in done:
                     continue
@@ -364,6 +368,8 @@ def preflight(args):
             dict(
                 valid_hypotheses=len(morph["hypotheses"]),
                 output_tokens=morph["output_tokens"],
+                budget=morph["budget"],
+                protocol_sha256=digest(ROOT / "experiments/full/protocol.json"),
                 complete=True,
             )
         )

@@ -67,6 +67,10 @@ class FiveFamilyTests(unittest.TestCase):
             self.assertFalse(validate(config))
             self.assertEqual(len(config['stages']), 34)
             self.assertEqual(sum(len(s['cells']) for s in config['stages']), 733)
+            collect = next(s for s in config['stages'] if s['name'] == 'collect')
+            for index in range(len(models)):
+                self.assertIn(dict(stage=f'model_preflight_m{index}', type='afterany'),
+                              collect['depends'])
             for index, model in enumerate(models):
                 main = next(s for s in config['stages'] if s['name'] == f'main_m{index}')
                 self.assertEqual(len(main['cells']), 96)

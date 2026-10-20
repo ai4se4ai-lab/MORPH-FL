@@ -1,5 +1,11 @@
 # Five-family protocol revision — 2026-10-20
 
+**Current review status:** the original full run ended with zero study records.
+The corrected v5 preflights are now running in a separate deployment; Qwen job
+17908 started real inference with the 32,000-token budget. Jobs 17909–17912 wait
+in sequence. No new gate pass or full-study result is claimed. See the final
+section for deployment and monitoring details.
+
 User request: replace three Qwen checkpoints with five models from five distinct
 families, prioritizing established software-engineering and fault-localization use.
 
@@ -140,7 +146,7 @@ completion is distinct from scientific completeness and favorable outcomes.
    the selected shard before skipping completed work or writing resume settings.
    Regression tests exercise valid resume and each rejection class.
 
-The local protocol is now `morph-full-five-families-v3`, with updated hashes for
+The local protocol is now `morph-full-five-families-v5`, with updated hashes for
 the scoring/analysis changes. Model selection, budgets, sampling and workflows
 are unchanged. The prior tracked protocol is recoverable at base commit
 `7710a0b097e04092773464592f3b7e26d3b1d77b`. This revision has **not** been deployed
@@ -150,7 +156,7 @@ a preserved result copy with the corrected analysis code.
 
 ### Verification
 
-- 85 unit tests passed, including new reuse and partial-analysis regressions.
+- 88 unit tests passed, including new reuse and partial-analysis regressions.
 - Two integration tests passed, covering collection and lossless storage.
 - `hpc/scripts/selftest.sh` passed full/smoke graph and shell/static checks.
 - Ruff passed on changed Python files; the protocol source-hash check passed.
@@ -161,3 +167,117 @@ a preserved result copy with the corrected analysis code.
 GPU inference and full scientific outcomes were not rerun locally. The archived
 UFV validation reports 15 tests and all five tokenizer/context checks passing;
 that evidence does not substitute for completed per-model inference gates.
+
+### Follow-up: collection ordering and failed-output diagnostics
+
+Two additional issues were fixed after inspecting the archived preflight logs:
+
+- Collection depended on downstream study jobs, which could become terminal
+  through dependency failure before all preflights had finished. The collection
+  stage now explicitly waits `afterany` for `model_preflight`. UFV model splitting
+  expands this into dependencies on all five per-model gates. Regression checks
+  verify every dependency. The existing gates remain strict.
+- Native structured parsing discarded malformed generated text. The backend now
+  carries that text in a typed parsing failure, and the controller stores it as
+  a hashed evidence artifact with the failure's role and step. Invalid structured
+  responses also retain their raw text. Failed calls still consume their actual
+  tokens; parsing and model behavior are unchanged. A regression verifies the
+  stored bytes, digest, and token accounting.
+
+These corrections make the next run diagnosable and prevent premature final
+collection. They do not establish that four failed models can satisfy the current
+schema or budget. Their genuine inference gates must pass before a full run can
+be considered ready. The local v4 protocol refreshes changed source hashes;
+no remote deployment, GPU rerun, or successful inference is claimed.
+
+### Recovered preflight evidence
+
+The existing SSH ControlMaster connection subsequently provided read-only access.
+All five models' predictions were recovered separately in
+`hpc/logs/ufv-fivefam-20261020/late-preflight-predictions.tar.gz`, preserving the
+original early collection archive. No GPU work or remote source edit was performed.
+
+| Model | Input tokens | Output tokens | Valid MORPH hypotheses | First-call finding |
+|---|---:|---:|---:|---|
+| Qwen | 3,558 | 1,095 | 4 | Valid hypotheses |
+| DeepSeek | 4,168 | 438 | 0 | No parseable JSON object |
+| CodeLlama | 4,199 | 667 | 0 | No parseable JSON object |
+| Mistral | 3,667 | 1,073 | 0 | Echoed report object; hypothesis list absent |
+| Granite | 3,898 | 1,536 | 0 | Echoed report object; hypothesis list absent |
+
+Every MORPH preflight stopped at the context/cumulative-budget check before its
+second generation. Granite reached the per-call output ceiling; that alone does
+not establish the cause of its echo. Invalid raw generations for DeepSeek and
+CodeLlama were discarded by the old backend and cannot be recovered from these
+prediction records.
+
+The controller previously used an empty default for a missing `hypotheses` key.
+It now requires that key to contain a list and records missing-list report echoes
+as invalid responses, with their raw artifact. An explicit empty list remains
+permitted. Regression coverage verifies the distinction. This corrects validity
+accounting but does not make the failed models produce usable hypotheses. Any
+prompt or budget revision still requires a fresh, common protocol and real GPU
+validation, retaining these failed attempts as evidence.
+
+### Follow-up: preflight budget mismatch
+
+The real-inference preflight inherited the ordinary smoke's 6,000-token ceiling,
+although its purpose is to gate a 32,000-token study. The recovered records show
+all five MORPH attempts stopped before a second generation, leaving no chance
+to obtain a valid response after the first invalid/irrelevant output.
+
+The v5 local protocol separates the two envelopes: per-model preflight uses the
+primary 32,000-token cumulative ceiling, still on one issue, with two rounds and
+six workflows; ordinary smoke tracks retain their 6,000-token limits. Primary
+budgets, model prompts, sampling, case selection and study record counts are
+unchanged. The gate still requires actual generated tokens and valid MORPH
+hypotheses. No constrained decoding, heuristic hypothesis fabrication or
+model-specific retry is introduced.
+
+Preflight mode is included in resume settings, and prior 6k records are rejected
+under the new 32k conditions. Gate receipts now record budget and protocol hash.
+A regression verifies the separate budgets and rejection of old-budget resume
+records. The revised gate has not been GPU-validated or deployed remotely; a
+larger preflight envelope alone does not guarantee schema compliance or success.
+
+### Isolated GPU validation of the corrections
+
+The v5 source snapshot was deployed separately to
+`/home/babaei/projects/MORPH-FL-review-v5-20261020`. Its frozen source hashes were
+verified on the remote host before submission. Results go to
+`/home/babaei/morph-ufv/runs/ufv-review-v5-20261020-01/results`.
+The original five-family deployment and failed run were not edited.
+
+The data-reuse validator passed against the existing complete prepared inputs.
+Each reused checkpoint's model ID and revision were checked against the new
+deployment's pins. Only weight directories are linked; preflight predictions,
+receipts and evidence are written into the new result tree.
+
+| Model | GPU preflight job | A30 GPUs |
+|---|---:|---:|
+| Qwen | 17908 | 1 |
+| DeepSeek | 17909 | 1 |
+| CodeLlama | 17910 | 2 |
+| Mistral | 17911 | 2 |
+| Granite | 17912 | 1 |
+
+Jobs execute serially via `afterany` dependencies, so a failed model does not
+prevent diagnostics for the next one. Each has a one-hour wall-time ceiling.
+Only these five preflights were submitted; no automatic full-study continuation
+was installed. The job entry point is `hpc/ufv/review_preflight.sh`, which requires
+a Slurm allocation and uses the existing container/runtime dependencies.
+
+At the saved 05:12:51 UTC check on October 20, Qwen was running and the other
+four jobs were pending. Its live log confirms a genuine MORPH call with budget
+32,000. All five receipts were still absent at that observation, so neither
+inference-gate success nor completion is inferred from job startup.
+
+A detached local monitor checks once per minute and retrieves terminal logs,
+prediction records, progress files and gate receipts. Its PID, script, output
+and status are under `hpc/logs/ufv-review-v5-20261020/`; do not start a duplicate.
+Large evidence/graph archives remain in the isolated remote result tree.
+This monitor reports **preflight status only**, never full-study completeness.
+
+Local validation remains 88 unit tests and two integration tests passing, with
+lint, source-hash and shell-syntax checks passing. Successful GPU gates remain
+the outstanding condition before another full experiment can be considered ready.

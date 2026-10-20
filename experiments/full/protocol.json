@@ -1,5 +1,5 @@
 {
-  "study": "morph-full-five-families-v3",
+  "study": "morph-full-five-families-v5",
   "phase": "prospective protocol, no full results yet",
   "models": 5,
   "seeds": [
@@ -24,11 +24,11 @@
     "experiments/full/analyze.py": "7c0406d0004e42f345b0a7fdd252502d827695e997757808f8345f2ce0367cb0",
     "experiments/full/export_bundle.py": "c82448aa41ee9937ab10afb09ca607ee26ca0271430b8210a1480e70a92fb792",
     "experiments/full/extended_analysis.py": "9daa224766006c054249d85075fe959fc04a9bef34e8b89b8c9649233ce33530",
-    "experiments/full/inference.py": "6185f330cb81095729b1175f73fcbefe698924c7326d82a7d2fccc6d0dbb4a49",
+    "experiments/full/inference.py": "8468bc456a85eeacca0019792c690e049edaa68faa95de9664065bb41543176d",
     "experiments/full/paper_update.py": "e23a3b4515fbe1414106213ea9558eeff416ece2f4160a1b6b51120dccd58f78",
     "experiments/full/pins.json": "587604c9b91bee2e1863693d4e56d6e06386ac757fbf4185b0b07e0d478badc0",
     "experiments/full/prepare.py": "2357c517d44a31147ff594576c1787782e8cfcdc082964966313364a7b2e57e1",
-    "experiments/full/suite.py": "df079c0c297e8637556068ac77aaee4501231faf3dfbf5a10b645da93c29f9a6",
+    "experiments/full/suite.py": "dd08516d63f8b69e6e966c7ef0bebcae36a29bbec072d915357acf77280b57b6",
     "experiments/full/typeset.py": "1feb1bd449374b2a5656225e3dd165a7c571ba6f207a42bd6ea022f27bd0c85a",
     "src/morph_fl/__init__.py": "5df9b9c1bc5e3e7b8e43d5686715a1499dcd4d081792208a8e63aec753d377a3",
     "src/morph_fl/__main__.py": "c88c3b891af5cb31911df6df19138d0b512b088877a30c15d31063fb9c8f86bf",
@@ -59,7 +59,7 @@
     "src/morph_fl/evaluation/statistics.py": "a7d0340adbed830c3ac3ef5d94d3572003f4aec6b7c8c2148484527a13593655",
     "src/morph_fl/external.py": "d3bf9519ead483474619a65a007240526fd82b886de38aa2783d2d145c4cb95a",
     "src/morph_fl/inference/__init__.py": "0c56b7bb655df7443efc472293d4ce8fadd65b7c49fe0bf3584929106775fb59",
-    "src/morph_fl/inference/local.py": "a0e978ec5d6c1ce3d84633c2bc786d200b7af9a3d47b586721752b853f78b72c",
+    "src/morph_fl/inference/local.py": "f21da35a88c154e66c8dc72243a85876b8362186635cb0077b8e5e4ea43c05ee",
     "src/morph_fl/inference/ollama.py": "c596181e60d7907ef13963f6d4f205a4b887e5d92c65f1eb2531ac94979a65ec",
     "src/morph_fl/inference/protocol.py": "ca3c30e5250865405e182cd4008b067d8623f916364bde77b95b0e4902e4631b",
     "src/morph_fl/infrastructure/__init__.py": "8c564641af3e554135b3678526386b99f486519227340d8d320844d7b1310c3a",
@@ -74,7 +74,7 @@
     "src/morph_fl/retrieval.py": "62e4e89d0b37032b194ea3969a87f0e3e879b5e5b3d80566068d1b50364f1e48",
     "src/morph_fl/search/__init__.py": "54873e1139545c98f572a3e90bf32eb9628729a991eb0b7125dd37acdcb1e1c8",
     "src/morph_fl/search/config.py": "7534956d31f102a3f3d7aaed2385de975e4a6abed6511b4298d74d86472ebc5d",
-    "src/morph_fl/search/controller.py": "ff3b498cbeed59841eec01fadf5096d2367e25334448c33ef90a0ec7685f465d",
+    "src/morph_fl/search/controller.py": "ed52a692431e869cbc29bc24cd0639365d95a01b82742e653f5b091983d7f69f",
     "src/morph_fl/search/policies.py": "dae82a302782f3a41fd3c32c3dae10b91ca9d1f696b8958e3519ac5858ad396d",
     "src/morph_fl/transformations/__init__.py": "ea8483ffc368d720d05a2aee24af24811ef81087faa41a49de1488fbc23e4ed8",
     "src/morph_fl/transformations/pipeline.py": "9f688ab795c811306524591f20a54ed14f8612fc078d3cff46e2de2b4802774b"
@@ -91,6 +91,20 @@
   "local_review_revision": {
     "date": "2026-10-20",
     "base_commit": "7710a0b097e04092773464592f3b7e26d3b1d77b",
-    "changes": "Partial scoring tolerates empty prediction cells and removes orphaned score tables; paper export validates exact model/workflow cells, primary budgets and case-seed counts. No model, dataset, sampling or workflow changes. Local revision only; active UFV deployment remains on its frozen protocol. Resume now verifies each completed record against current case provenance, model/seed/signature, shard and planned conditions before skipping work. Zero-record analysis now emits a header-only summary.csv so failed runs remain collectable without invented measurements."
+    "changes": "Partial scoring tolerates empty prediction cells and removes orphaned score tables; paper export validates exact model/workflow cells, primary budgets and case-seed counts. No model, dataset, sampling or workflow changes. Local revision only; active UFV deployment remains on its frozen protocol. Resume now verifies each completed record against current case provenance, model/seed/signature, shard and planned conditions before skipping work. Zero-record analysis now emits a header-only summary.csv so failed runs remain collectable without invented measurements.",
+    "diagnostic_revision": {
+      "base_commit": "e2142bf",
+      "changes": "Preserve raw malformed generations as hashed evidence artifacts and wait explicitly for model preflights before final collection. No sampling, prompt, budget, or model changes. Not deployed to UFV. Reject responses missing the required hypothesis list instead of accepting report echoes as valid empty responses."
+    },
+    "preflight_budget_revision": {
+      "reason": "All archived MORPH preflights exhausted the 6000-token smoke envelope before a second generation. Match the primary budget for the gate only; primary experiments, prompts and sampling are unchanged. Requires fresh GPU validation."
+    }
+  },
+  "preflight": {
+    "subjects": 1,
+    "round_limit": 2,
+    "budget": 32000,
+    "workflows": "all six primary workflows",
+    "note": "Use primary cumulative budget; ordinary smoke remains 6000. Separate preflight namespace and resume signature. Success still requires generated tokens and valid MORPH hypotheses."
   }
 }

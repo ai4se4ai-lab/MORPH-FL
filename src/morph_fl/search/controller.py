@@ -271,21 +271,30 @@ class LocalizationController:
                 break
             except (ValueError, TypeError, KeyError) as exc:
                 invalid += 1
-                event(dict(type="invalid_response", step=step, error=str(exc)))
+                failure = dict(type="invalid_response", step=step, role=role, error=str(exc))
+                failed_raw = getattr(exc, "raw", None)
+                if isinstance(failed_raw, str):
+                    artifact, digest = store.put(failed_raw.encode())
+                    failure.update(artifact=artifact, digest=digest)
+                event(failure)
                 continue
             finally:
                 budget.charge(
                     self.backend.input_tokens - before_in, self.backend.output_tokens - before_out
                 )
             if not isinstance(response, dict) or not isinstance(
-                response.get("hypotheses", []), list
+                response.get("hypotheses"), list
             ):
                 invalid += 1
+                artifact, digest = store.put(raw.encode())
                 event(
                     dict(
                         type="invalid_response",
                         step=step,
                         error="Expected object with hypothesis list",
+                        role=role,
+                        artifact=artifact,
+                        digest=digest,
                     )
                 )
                 continue

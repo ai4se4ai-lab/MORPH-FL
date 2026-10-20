@@ -78,6 +78,42 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(result["invalid_probes"], 3)
         self.assertTrue(result["abstained"])
 
+    def test_malformed_generation_is_preserved_as_auditable_artifact(self):
+        import hashlib
+
+        from morph_fl.inference.local import InvalidModelResponse
+
+        class MalformedBackend(RecordingBackend):
+            def ask(self, messages, remaining):
+                self.input_tokens += 50
+                self.output_tokens += 25
+                raise InvalidModelResponse("Invalid JSON", "Here is prose instead of JSON.")
+
+        result = localize(self.root, "total", "v", MalformedBackend(), rounds=1,
+                          artifacts=self.root / "evidence")
+        failure = next(e for e in result["audit"] if e["type"] == "invalid_response")
+        raw = Path(failure["artifact"]).read_bytes()
+        self.assertEqual(raw, b"Here is prose instead of JSON.")
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), failure["digest"])
+        self.assertEqual(result["input_tokens"], 50)
+        self.assertEqual(result["output_tokens"], 25)
+
+    def test_echoed_payload_without_hypotheses_is_invalid(self):
+        class EchoBackend(RecordingBackend):
+            def ask(self, messages, remaining):
+                self.input_tokens += 50
+                self.output_tokens += 25
+                response = dict(report="echoed report", expected=None)
+                return response, json.dumps(response)
+
+        result = localize(self.root, "total", "v", EchoBackend(), rounds=1,
+                          artifacts=self.root / "evidence")
+        failure = next(e for e in result["audit"] if e["type"] == "invalid_response")
+        self.assertEqual(json.loads(Path(failure["artifact"]).read_text()),
+                         dict(report="echoed report", expected=None))
+        self.assertFalse(any(e["type"] == "agent_response" for e in result["audit"]))
+        self.assertEqual(result["invalid_probes"], 1)
+
     def test_no_mde_uses_plain_evidence_memory(self):
         backend = RecordingBackend()
         localize(self.root, "total", "v", backend, "no_mde", rounds=2)

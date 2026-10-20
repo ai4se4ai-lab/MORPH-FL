@@ -12,6 +12,27 @@ from experiments.full.suite import jobs_for, selected_cases
 
 
 class FullStudyTests(unittest.TestCase):
+    def test_preflight_uses_primary_budget_without_changing_ordinary_smoke(self):
+        from experiments.full.suite import CORE, resume_keys
+
+        self.assertEqual(jobs_for("main", True, preflight=True),
+                         [(v, 32000, None) for v in CORE])
+        self.assertEqual(jobs_for("main", True), [(v, 6000, None) for v in CORE])
+        case = dict(instance_id="unit", repo="unit/repo", revision="v",
+                    report="public report", archive_sha256="archive-hash")
+        import hashlib
+
+        settings = dict(track="main", seed=1, smoke=True, preflight=True,
+                        model=dict(id="model", revision="commit"))
+        row = dict(instance_id="unit", repo=case["repo"], revision="v",
+                   report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
+                   source_archive_sha256="archive-hash", run_signature="signature",
+                   track="main", seed=1, model_id="model", model_revision="commit",
+                   variant="morph", budget=32000, window=None)
+        self.assertEqual(len(resume_keys([row], [case], settings, "signature")), 1)
+        with self.assertRaisesRegex(ValueError, "Unplanned"):
+            resume_keys([dict(row, budget=6000)], [case], settings, "signature")
+
     def test_resume_rejects_changed_provenance_duplicate_and_unplanned_records(self):
         import hashlib
 
@@ -44,6 +65,11 @@ class FullStudyTests(unittest.TestCase):
         )
         with self.assertRaises(ValueError):
             decode_object("no object")
+        from morph_fl.inference.local import InvalidModelResponse
+
+        with self.assertRaises(InvalidModelResponse) as failure:
+            decode_object("original malformed generation")
+        self.assertEqual(failure.exception.raw, "original malformed generation")
 
     def test_snapshot_extract_rejects_escape_links_and_non_python(self):
         with tempfile.TemporaryDirectory() as tmp:

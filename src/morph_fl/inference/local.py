@@ -7,6 +7,14 @@ class BudgetExceeded(Exception):
     pass
 
 
+class InvalidModelResponse(ValueError):
+    """A failed structured response whose original generation remains auditable."""
+
+    def __init__(self, message, raw):
+        super().__init__(message)
+        self.raw = raw
+
+
 class LocalModel:
     def __init__(self, path, seed):
         import torch

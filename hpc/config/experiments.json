@@ -606,6 +606,10 @@
         {
           "stage": "retrieval",
           "type": "afterany"
+        },
+        {
+          "stage": "model_preflight",
+          "type": "afterany"
         }
       ]
     }

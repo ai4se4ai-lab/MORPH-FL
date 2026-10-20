@@ -8,7 +8,7 @@ import json
 import os
 from types import SimpleNamespace
 
-from morph_fl.inference.local import BudgetExceeded
+from morph_fl.inference.local import BudgetExceeded, InvalidModelResponse
 
 
 def decode_object(text):
@@ -21,7 +21,7 @@ def decode_object(text):
                 continue
             if isinstance(value, dict):
                 return value
-    raise ValueError("No valid JSON object in generated output")
+    raise InvalidModelResponse("No valid JSON object in generated output", text)
 
 
 class NativeModel:
