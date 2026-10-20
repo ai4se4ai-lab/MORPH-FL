@@ -5,16 +5,20 @@
       "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242"
     },
     {
-      "id": "Qwen/Qwen2.5-Coder-32B-Instruct",
-      "revision": "381fc969f78efac66bc87ff7ddeadb7e73c218a7"
-    },
-    {
-      "id": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
-      "revision": "b2cff646eb4bb1d68355c01b18ae02e7cf42d120"
-    },
-    {
       "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
       "revision": "e5d64addd26a6a1db0f9b863abf6ee3141936807"
+    },
+    {
+      "id": "codellama/CodeLlama-7b-Instruct-hf",
+      "revision": "22cb240e0292b0b5ab4c17ccd97aa3a2f799cbed"
+    },
+    {
+      "id": "mistralai/Mistral-Nemo-Instruct-2407",
+      "revision": "04d8a90549d23fc6bd7f642064003592df51e9b3"
+    },
+    {
+      "id": "ibm-granite/granite-3.1-8b-instruct",
+      "revision": "4009206d5fc95d2e65a7b7633e159d6e97e25d35"
     }
   ],
   "datasets": [

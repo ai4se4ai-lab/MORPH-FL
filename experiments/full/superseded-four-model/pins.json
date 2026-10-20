@@ -1,0 +1,30 @@
+{
+  "models": [
+    {
+      "id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242"
+    },
+    {
+      "id": "Qwen/Qwen2.5-Coder-32B-Instruct",
+      "revision": "381fc969f78efac66bc87ff7ddeadb7e73c218a7"
+    },
+    {
+      "id": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "revision": "b2cff646eb4bb1d68355c01b18ae02e7cf42d120"
+    },
+    {
+      "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "revision": "e5d64addd26a6a1db0f9b863abf6ee3141936807"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "princeton-nlp/SWE-bench_Lite",
+      "revision": "6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2"
+    },
+    {
+      "id": "princeton-nlp/SWE-bench_Verified",
+      "revision": "c104f840cc67f8b6eec6f759ebc8b2693d585d4a"
+    }
+  ]
+}

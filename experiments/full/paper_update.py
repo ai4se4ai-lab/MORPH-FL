@@ -41,10 +41,10 @@ def update(results, paper):
     with (results / "analysis/summary.csv").open() as f:
         rows = list(csv.DictReader(f))
     main = [r for r in rows if r["track"] == "main"]
-    # Require four model configurations, six workflow cells per benchmark, three seeds.
+    # Require five model families, six workflow cells per benchmark, three seeds.
     for benchmark in status["benchmark_sizes"]:
         subset = [r for r in main if r["benchmark"] == benchmark]
-        if len({r["model"] for r in subset}) != 4 or len(subset) != 24:
+        if len({r["model"] for r in subset}) != 5 or len(subset) != 30:
             raise ValueError("Main table is missing model/method cells")
         if any(
             int(r["observed_seeds"]) != 3
@@ -61,7 +61,7 @@ def update(results, paper):
         r"\label{sec:full-extension}",
         "A separately frozen extension evaluates all 300 SWE-bench Lite and 500 Verified instances, deduplicating shared instance IDs during execution. "
         + f"The union contains {status['unique_subjects']} issues, with {status['overlap']} shared issues. "
-        + "Each benchmark is summarized separately; their overlapping outcomes are not independent replications. Four BF16 model configurations and three seeds replace the exploratory quantized single-seed settings. The primary ceiling is 32,000 input-plus-output tokens with up to 16 rounds. This extension retains static observations and unreviewed patch-change proxies; it does not establish causal labels, calibrated confidence, or dynamic probe validity.",
+        + "Each benchmark is summarized separately; their overlapping outcomes are not independent replications. Five BF16 model families and three seeds replace the exploratory quantized single-seed settings. The primary ceiling is 32,000 input-plus-output tokens with up to 16 rounds. This extension retains static observations and unreviewed patch-change proxies; it does not establish causal labels, calibrated confidence, or dynamic probe validity.",
         "Eight component controls, measured budget levels, disclosed misdirection and policy sensitivity use a fixed report-blind, repository-balanced sample of 100 union issues. External Agentless/RGFL results remain restricted component adaptations, with a 12,000-token tree allowance selected before these outcomes. All planned record counts are present; that completeness is distinct from favorable outcomes.",
     ]
     for number, benchmark in enumerate(sorted(status["benchmark_sizes"])):

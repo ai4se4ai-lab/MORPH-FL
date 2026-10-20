@@ -12,7 +12,7 @@ No completed full benchmark is claimed. The earlier Nibi BF16 run was partial. F
 
 | Question/component | Subjects/factors | Executable entry point | Decision/output |
 |---|---|---|---|
-| RQ1 primary accuracy | Every unique Lite/Verified test issue; four models; seeds 1/2/3; six workflows; 32k tokens, up to16 rounds | `experiments.full.suite run --track main` | File/function Top-k, MRR, explicit eligibility; one benchmark summary each with overlap disclosed |
+| RQ1 primary accuracy | Every unique Lite/Verified test issue; five models; seeds 1/2/3; six workflows; 32k tokens, up to16 rounds | `experiments.full.suite run --track main` | File/function Top-k, MRR, explicit eligibility; one benchmark summary each with overlap disclosed |
 | Retrieval controls | Same full union, deterministic BM25/graph once each | `--track retrieval` | No repeated model/seed pseudo-replication |
 | RQ2 component effects | Fixed 100-issue repository-balanced report-blind sample; eight ablations | `--track ablations` | Compare with matching primary cases; model/evidence visibility boundaries remain explicit |
 | RQ2 memory mechanism | Primary continuous, adaptive, fixed, summary conditions, actual reset events | `--track main` | Observation retention, resets, duplication, hypothesis switches; no reset occurrence presumed |
@@ -21,7 +21,7 @@ No completed full benchmark is claimed. The earlier Nibi BF16 run was partial. F
 | RQ3 budgets | Same fixed sample; four memory methods; 16k/32k/48k | `--track budgets`, matching32k primary records | Measured quality/token curves, no extrapolation; actual costs also recorded |
 | RQ3 evidence/reliability | All observations and assessment scopes | Core ledger/audit and final analysis | Static provenance and null confidence; no fabricated calibration or causal judgments |
 | Pinned inputs | All issues, overlap deduplication, public snapshots vs labels | `experiments.full.prepare` | Data manifest, packed source hashes, public cases and separate proxy labels |
-| Inference | Four native instruction checkpoints, BF16/context16384/T.2/top-p.95/top-k50 | `experiments.full.inference.NativeModel` | Actual tokens, pinned metadata, all parameters on allocated GPU |
+| Inference | Five native instruction checkpoints, BF16/context16384/T.2/top-p.95/top-k50 | `experiments.full.inference.NativeModel` | Actual tokens, pinned metadata, all parameters on allocated GPU |
 | Scoring/statistics | All completed records, eligible labels, repository clusters | `experiments.full.analyze`, `extended_analysis` | Exact-key completeness, case-seed means, paired intervals, predeclared Holm family |
 | Paper promotion | Complete non-smoke full results only | `experiments.full.paper_update` | Generated TeX/tables/figures/provenance; refuses incomplete or smoke evidence |
 
@@ -48,7 +48,7 @@ flowchart LR
   R --> G
 ```
 
-All heavy tracks also require successful model preflight. Primary/side arrays are sequential stages with throttle4, so independent arrays cannot silently request16 GPUs. Retrieval finishes before main; small preparation stages occupy at most three MIG allocations. Four-model preflight uses at most four full H100s. Collection follows all heavy tracks. Model/source downloads and dataset preparation occur only in GPU jobs with internet explicitly enabled; later inference is offline.
+All heavy tracks also require successful model preflight. Primary/side arrays are sequential stages with throttle4, so independent arrays cannot silently request16 GPUs. Retrieval finishes before main; small preparation stages occupy at most three MIG allocations. Five-model preflight uses at most four full H100s. Collection follows all heavy tracks. Model/source downloads and dataset preparation occur only in GPU jobs with internet explicitly enabled; later inference is offline.
 
 | Stage | Full task cells | GPU/task | CPU/memory | Initial time/task |
 |---|---:|---|---|---|
@@ -56,14 +56,14 @@ All heavy tracks also require successful model preflight. Primary/side arrays ar
 | model_assets | 4, throttle2 | H1001g10GB MIG | 2/16G | 4h |
 | model_preflight | 4, throttle4 | Full H10080GB | 8/128G | 12h |
 | retrieval | 1 | H1001g10GB MIG | 2/16G | 2h |
-| main | 384 (4models ×3seeds ×32shards), throttle4 | Full H10080GB | 8/128G | 12h |
+| main | 480 (4models ×3seeds ×32shards), throttle4 | Full H10080GB | 8/128G | 12h |
 | ablations | 48, throttle4 | Full H10080GB | 8/128G | 12h |
 | budgets | 48, throttle4 | Full H10080GB | 8/128G | 12h |
 | misdirection | 48, throttle4 | Full H10080GB | 8/128G | 12h |
 | policy | 48, throttle4 | Full H10080GB | 8/128G | 12h |
 | collect | 1 | H1001g10GB MIG | 2/16G | 2h |
 
-Ten sbatch submissions, 587 task cells. At the800-unique-subject upper bound:57,600 primary LLM records +27,600 side-study LLM records +1,600 deterministic controls =86,800 total; overlap reduces actual primary/control counts. Main/side initial reservation ceiling:6,912 full-H100 hours, not an estimated actual consumption. At most two requeues can triple that ceiling; each resumes completed cases. Queue latency and measured throughput determine elapsed completion time. A large run is not a one-turn result.
+Ten sbatch submissions, 733 task cells. At the800-unique-subject upper bound:72,000 primary LLM records +34,500 side-study LLM records +1,600 deterministic controls =108,100 total; overlap reduces actual primary/control counts. Main/side initial reservation ceiling:8,640 full-H100 hours, not an estimated actual consumption. At most two requeues can triple that ceiling; each resumes completed cases. Queue latency and measured throughput determine elapsed completion time. A large run is not a one-turn result.
 
 Smoke retains every stage, but one model/seed/shard and one issue per track:6 main +8 ablation +4 budget +4 misdirection +1 policy +2 retrieval records =25 inference/control records, plus separate6-workflow preflight records. The7B smoke uses20GB MIGs rather than full H100s; full-study resources stay unchanged. Stage time limits are15min. Genuine preflight requires actual output tokens and valid hypotheses; a successful scheduler exit alone cannot satisfy it. Final smoke analysis must be nonempty and exact-key complete. Smoke output is never promoted to paper results.
 
@@ -79,10 +79,10 @@ Smoke retains every stage, but one model/seed/shard and one issue per track:6 ma
 | Case/model/method heatmap | analysis → `heatmap.pdf` | Only measured cells, missing cells remain missing |
 | Top-k line charts | analysis → `SWE-bench_*-topk.pdf` | Observed k1/5/10 only; no invented cost trajectory |
 | Paired uncertainty | analysis → `paired.json` | Average seeds within case, bootstrap repository clusters |
-| Primary testing family | extended_analysis → `primary_comparisons.json` | File Top1: five comparators ×four models ×two benchmarks; Holm across family; no confirmatory claim for partial/smoke data |
+| Primary testing family | extended_analysis → `primary_comparisons.json` | File Top1: five comparators ×five models ×two benchmarks; Holm across family; no confirmatory claim for partial/smoke data |
 | Calibration/causal evidence | `analysis/rq_coverage.json` | Confidence null; calibration and human causal validity remain unmeasured |
 | Full-run completion | `analysis/completeness.json`, pipeline ledger | Exact expected keys equal observed, all step receipts and model gates accounted for |
-| TSE result promotion | `paper_update.py` | Reject smoke/partial, require four models/six workflows/three seeds/full benchmark coverage |
+| TSE result promotion | `paper_update.py` | Reject smoke/partial, require five models/six workflows/three seeds/full benchmark coverage |
 
 The paper's central causal/fixation hypothesis is not automatically established by scale. Labels remain unreviewed patch-change proxies. Dynamic Apptainer benchmark reproductions, independently rated causal chains and true mechanism diversity, human ground-truth adjudication, complete upstream graph/embedding/tool pipelines, and second-language analyses remain missing. The pipeline states these gaps rather than claiming all aspects of every RQ are answered. Calibration cannot be computed from null confidence.
 
@@ -117,3 +117,7 @@ After collection, copy the collected result tree (plus analysis/data manifests) 
 The final smoke runs all15 steps, including a real pinned Tectonic/compiler-cache preflight on a GPU node. Continuation job24601530 depends on smoke collect24601434. `hpc/scripts/continue_full.py` additionally validates every successful step receipt, actual valid hypotheses/tokens, exact smoke coverage and nonempty collected tables before calling the authorized full submitter. Its `full_continuation.json` records the actual full run ID/jobs; it refuses duplicate submission on retry. This is scheduler-driven continuation, not a monitoring loop.
 
 The final collect stage exports complete non-smoke TeX results and compiles the paper offline with the setup-cached Tectonic0.17.0 asset (SHA-256 pinned in `experiments/full/typeset.py`). URW font files and their license/font exception accompany the manuscript so fonts resolve on Nibi without OS installs. Smoke or partial data produce deferred export/type-setting receipts. The resulting PDF is explicitly for outcome-level scientific review; no automated exporter establishes a positive effect or acceptance readiness.
+
+## Five-family revision
+
+Deployment v5 supersedes the unexecuted four-model benchmark matrix. Models are Qwen2.5-Coder 7B, DeepSeek-Coder 6.7B, CodeLlama 7B, Mistral NeMo 12B and IBM Granite 3.1 8B. See `experiments/full/models.md` for exact versus family-level FL evidence. Five independent checkpoint preflights gate the main matrix; at most four full H100s run concurrently. Previously completed source snapshots are hard-linked and revalidated inside the GPU data stage. The earlier compute-node continuation failed on site Slurm plugin incompatibility; submissions are performed from the login node, with all experiment stages on GPU nodes.
