@@ -1,0 +1,13 @@
+# Stage B gaps and novelty audit
+
+Completed independent focused search with 15 method-opened sources and nine comparison rows; no manuscript drafted. Related-work adequacy: Adequate for narrow reset-boundary positioning; priority/comprehensiveness: Unverified.
+
+1. Closest memory overlap is substantial: MemFL and ICLR 2026 Repository Memory must be discussed, not buried in generic memory citations. No claim that external memory or persistent state is new is defensible. AgentFL already stores program-analysis and generated task outputs.
+2. LS-CM exists: Tianjun Mo, Changhao Zhang, Jitong Zou, Zixuan Guo and Minjae Rhee, “Self-Evolving AI Agents With Dual Memory for Automated Software Testing and Bug Localization,” IEEE Access 14, 111086–111102, 14 July 2026, DOI 10.1109/ACCESS.2026.3713401. Publisher abstract and Crossref authors verified. Full method blocked by JavaScript/robot challenge, so excluded from usable bibliography and table. Its abstract describes short-term RAG, long-term learned strategy and prompt adaptation. Author must obtain full text before claiming absence of ledgers/resets or finalizing novelty.
+3. No opened localization method establishes exactly the claimed observation-retention reset boundary, but absence in this search is not proof of priority. Recent unexamined graph/retrieval papers found incidentally include FuseSearch and GraphLocator; excluded from claims.
+4. AgentFL v2 says it became SoapFL (TSE 2025, DOI 10.1109/TSE.2025.3543187). This lineage is verified by its author note, but published method equivalence and updated author list require checking before substituting the bibliography entry. Explicit AgentFL 2024 preprint citation is honest meanwhile.
+5. ARISE citation intentionally identifies v1 (4 May 2026; two authors). Website may describe a later author list. Avoid mixing later metadata into v1 method claims; check versions before submission.
+6. Spectrum foundational full text Abreu 2007 and full BM25 monograph were not retrieved. Their metadata/abstracts alone were not promoted to method-verified citations. DeepRL4FL provides opened primary coverage-based/learned localization context; author may add a foundational spectrum citation after reading the paper.
+7. Current TSE-specific page limit not verified. General IEEE author guidance and disclosure guidance were opened; archived TSE instructions are not current authority.
+
+Citation budget: each primary work has at most 200 paraphrased words across all artifacts and eventual manuscript together. Keep eventual closest-work text+table+introduction ≤60 derived words per work unless reducing notes elsewhere. None of these sources licenses causal correctness, calibrated confidence or empirical advantage claims about MORPH-FL.

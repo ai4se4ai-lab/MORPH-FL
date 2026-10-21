@@ -1,6 +1,6 @@
 # Active UFV five-family study
 
-The [living phase tracker](../../docs/UFV/study_progress.md) updates every minute
+The [living phase tracker](../../docs/UFV/study_progress.md) updates every 30 minutes (with a persistent refresh change log and failure diagnostics)
 from the active monitor's read-only metadata snapshot. Its table covers each
 experiment, rationale, receipt-backed status, result overview and output paths.
 Edit `hpc/ufv/study_tracker.py` to change the generated plan; manual edits to the
@@ -9,12 +9,16 @@ generated Markdown are overwritten. The snapshot is saved as
 scientific settings are changed by this reporting feature.
 
 **Active corrected run:** `ufv-full-v12-20261020-01`, deployment
-`/home/babaei/projects/MORPH-FL-full-v12-20261020`, collection job **17962**.
-All five in-run GPU gates passed. Retrieval 17935 resumed after lossless packing
-of 315 records (exact before/after logical hashes); its scheduler limit is now
-12 hours. Latest audited progress: 318/1,414 retrieval records at 09:46:03 UTC
-on October 20. Primary jobs remain dependency-pending. See
-[current review and evidence](../../docs/UFV/five_family_transition.md).
+`/home/babaei/projects/MORPH-FL-full-v12-20261020`, collection job **18007** (replaces 17962).
+All five in-run GPU gates passed. Retrieval recovery **17979** completed with
+**1,414/1,414 verified records** after depth-safe AST traversal and streaming
+resume fixes. The compact prediction file is about 41 MiB; full graphs remain
+on UFV. The continuation submitted all 26 remaining stages at 19:17 UTC on
+October 20. Primary arrays are **17980–17984**, with two Qwen tasks running in
+17980; final collection is **18007**. Existing side-study records are retained
+for resume. The temporary recovery cron removed itself; half-hour reporting
+continues. See [repair evidence](../../docs/UFV/runtime_recovery_20261020.md)
+and the [living tracker](../../docs/UFV/study_progress.md) for current results.
 
 The identifiers below describe the preserved, failed original run.
 
@@ -75,7 +79,7 @@ python3 -u hpc/ufv/watch_collect.py \
 
 The existing detached collector PID is in
 `hpc/logs/ufv-full-v12-20261020/monitor.pid`; do not launch a duplicate.
-It polls once/minute, saves `status.json`, and transfers terminal logs, tables,
+It polls once/minute, publishes the study document every 30 minutes (and on final collection), saves `status.json`, and transfers terminal logs, tables,
 figures, predictions and metadata with an SSH tar stream. Remote rsync is absent.
 Graphs/evidence archives remain remote; their paths and sizes are inventoried.
 A scheduler-terminal run may still be scientifically incomplete: consult
@@ -88,3 +92,15 @@ this checkout. The exporter itself now validates all five pinned model identitie
 Mistral NeMo uses the pinned Transformers tokenizer option
 `fix_mistral_regex=True`. The pre-correction protocol and manifest are preserved
 in the run log; the final selection/protocol are copied to both config and results.
+
+The tracker stores persistent refresh history and failure incidents in
+`hpc/logs/ufv-full-v12-20261020/tracker-history.json`. Each publication adds a
+row to the document’s final change-log table, including publications with no
+progress. Failures are observed on each poll and appear in the document at its
+next refresh, with attempt identity, commands, exit codes and log evidence.
+The monitor must remain running and SSH access must remain available; failed
+connections retain the last successful remote snapshot and are logged as incidents.
+
+Active monitoring now uses the `majid` crontab on comp370, at minutes 00 and 30.
+The continuous monitor has been stopped. See [installed cron setup](../../docs/UFV/comp370_tracker_cron.md)
+for paths, authentication, operation, and limitations.

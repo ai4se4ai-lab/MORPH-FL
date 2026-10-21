@@ -57,10 +57,42 @@ def inspect_run(root_path, run):
     temporary.write_text(json.dumps(files))
     temporary.replace(cache_path)
     latest = {}
+    attempts = []
     ledger = logs / 'steps.tsv'
     if ledger.exists():
         for row in csv.DictReader(io.StringIO(ledger.read_text()), delimiter='\t'):
             latest[(row['stage'], row['cell'], row['step'])] = row
+            attempts.append(row)
+    failure_events = []
+    for attempt in attempts:
+        if attempt.get('rc') == '0':
+            continue
+        event = dict(attempt, kind='step')
+        key = (attempt['stage'], attempt['cell'], attempt['step'])
+        event['resolved'] = latest[key].get('rc') == '0'
+        path = logs / 'steps' / attempt['stage'] / attempt['cell'] / (attempt['step'] + '.log')
+        event['log'] = str(path)
+        event['ledger'] = str(ledger)
+        if path.resolve().is_relative_to(logs.resolve()) and path.exists():
+            with path.open('rb') as source:
+                source.seek(max(0, path.stat().st_size - 4096))
+                event['tail'] = source.read(4096).decode('utf-8', errors='replace')
+        failure_events.append(event)
+    # Runtime repairs and validation attempts live outside the original frozen graph.
+    for event_path in sorted((logs / 'maintenance').glob('*/events.json')):
+        failure_events.extend(read(event_path, []))
+    finished = logs / 'jobs_finished.tsv'
+    if finished.exists():
+        for line in finished.read_text().splitlines():
+            fields = line.split('\t')
+            if len(fields) >= 7 and fields[5].startswith('FAILED'):
+                timestamp, job, stage, cell, restart, outcome, host = fields[:7]
+                if any(e.get('job') == job and e.get('kind') == 'step' for e in failure_events):
+                    continue
+                later_success = any(r.get('stage') == stage and r.get('cell') == cell and r.get('rc') == '0' for r in latest.values())
+                failure_events.append(dict(kind='job', time=timestamp, job=job, stage=stage,
+                    cell=cell, restart=restart, rc=outcome, detail='Host: ' + host,
+                    log=str(logs / 'slurm'), ledger=str(finished), resolved=later_success))
     stages = []
     jobs_by_stage = {}
     job_file = logs / 'jobs.tsv'
@@ -75,7 +107,7 @@ def inspect_run(root_path, run):
         stages.append(dict(name=stage['name'], jobs=jobs_by_stage.get(stage['name'], []), cells=len(stage.get('cells', [{}])),
                            expected_steps=expected_steps,
                            successful_steps=sum(r['rc'] == '0' for r in rows),
-                           failures=[{k:r.get(k) for k in ('cell','step','rc','note')} for r in rows if r['rc'] != '0']))
+                           failures=[{k:r.get(k) for k in ('cell','step','rc','note','job','time')} for r in rows if r['rc'] != '0']))
     summary_path = results / 'analysis/summary.csv'
     summary = []
     if summary_path.exists():
@@ -109,4 +141,7 @@ def inspect_run(root_path, run):
                 completeness=read(results / 'analysis/completeness.json'), summary_rows=summary,
                 analysis_overviews=analysis_overviews,
                 analysis_files=[p.name for p in sorted((results / 'analysis').glob('*')) if p.is_file()],
-                errors=errors)
+                errors=errors, failure_events=failure_events,
+                runtime_maintenance=read(repo / 'experiments/full/runtime_maintenance.json'),
+                maintenance_validation=read(logs / 'maintenance/ast-recovery-20261020/validation.json'),
+                maintenance_recovery=read(logs / 'maintenance/ast-recovery-20261020/restored_graph.json') or read(logs / 'maintenance/ast-recovery-20261020/retrieval-retry.json'))

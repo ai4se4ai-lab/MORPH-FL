@@ -1,0 +1,17 @@
+# Closest-work table (Stage B, 20 October 2026)
+
+Cells describe the versions linked in citations_verified.csv, not every release of a system. “Not stated” means the opened method does not specify that property; it is not evidence of absence. Action/observation message roles are already common and are not MORPH-FL's novelty. This table contributes under 65 paraphrase words per source.
+
+| System / key | Persistent state across steps or restarts | Evidence | Observation versus interpretation | Memory/restart study | Evaluated granularity |
+|---|---|---|---|---|---|
+| Agentless / agentless2025 | Selected files, skeletons, elements, edit locations | Report and source; tests in repair | Not stated as a typed distinction | Hierarchical localization; restart not stated | Edit-location agreement and repair |
+| AutoFL / autofl2024 | Tool-return messages and explanation within run; aggregated predictions across runs | Failing test, coverage, source, documentation | Function outputs and generated explanation have separate message roles | Repeated-run aggregation; retention through reset not stated | Method |
+| AgentFL / agentfl2024 | State Storage holds parsed outputs and program-analysis material | Test traces, static source, documentation | Component results and generated task outputs stored; epistemic invariant not stated | Multi-round dialogue; restart policy not stated | Method |
+| RGFL / rgfl2026 | Candidate-specific reasoning and rankings | Report and source; tests in downstream repair | Explanations generated from candidates; typed evidence distinction not stated | Reasoning-stage comparisons; restart not stated | File, element, line; repair |
+| LocAgent / locagent2025 | Graph/index and event log | Source and structural relationships | Action/observation loop; reset-safe immutable observation store not stated | Graph/tool ablations; restart policy not stated | File/function localization; downstream repair |
+| ARISE / arise2026 | Repository graph and assembled context bundles | Structural and intra-procedural def-use relationships | Tool evidence bundled; typed interpretation ledger not stated | Structural/data-flow/bundling ablations; restart not stated | File/function/line; repair |
+| MemFL / memfl2025 | Fixed project/class summaries; refined stage-specific debugging guidance | Test information, coverage, source; pseudo-training patched methods | Static versus dynamic memory; observation/interpretation split not stated | Memory refinement and component ablations | Method |
+| Repository Memory / repomem2026 | Historical commits/issues and cached active-file summaries | Prior diffs/issues and current source/graph | Episodic versus semantic memory; interpretation/observation split not stated | Memory component/retrieval ablations; within-task resets not stated | File localization; downstream repair |
+| Forgetting / forgetting2026 | Best candidate and score survive; sessions and candidate history discarded | Scored evaluator feedback | Search state and session distinguished | Explicit forget/continue experiments | Optimization score, not localization |
+
+The proposed difference is an explicitly specified within-investigation reset boundary over observations, interpretations and dialogue, coupled to a controlled comparison against prose summaries. Do not claim first memory, first separation of tool observations from thoughts, first graph localization, or first restart. Neither record retention nor any table difference establishes localization benefit.

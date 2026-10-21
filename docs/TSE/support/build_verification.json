@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-21",
+  "revision": "Whole-paper consistency, running-example alignment, motivated definitions and transitions, and connected prospective closing sections",
+  "tex_sha256": "4cd76b222661e703d108e4630c4f1ff7a0e59b4f05289d57d5d68b043f73de8d",
+  "bib_sha256": "4316b964770ae0f420da01f0a094e0dd0b5b06ae39bf5b48686c6d6dd7ca3f6c",
+  "pdf_sha256": "982a7bb224f44164708cec644103e1d8fff5b92f86dbe27f27d271700eaca6cb",
+  "pdf_pages": 22,
+  "abstract_words": 182,
+  "citation_count": 30,
+  "missing_citations": [],
+  "unused_entries": [],
+  "duplicate_labels": [],
+  "missing_references": [],
+  "overfull_boxes": false,
+  "undefined_references": false,
+  "unchanged_inspected_inputs": true,
+  "changed_inputs": [],
+  "source_manifest": "support/presentation_source_manifest.json",
+  "targeted_tests": {
+    "command": "PYTHONPATH=src /tmp/morph-tse-tools/venv/bin/python -m unittest tests.unit.test_method tests.unit.test_controller tests.unit.test_reset_policy tests.unit.test_deep_python_analysis -q",
+    "passed": 40,
+    "failed": 0
+  },
+  "example_checks": {
+    "check_running_example.py": "passed: M1\u2013M4/T1\u2013T7 trace plus seven actual-controller attempts with a scripted backend",
+    "check_synthetic_trace.py": "passed: constructed reset arithmetic"
+  },
+  "review_status": "Whole-paper editorial self-review and implementation checks; no independent peer review or empirical findings claimed.",
+  "compile_engine": "Tectonic 0.17.0 / XeTeX / IEEEtran",
+  "known_warnings": [
+    "algorithm.sty upstream comment encoding",
+    "underfull boxes"
+  ],
+  "transformation_weight_check": {
+    "source_quote": {
+      "cost": 1,
+      "reliability": 0.9
+    },
+    "ast_query": {
+      "cost": 1,
+      "reliability": 0.7
+    },
+    "test_trace_counterfactual": {
+      "cost": 30,
+      "reliability": 0.7
+    },
+    "example_ast_utility": 1.4,
+    "same_diversity_dynamic_utility": 0.04666666666666666
+  },
+  "visual_review": "Whole-paper layout overview checked; final Algorithm 1 and overview placement inspected in detail. Normal algorithm text restored, float barrier keeps the walkthrough after it, and ragged bottoms avoid stretched paragraph gaps.",
+  "preserved_result_keys": true,
+  "duplicate_prose_paragraphs": 0,
+  "algorithm_precedes_walkthrough": true
+}

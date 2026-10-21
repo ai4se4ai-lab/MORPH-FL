@@ -1,0 +1,490 @@
+\documentclass[letterpaper,journal]{IEEEtran}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{tikz}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+% Adapted from docs/tse-template.tex; all manuscript content is in this file.
+% Source anchors below refer to the working tree captured in support/source_manifest.json.
+\usetikzlibrary{positioning,arrows.meta}
+\newif\ifdraftresults
+\draftresultstrue % Change only after audited, complete results have been bound.
+\ifdraftresults
+  \newcommand{\resultslot}[1]{\textcolor{blue!65!black}{\textbf{[RESULT: #1]}}}
+  \newcommand{\res}[1]{\resultslot{#1}}
+  \newcommand{\resrange}[1]{\resultslot{#1}}
+  \newcommand{\claimslot}[1]{\resultslot{#1}}
+  \newcommand{\figslot}[1]{\resultslot{figure #1}}
+  \newcommand{\tabslot}[1]{\resultslot{table #1}}
+\else
+  \InputIfFileExists{generated/results.tex}{}{\PackageError{morph-results}{Missing audited results}{Final mode requires generated/results.tex}}
+  \newcommand{\boundresult}[1]{\ifcsname result@#1\endcsname\csname result@#1\endcsname\else\PackageError{morph-results}{Missing result key #1}{Supply audited binding}\fi}
+  \newcommand{\res}[1]{\boundresult{#1}}
+  \newcommand{\resrange}[1]{\boundresult{#1}}
+  \newcommand{\claimslot}[1]{\boundresult{#1}}
+  \newcommand{\figslot}[1]{\boundresult{#1}}
+  \newcommand{\tabslot}[1]{\boundresult{#1}}
+\fi
+\newcommand{\tool}{MORPH-FL}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,columns=fullflexible,frame=single,numbers=left,numberstyle=\tiny,xleftmargin=1em}
+\hyphenation{lo-cal-iza-tion ob-ser-va-tions}
+\begin{document}
+\title{MORPH-FL: Evidence-Preserving Restarts for Budgeted Fault Localization}
+\author{Author information to be supplied}
+\maketitle
+\begin{abstract}
+An agent investigating a bug can retain an observation, an explanation of that observation, and the conversation that produced the explanation. These are different kinds of state. Clearing the conversation need not discard the observation, but retaining a record does not ensure that a fresh investigator can use it. We specify \tool{}, a Python fault-localization prototype that makes this distinction executable. It stores source-versioned observations outside role conversations, assesses explicit predictions within stated evidence scopes, and restarts from a bounded portfolio of hypotheses when a heuristic progress monitor requests it. Source matches remain static facts; causal confidence is not inferred from their scores. We separate a record-retention invariant from the empirical question of whether rankings justify added cost over a deterministic observation-text control. Sufficiency of reconstructed context is a separate, unmeasured property. A prospective study compares memory policies, restricted upstream localization components, and component ablations under matched budgets, including disclosed misleading leads. This working manuscript completes the method and positioning; empirical findings remain registered placeholders rather than asserted results.
+\end{abstract}
+\begin{IEEEkeywords}
+Fault localization, language model agents, investigation state, evidence provenance, context management.
+\end{IEEEkeywords}
+
+\section{Introduction}\label{sec:intro}
+A report that a disabled feature still appears on screen can point an investigator toward rendering code even when an earlier configuration step has replaced an explicit false value with a default. The displayed symptom and the faulty operation need not share a file. This is an illustrative example, developed in Section~\ref{sec:example}, of a practical localization problem: deciding which source locations deserve inspection when the report alone does not identify the responsible operation.
+
+Language-model workflows address this problem in several ways. Agentless narrows a repository through file, function, and edit localization before repair~\cite{agentless2025}. AutoFL uses tools to inspect a failing program and requests an explanation as well as a location~\cite{autofl2024}. LocAgent supplies a graph and navigation tools for repository search~\cite{locagent2025}; RGFL reasons about candidates before ranking them~\cite{rgfl2026}. These mechanisms give an investigator more than lexical matches. They do not, by themselves, settle what an investigator should retain when its conversational context is restarted.
+
+The distinction matters because an explanation can outlive the check that motivated it. A source line may show a default expression without showing that the reported execution reached it. Several roles can repeat that explanation without supplying another observation. Conversely, a fresh context can omit the conditions under which a useful observation was obtained. We treat fixation, repeated investigation, and loss of useful context as risks to test, rather than established defects of every localization agent. Restarting search has recently been studied in scored optimization tasks~\cite{forgetting2026}; those results do not establish a benefit for fault localization, where a plausible explanation lacks a dependable scalar oracle.
+
+Our starting idea is simple: keep checked observations separately from explanations and from the dialogue used to explore them. A restart clears the dialogue, retains the observations with their provenance, and selects a few competing explanations for the next investigation. The observation remains available to model reasoning even if its original explanation is discarded; the current implementation does not restore every discarded score or evidence link. This defines a boundary for forgetting, not a guarantee that the next investigator receives everything it needs.
+
+A text summary is an important alternative. Prior work already uses external memory and project summaries for fault localization~\cite{memfl2025}, and repository memory can supply historical context to code localization~\cite{repomem2026}. Ledger also externalizes coding-agent execution state and mediates redundant actions~\cite{ledger2026}. It is therefore insufficient to argue that an agent needs memory or an execution ledger. Our comparison asks whether explicit hypothesis records and a restart policy earn their cost over a specific simple control: path/line labels followed by JSON observation payloads, concatenated without a model-generated summary or prior dialogue. This control omits behavior fields, hypotheses, predictions, and relation excerpts; it does not isolate representation from information content or reset timing. A favorable contrast would apply to that package comparison, not to prose handoff summaries generally; an unfavorable contrast would favor the simpler instrument under those conditions.
+
+% Method: search/controller.py:121-529; transformations/pipeline.py:23-207.
+\tool{} instantiates this idea with typed investigation state, sequential role conversations, cached source or AST checks, a lexical-diversity portfolio heuristic, and an observable plateau policy. The built-in analyzer handles Python. Registered dynamic procedures are implemented, but the prospective benchmark workflow uses source-only evidence; runtime causal validation is outside its established evidence. We use the project name without claiming a general model-driven engineering framework.
+
+We ask three result-agnostic questions. \textbf{RQ1:} How do file and function patch-proxy rankings compare with the controls at matched budgets? The hypothesis is that the combination yields favorable paired ranking differences; coherent positive contrasts support that hypothesis, while uncertain or unfavorable contrasts limit it. \textbf{RQ2:} What do component contrasts and trajectories following disclosed misleading leads reveal about the memory mechanism? The hypothesis is that the retained portfolio and reset policy matter beyond clearing dialogue. Support requires eligible wrong-lead trajectories and compatible component contrasts; reset counts alone cannot support it. \textbf{RQ3:} What localization--cost tradeoffs and evidence-handling failures occur? The hypothesis is that the complete policy earns its cost over the configured observation-text and continuous-context controls. Matched budget curves and actual token, probe, and wall costs determine that judgment; null confidence precludes calibration claims.
+
+The primary object of study is this complete prototype policy, including its interpretation-loss and reassessment-suppression behavior. We do not claim a robust, generally reusable evidence-management architecture. RQ1 and RQ3 compare packages; RQ2 uses the no-forgetting, fixed-reset, context-only, and single-hypothesis contrasts to characterize conditional policy behavior. The present controls cannot identify a benefit of typed representation itself. That attribution would require a content-matched handoff with the same reset schedule and relation access, which is not implemented here.
+
+The results preview is deliberately unbound: \claimslot{effectiveness}; \claimslot{mechanism}; \claimslot{efficiency}. The paper supplies (1) a controlled policy-study protocol comparing the complete restart package with continuous context, periodic resets, and the specific observation-text control; (2) an executable prototype defining scoped assessments, portfolio selection, reconstruction, and their loss/suppression edge cases; and (3) a source-traceable contract and audit procedure separating retained records from retained interpretations. The retention invariant supports this study; it is not a substantial standalone algorithmic result. Empirical conclusions are reserved for the completed study. Neither memory in localization nor restarts in agent search are claimed as new in isolation.
+
+\section{Background and Problem Definition}\label{sec:background}
+\subsection{Locations, explanations, and evidence}
+\emph{Localization} returns an ordered set of candidate source elements. A file ranking orders repository paths; a function ranking orders qualified symbols within paths. An \emph{explanation} additionally proposes a mechanism connecting an operation to the reported behavior. Finding a patch-touched location is a useful evaluation target, but it does not establish that the proposed mechanism caused the failure. Our evaluator's reference-patch labels are unreviewed change-location proxies, not adjudicated causes.
+% datasets/labels.py:14-94; search/controller.py:476-529.
+
+A \emph{hypothesis} contains candidate locations, a proposed mechanism, explicit predictions, and assumptions. An \emph{observation} records what a permitted check returned, together with source revision, procedure, and artifact. An \emph{assessment} relates that observation to one hypothesis's prediction: supports, contradicts, or inconclusive. This separation permits two hypotheses to use one recorded observation without representing role agreement as independent evidence. A source match can support a source-presence prediction while leaving a runtime explanation untested.
+% domain/models.py:66-140; transformations/pipeline.py:112-157.
+
+The evidence scope states what was checked. \emph{Source presence} concerns a quoted substring at a numbered line. \emph{Static structure} concerns a permitted AST predicate. \emph{Dynamic prediction} concerns the recorded outcome of a registered test, trace, or intervention procedure. Even dynamic support is conditional on that procedure and the declared assumptions. Scope is an operational limit on an assessment, not a truth certificate for a causal explanation.
+% investigation/executor.py:64-123; transformations/pipeline.py:112-157.
+
+An agent's \emph{context} is the messages supplied on a model call. Each role has a dialogue of earlier requests and responses. A \emph{reset} clears these dialogues; it does not erase the external observation ledger. We keep three properties separate: \emph{record retention}, equality of recorded observation IDs across the reset; \emph{view sufficiency}, whether the reconstructed request contains the information needed for useful continuation; and \emph{localization benefit}, the measured effect on rankings at the stated budget. Only the first is an implementation invariant. View sufficiency is not independently measured by the present protocol: recovery and rankings test outcomes, while context failures test deliverability. Neither identifies missing semantic information by itself.
+% agents/sessions.py:47-72; search/controller.py:441-463.
+
+\subsection{Illustrative running example}\label{sec:example}
+Consider the following synthetic Python repository. The report says: ``Setting enabled to false still displays the feature.'' The example is constructed for explanation; it is not a benchmark case or an observed run.
+\begin{lstlisting}[language=Python,caption={Illustrative pre-fix source in two files.},label={lst:example}]
+# config.py
+def normalize(options):
+    return {"enabled": options.get("enabled") or True}
+
+# handler.py
+from config import normalize
+def handle(options):
+    config = normalize(options)
+    return render(config["enabled"]) # render omitted
+\end{lstlisting}
+The handler is the visible symptom site. One hypothesis, $h_A$, suspects a rendering interpretation in \code{handler.py}; another, $h_B$, suspects default handling in \code{config.py}. For $h_B$, a check can predict that the return expression contains \code{or True}. A successful quote check records that substring at the actual source line. An AST query for a \code{Return} containing the expression records static structure. Neither check executes the report's input or observes \code{render}.
+
+Inspection of this constructed expression explains why explicit false would become true under ordinary Python evaluation. That reasoning belongs to the illustration; the implemented static probes do not independently reproduce the failure or rule out another runtime cause. A dynamic test of \code{normalize} would require a registered procedure. If no such procedure is available, its outcome is blocked and the assessment inconclusive. This is why \tool{} can rank \code{config.py} while abstaining from a causal conclusion.
+
+Suppose subsequent valid rounds only propose previously executed quotes. Once the plateau conditions hold and a restart is affordable, the controller clears the dialogues and retains a selected portfolio, which may include $h_B$ and an alternative. The quote observation remains in the ledger regardless of whether its original hypothesis survives. A new role receives accessible observations and selected explanations. This hypothetical continuation illustrates the reset operation, not a measured recovery from $h_A$.
+
+\subsection{Inputs, outputs, and success criteria}\label{sec:problem}
+The inputs are a public report, a pre-fix Python repository at a recorded revision, permitted investigation procedures, a model backend, and token, physical-probe, wall-time, and round limits. Gold patches, reference labels, solution hints, and post-fix test patches are evaluator-only inputs and are excluded from the public-case interface. Public benchmark pretraining contamination remains possible despite that interface separation.
+% datasets/contracts.py:10-50; search/controller.py:121-195.
+
+The outputs are file and symbol rankings, live hypotheses, all recorded observations and assessments, cumulative costs, a stop reason, an audit path, and causal abstention. The implementation's symbol list can contain a class name when the selected line lies within a class but outside a function; exact-function scoring must not silently treat such entries as functions. File Top-$k$ asks whether the first $k$ paths intersect the reference proxy set. Function Top-$k$ uses exact qualified function identifiers; reciprocal rank uses the first hit. Empty or ineligible proxy labels require an explicit denominator, not a negative causal judgment.
+% pipeline.py:64-66; controller.py:522-529; evaluation/metrics.py:4-17.
+
+The task is budgeted ranking with auditable evidence, not repair, proof of a unique cause, automatic test synthesis, or multilingual program analysis. The analyzer's approximate relations may omit or misresolve dependencies. Registered procedures are supplied by the experiment owner; generated prose alone cannot authorize arbitrary execution. Confidence is returned as null. Thus neither a large hypothesis score nor a nonempty explanation implies calibrated certainty.
+% program_analysis/python.py:1-5; investigation/executor.py:26-46,126-204; controller.py:483-510.
+
+\begin{table}[t]
+\caption{Notation used by the algorithms. All sets and lists are finite.}\label{tab:notation}
+\centering\small
+\begin{tabular}{@{}p{.25\columnwidth}p{.68\columnwidth}@{}}\toprule
+Symbol & Type and meaning\\\midrule
+$R,v,B$ & Repository snapshot, revision identifier, report text\\
+$H_s,E,A,Q$ & Hypothesis map in access scope $s$; observation map by ID; role dialogues; physical-probe cache\\
+$h,p,e$ & One hypothesis, proposed probe, recorded observation\\
+$k,W,n$ & Positive portfolio bound, window length, cumulative valid-round count\\
+$C_0,C,c_0$ & Original/remaining integer token budget, positive token reserve\\
+$g_t,r_t,d_t,c_t$ & Valid-round observation gain, repetition fraction, diversity in $[0,1]$, actual tokens\\
+$D(h,h')$ & Lexical/path dissimilarity in $[0,1]$\\
+\bottomrule\end{tabular}
+\end{table}
+
+\section{Approach}\label{sec:approach}
+\subsection{Design rationale and information flow}
+The design answers three different needs. Versioned observations make a check reusable without retaining the conversation that requested it. Explicit assessments prevent a static source match from silently becoming a causal verdict. A retained portfolio gives a restarted investigator alternatives to the highest-scored explanation. A prose handoff could serve these needs. The current observation-text controls test a simpler package, however, and cannot establish the value of typed formatting independently of retained information. None of these needs selects a unique reset threshold, diversity formula, or portfolio size. Those are exposed engineering choices.
+
+Figure~\ref{fig:flow} shows the boundary: execution populates the ledger, while interpretation populates hypothesis records. Both feed the next request. Only dialogues are cleared unconditionally at a reset; the live hypothesis pool is pruned according to policy. The default roles clarify behavior, challenge the current leader, inspect structure, and propose dynamic investigations, in that order. They run sequentially through one backend, with separate dialogues, rather than as parallel model workers.
+% search/config.py:7-33; search/controller.py:196-207,441-463.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\scriptsize, node distance=3mm and 5mm,
+ box/.style={draw,rounded corners,align=center,text width=31mm,minimum height=7mm},
+ arr/.style={-{Stealth[length=1.6mm]},semithick}]
+\node[box] (input) {Public report + pre-fix source};
+\node[box,below=of input] (state) {Behavior + structure\\retrieved candidates};
+\node[box,below=of state] (role) {Role request + dialogue};
+\node[box,below=of role] (hyp) {Validate hypotheses + probes};
+\node[box,below=of hyp] (exec) {Physical cache or permitted check};
+\node[box,below=of exec] (ev) {Retained observation ledger\\scoped assessments};
+\node[box,right=of hyp] (monitor) {Progress monitor};
+\node[box,above=of monitor] (reset) {Select portfolio; clear dialogues;\\reconstruct next request};
+\draw[arr] (input)--(state);\draw[arr] (state)--(role);
+\draw[arr] (role)--(hyp);\draw[arr] (hyp)--(exec);\draw[arr] (exec)--(ev);
+\draw[arr] (ev.east)-|(monitor.south);\draw[arr] (monitor)--(reset);
+\draw[arr] (reset.west)--(role.east);
+\draw[arr,dashed] (reset.north) to[bend left=35] (role.north east);
+\draw[arr] (ev.west)--++(-4mm,0)|-node[pos=.72,left]{retained} (role.west);
+\end{tikzpicture}
+\caption{Investigation flow. The solid feedback path makes observations available after a reset. Dashed feedback denotes conversation clearing, not observation deletion.}\label{fig:flow}
+\end{figure}
+
+\subsection{Typed investigation state and transformations}\label{sec:state}
+Four groups of dataclasses hold the state. M1, \code{BehavioralModel}, stores the report, trigger, expected and observed behavior, invariants, and ambiguities. Report extraction remains conjectural. M2, \code{SystemModel}, stores source text, versioned symbol locations, typed relations, and diagnostics. Its analyzer uses Python ASTs, syntactic import/call resolution, and approximate local def-use information. Unresolved links remain marked; the representation is not a sound interprocedural dependence model.
+% domain/models.py:28-77; program_analysis/python.py:40 onward.
+
+M3, \code{FaultHypothesis} and \code{Prediction}, holds locations, mechanism, predictions, assumptions, conjectured causal edges, support and contradiction references, and an additive score. M4 contains \code{Probe}, \code{Evidence}, \code{Assessment}, and \code{Budget}. A probe requests a check; evidence records its result; an assessment interprets that result for the probe's prediction. The stored assessment references only hypothesis and observation IDs, not the prediction or probe ID; it is therefore not a complete standalone prediction-to-result relation when a hypothesis has several predictions. Keeping these as separate records permits the same physical observation to be interpreted for different hypotheses without copying it into several independent facts.
+% domain/models.py:66-158; controller.py:384-407.
+
+The labels follow the practical sequence: prepare source, propose an explanation and check, record the result, then rebuild context. The seven named transformations identify concrete boundaries: T1 populates report fields; T2 builds the Python system model; T3 expands seed paths; T4 validates and materializes a proposed hypothesis; T5 materializes its jointly proposed probe; T6 assesses an observation; T7 constructs a fresh request. T4/T5 do not compile an arbitrary explanation into a verified test. The internal variant name \code{no_mde} refers to removing typed models from agent-visible memory; it does not remove the dataclasses or validators from the implementation.
+% pipeline.py:23-207; controller.py:209-217.
+
+\subsection{Candidate construction and the controller}\label{sec:controller}
+BM25, a lexical report-to-source ranking method, scores files using report terms against paths and contents. Up to five leading paths seed a two-hop neighborhood over resolved relation endpoints. Candidates are the stable concatenation of seeds, neighborhood members in retrieval order, and all remaining retrieved paths, truncated to the configured pool size. Algorithm~\ref{alg:neighborhood} gives the neighborhood operation. In the illustration, a resolved import from \code{handler.py} to \code{config.py} can connect symptom and configuration files. No structural link guarantees a cause is retained, and truncation can exclude the true fault from investigation even though the final ranking still contains all retrieved files.
+% controller.py:135-145; pipeline.py:38-50; program_analysis/retrieval.py:77-98.
+
+The first request shows the first configured number of candidates. Later requests anchor the original retrieval leader and the first selected hypothesis path, then fill remaining slots from a rotating candidate list. Each numbered source window prefers a report's trace location or named function, otherwise identifier overlap. Default limits are 40 lines and 4,500 characters per file; at most 12 relation excerpts are shown. Visibility validation checks that a proposed path was supplied, but only checks that its line exists in the file, not that the line appeared in the displayed window.
+% controller.py:33-112,218-247,320-325.
+
+\begin{algorithm}[t]
+\caption{Budgeted localization controller}\label{alg:controller}
+\begin{algorithmic}[1]\small
+\Require $B,R,v$, model backend, configuration and budgets
+\Ensure Rankings, state records, costs, abstention and audit
+\State Analyze $R$; rank files; construct bounded candidates
+\State Initialize scoped pools, $E,A,Q$, monitor and cumulative budget
+\For{attempt $t=0,\ldots,\text{round limit}-1$}
+  \If{remaining tokens $<64$, probe cap, or wall limit} \State \textbf{break} \EndIf
+  \State Choose scheduled role and its access scope $s$
+  \State Select portfolio from $H_s$; build request with source windows
+  \State Ask backend; charge actual input/output tokens in all cases
+  \If{backend reports context/token limit} \State \textbf{break} \EndIf
+  \If{response invalid} \State \textbf{continue} \EndIf
+  \State Record dialogue; update scoped behavior fields
+  \State Validate up to four proposed hypothesis/probe pairs; merge valid records
+  \State Count pre-round cached physical-probe proposals
+  \If{probes enabled}
+    \For{probe in utility order, while probe/wall limits permit}
+      \State Reuse $Q$ or execute check; validate source/artifact; add to $E$
+      \State Expose observation to $s$; assess if not already linked to hypothesis
+    \EndFor
+  \EndIf
+  \State Update monitor with gain, repetition, diversity, and actual round tokens
+  \State Evaluate reset policy; execute reset if requested
+  \State Test registered-dynamic-support early-stop condition
+\EndFor
+\State Derive rankings from live pools; compute historical-assessment abstention
+\State \Return records, rankings, stop reason and cumulative costs
+\end{algorithmic}
+\end{algorithm}
+
+A round limit bounds attempted model calls. A \emph{valid round} is an accepted structured response reaching the monitor; an empty hypothesis list or rejected individual proposals still permits a valid round. Invalid responses consume their actual tokens and an attempt, but skip monitor updates and reset checks. A backend context-limit exception stops the run; the controller does not use an emergency reset to retry it. A registered-dynamic-support stop is checked after the reset branch. These details matter when interpreting a short run with no resets.
+% controller.py:267-303,418-475.
+
+For the running example, Algorithm~\ref{alg:controller} can accept a visible \code{config.py} proposal and a quote probe, then store a source-presence observation. If a later response repeats the same physical check, the cache supplies that observation. This is a possible execution of the specification, not a claim that the backend necessarily proposes $h_B$.
+
+\subsection{Proposals, execution, and scoped assessment}\label{sec:probes}
+Synthesis requires a nonempty mechanism, an existing source path, an in-range line, a prediction, and a probe mapped to that path. The narrowest containing symbol grounds the location. Hypothesis identity uses path, case-folded mechanism, and probe kind; repeated proposals with that identity can add locations and predictions. Generated causal edges are marked conjectured regardless of the model's label. Probe identity additionally includes hypothesis identity and parameters. Validation rejects malformed proposals; it does not establish that their predictions discriminate the actual competing causes.
+% pipeline.py:53-109; controller.py:320-363.
+
+A source-quote probe checks substring membership at its specified line. An AST probe searches the whole file for an allowed node type with optional text containment, rather than restricting the query to the selected line. Tests, traces, and counterfactual procedures require an owner-registered command in a digest-pinned Apptainer image. A counterfactual compares registered baseline and intervention procedures. Missing procedures, unavailable execution, or timeouts yield blocked or inconclusive evidence; generated code is not an unrestricted host command.
+% investigation/executor.py:26-46,64-204.
+
+The physical cache key contains kind, path, and parameters within a run. The observation identity additionally depends on source digest, procedure, and result. A cache hit does not spend another physical probe; a newly exposed cached observation may still count as gain for an isolated role. Ledger insertion verifies revision, provenance, and artifact digest. A reused observation may receive an assessment for another hypothesis, but the controller skips another assessment once that observation is already in a particular hypothesis's support or contradiction list, even if a later prediction differs.
+% controller.py:384-407; executor.py:116-123; ledger.py:15-33.
+
+Logical probe suppression is stronger than physical caching. In shared mode, handled probe IDs survive reset. If a pruned hypothesis is recreated with the same identity and probe parameters, the probe is filtered before cache lookup; its old score and support/contradiction links are not restored. Changing only the prediction can also preserve the probe ID and suppress reassessment, including after an inconclusive result. The model still sees accessible observation payloads, but executable scoring does not automatically recover their former interpretation. These loss/suppression rules are part of the policy under study, not evidence-preserving guarantees. The planned trajectory audit distinguishes raw-record retention, recreated hypotheses without former links, and skipped logical requests; its frequency estimates remain unmeasured and require analysis beyond the existing retention-ID summary. Proposal artifacts and ordered events are required to inspect which prediction was assessed; the assessment record alone is insufficient.
+% policies.py:38-50; pipeline.py:67,100-108; controller.py:329-405,441-463.
+
+T6 evaluates only the explicit predicate. A matched source-presence prediction adds 0.25 to the hypothesis score; AST evidence adds 1; other assessed evidence adds 2. A contradiction subtracts the corresponding weight, and an inconclusive assessment adds zero. These are chosen weights, not likelihoods. Contradictions remain linked rather than being replaced by a role's later assertion. In the illustration, a quote of \code{or True} affects $h_B$'s source-presence score but cannot establish that the reported call reached that expression.
+% pipeline.py:112-157.
+
+Distinct observation IDs do not guarantee independent information. Differently parameterized quotes of the same expression can accumulate several positive increments; paraphrased mechanisms can create distinct hypotheses. There is no semantic duplicate normalization or requirement that a new check distinguish causes. Because the diversity bonus is at most one while scores accumulate, a score margin greater than one can dominate any diversity preference. Portfolio and ranking conclusions therefore concern this heuristic instantiation, not an optimal anti-fixation policy.
+% pipeline.py:67,100-108,145-150; policies.py:21-35.
+
+\subsection{Probe ordering and portfolio selection}\label{sec:utility}
+Probe ordering prioritizes a cheap check that appears to distinguish alternatives. Let $T(h)$ be the set of lowercase alphabetic mechanism terms of length at least three, and let $\pi(h)$ be its first location's path. Define
+\begin{equation}\label{eq:distance}
+\begin{aligned}
+D(h,h')={}&.6\left(1-\frac{|T(h)\cap T(h')|}{\max(1,|T(h)\cup T(h')|)}\right)
+\\ &+.4\,\mathbf{1}[\pi(h)\ne\pi(h')].
+\end{aligned}
+\end{equation}
+The formula combines lexical difference with a different-file indicator. It is not semantic independence; even two empty term sets have lexical distance one under its denominator rule. The diversity $d_t$ is mean pairwise $D$ in the active scope's pool, or zero when fewer than two hypotheses exist.
+% policies.py:11-18,159-161; domain/models.py:117-119.
+
+\begin{algorithm}[t]
+\caption{Probe ordering and portfolio selection}\label{alg:utility}
+\begin{algorithmic}[1]\small
+\Procedure{OrderProbes}{$P,H,V$}\Comment{Probes, live pool, handled IDs}
+  \State Remove probes whose logical IDs are in $V$
+  \For{$p$ linked to hypothesis $h\in H$}
+    \State $a\gets$ number of distinct declared alternative IDs
+    \State $u(p)\gets \mathrm{reliability}(p)\bigl(\max(1,a)+\sum_{h'\ne h}D(h,h')\bigr)/\max(.001,\mathrm{cost}(p))$
+  \EndFor
+  \State \Return probes by decreasing $u$, then increasing probe ID
+\EndProcedure
+\Procedure{SelectPortfolio}{$H,k$}
+  \State $L\gets H$ sorted by decreasing score, then increasing ID
+  \State $S\gets[\ ]$
+  \While{$L\ne[\ ]$ and $|S|<k$}
+    \State Select first maximizing $\mathrm{score}(h)+\min_{x\in S}D(h,x)$ from $L$; use $1$ if $S$ empty
+    \State Append $h$ to $S$; remove $h$ from $L$
+  \EndWhile
+  \State \Return $S$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:utility}'s first procedure returns a probe list; its second returns at most $k$ hypotheses. Declared alternatives are other pooled hypotheses with a differing expected value or predicate. The implementation does not estimate outcome distributions. Source-quote reliability is 0.9, other kinds 0.7; estimated cost is 1 for static and 30 for dynamic probes. These constants order checks and are not probabilities or measured execution costs. Shared investigations filter handled logical probe IDs; isolated investigators pass an empty filter while still sharing the physical cache.
+% policies.py:21-50; pipeline.py:95-109; controller.py:352-376.
+
+In the illustration, the different paths of $h_A$ and $h_B$ contribute 0.4 to their distance. The remaining contribution depends on their mechanism wording. Portfolio selection begins with the highest score, then trades score against minimum distance to the selected set. It need not retain both hypotheses, and it does not guarantee a useful alternative or a correct candidate.
+
+\subsection{Plateau monitoring}\label{sec:plateau}
+The monitor asks whether recent valid rounds produced little accessible evidence while repeating checks or maintaining similar hypotheses. Each sample contains new non-blocked observations $g_t$, pre-round physical-cache repetition ratio $r_t$, pool diversity $d_t$, and actual input-plus-output tokens $c_t$. Repetition counts proposals already present in the cache before the round, divided by at least one proposed probe; repeated checks within a new batch are not included in that pre-round count. Gain counts availability, not causal discrimination.
+% controller.py:365-420; policies.py:53-156.
+
+\begin{algorithm}[t]
+\caption{Plateau decision}\label{alg:plateau}
+\begin{algorithmic}[1]\small
+\Require History $J$ (up to $W$ samples), valid-round count $n$, token budgets $C_0,C$, reserve $c_0$; minimum rounds $n_0$, fraction $\rho$, gain/repetition/diversity thresholds $\tau_g,\tau_r,\tau_d$
+\State $m\gets |J|$; compute mean gain $\bar g$, repetition $\bar r$, diversity $\bar d$, and token sum $c_J$, dividing means by $\max(1,m)$
+\State $f\gets1-C/C_0$
+\State $\widehat c\gets\max(c_0,\lfloor c_t/2\rfloor)$ for latest valid round
+\State $ready\gets(n\ge n_0)\land(m=W)\land(f\ge\rho)$
+\State $affordable\gets C>\widehat c+c_0$
+\State \Return $ready\land affordable\land(c_J\ge c_0)\land(\bar g\le\tau_g)\land(\bar r\ge\tau_r\lor\bar d<\tau_d)$, plus diagnostics
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:plateau} returns a Boolean and its diagnostic quantities; Table~\ref{tab:defaults} supplies the defaults. The restart estimate uses the latest valid round, not the window's mean cost. Tokens per new observation is logged but is not another trigger. A reset clears the history window while retaining $n$ and incurred expenditure. Consequently a subsequent reset requires a new full window, not another initial warm-up count. If the illustration's latest window contains only already accessible quote results, $\bar g=0$; repetition can satisfy the plateau condition only when the remaining gates also hold. Static observation retention alone says nothing about whether that reset is useful.
+% policies.py:113-156; controller.py:434-450.
+
+\subsection{Reset and reconstruction}\label{sec:reset}
+\begin{algorithm}[t]
+\caption{Evidence-preserving reset}\label{alg:reset}
+\begin{algorithmic}[1]\small
+\Require Scoped pools $H_s$, dialogues $A$, ledger $E$, monitor
+\State $O\gets\mathrm{keys}(E)$
+\For{each existing access scope $s$}
+  \If{policy does not retain all hypotheses}
+    \State $H_s\gets\textsc{SelectPortfolio}(H_s,k)$ as an ID map
+  \EndIf
+\EndFor
+\State Clear all role dialogues; advance session generation
+\State Clear monitor history, keeping cumulative valid-round count
+\State Assert $\mathrm{keys}(E)=O$; record reset and retained IDs
+\State Keep scope references, physical cache, artifacts, and all cumulative costs
+\State On next call, build T7 view from scoped behavior, selected hypotheses, accessible observations, and remaining tokens
+\end{algorithmic}
+\end{algorithm}
+
+An \emph{access scope} is shared in the default condition and role-specific in the isolated condition. Algorithm~\ref{alg:reset} retains up to $k$ hypotheses \emph{per existing scope}, not $k$ globally across independent roles. All role dialogues are cleared together. T7 distinguishes static observations from dynamic-kind support and presents predictions without such support as unresolved. The rebuilt view includes every observation accessible to that scope, not just observations attached to the retained portfolio. Thus a bounded portfolio does not impose a bounded request size; reconstruction can still encounter a backend context limit.
+% controller.py:149-166,196-205,441-463; pipeline.py:160-207.
+
+\textbf{Retention property.} For the reset operation in isolation, the observation-ID set before and after is equal, as asserted in Algorithm~\ref{alg:reset}. The property follows directly from the operation's writes: it replaces live hypothesis maps, clears dialogues and monitor history, and appends an audit event; it neither removes nor inserts ledger observations. The ledger API separately rejects a changed payload under an existing observation ID, except for the originating probe-ID alias. This is API-level overwrite protection: nested payload dictionaries are not deeply immutable. The property establishes neither completeness of recorded reasoning nor sufficiency of the next model view.
+% controller.py:441-463; ledger.py:15-33; domain/models.py:91-101.
+
+For the illustration, the quote fact survives even if $h_A$ is pruned. Its former dialogue is no longer supplied, but prior request and response artifacts remain in the audit. A fresh role can reuse the fact without receiving every earlier interpretation. Whether it then investigates \code{config.py} effectively is precisely the empirical question.
+
+\paragraph{A complete constructed reset step.}
+For a concrete trace of the running example, stipulate two hypotheses with mechanisms ``render converts flag'' ($h_A$, \code{handler.py}, score 0.25) and ``default replaces flag'' ($h_B$, \code{config.py}, score 0.5). These scores and the following token counts are synthetic state inputs, not measurements. Their term sets share only ``flag'', so $D(h_A,h_B)=0.88$. With the default bound three, selection returns $h_B$ then $h_A$; it does not invent a third alternative. Suppose four valid rounds each used 512 tokens: the first exposed three observations, and the last three exposed none while proposing only cached checks. The final window is therefore three copies of $(g_t,r_t,d_t,c_t)=(0,1,0.88,512)$. With $C_0=16{,}000$, $C=13{,}952$, $n=4$, and default thresholds, the window cost is 1,536 and the restart estimate is 256. Every gate passes, including $C>256+256$, so reset is requested.
+
+The reset retains both hypothesis IDs and all three observation IDs, clears dialogue and the monitor window, and leaves $C$ unchanged. The next T7 request contains scoped report/behavior fields, both hypotheses' locations and predictions, their recorded support/contradiction references, all accessible observation payloads, unresolved predictions, role, and remaining tokens; the controller adds source windows and relation excerpts. The source-presence observation for \code{or True} remains static support. This deterministic state transition, checked against the policy functions, demonstrates retention and reconstruction only. It neither simulates a model's response nor establishes view sufficiency or successful localization. Loss of a hypothesis interpretation after pruning is a separate possible transition, not contradicted by this retained-portfolio example.
+% Constructed trace independently checked by support/check_synthetic_trace.py.
+
+\subsection{Ranking, stopping, and uncertainty}\label{sec:output}
+For each retrieved file, the final score is the maximum live hypothesis score whose first location has that path, or $-1$ when none does. Files are sorted by decreasing score with original BM25 order for ties. A sufficiently contradicted hypothesis can therefore rank below a file with no live hypothesis. The symbol ranking is generated separately: sort live hypotheses by score, concatenate their symbol-bearing locations, and keep first occurrences. It is not a projection of the file ranking, so their leading answers can disagree. With no live hypotheses the file ranking remains retrieval order.
+% controller.py:476-482,522-529.
+
+The controller stops at an attempt limit, token/probe/wall limits, a backend context/token exception, or its registered-dynamic-support rule. That rule checks whether the current scope's leader has support from at least two dynamic procedure IDs, no contradictions, and nonempty assumptions. It does not filter by causal assessment scope, and distinct procedure IDs do not prove statistical independence. The check follows pruning while holding a reference to the pre-pruning pool. We therefore report its literal stop reason rather than interpreting it as certification of the retained leader.
+% controller.py:464-475.
+
+Returned causal abstention uses a different rule: it is false if \emph{any historical assessment} supports a dynamic causal prediction, including assessments for a hypothesis later pruned or no longer leading. Otherwise it is true; confidence is always null. This run-level flag is not a certificate for the top-ranked file. Source-only runs can still return rankings while abstaining from a causal conclusion. Tests of dynamic semantics and interfaces do not substitute for benchmark execution of the registered procedures.
+% controller.py:483-510; tests/unit/test_method.py:121-125,238-267.
+
+\begin{algorithm}[t]
+\caption{Dependency neighborhood}\label{alg:neighborhood}
+\begin{algorithmic}[1]\small
+\Require System model, ordered seed paths $S_0$, hop limit $b$
+\State $S\gets\mathrm{set}(S_0)$
+\For{$i=1,\ldots,b$}
+  \State $S'\gets S$
+  \For{relation with resolution other than unresolved}
+    \State $u,w\gets$ endpoint file paths
+    \If{$u\in S$ or $w\in S$} \State $S'\gets S'\cup\{u,w\}$ \EndIf
+  \EndFor
+  \State $S\gets S'$
+\EndFor
+\State \Return $S_0$ followed by sorted new paths present in source
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:neighborhood} expands both ways over known relations using the previous hop's set; it terminates after $b$ passes. Seeds are preserved and unresolved endpoints do not drive expansion. In the illustration, the import can bring \code{config.py} into the neighborhood from a \code{handler.py} seed in one pass. Missing or imprecise links can prevent this connection. The operation is a bounded neighborhood, not a sound slice or proof of fault-location coverage.
+% pipeline.py:38-50.
+
+\begin{table*}[t]
+\caption{Library defaults and engineering constants. All values are chosen, not tuned or calibrated in this manuscript. Study overrides are separate. Paths are under \code{src/morph_fl/}: C=\code{search/controller.py}, P=\code{search/policies.py}, G=\code{search/config.py}, T=\code{transformations/pipeline.py}.}\label{tab:defaults}
+\centering\small
+\begin{tabular}{@{}p{.28\textwidth}p{.18\textwidth}p{.34\textwidth}l@{}}\toprule
+Parameter & Default & Role & Code lines\\\midrule
+Attempt/token/probe/wall ceilings & 12 / 16,000 / 48 / 3,600 s & Separate cumulative limits & G:7--13\\
+Portfolio / candidate pool / files per call & 3 / 20 / 4 & Retained hypotheses and shown paths & G:14--17\\
+Seed paths / neighborhood hops & up to 5 / 2 & Lexical/structural candidate preparation & C:140; T:38\\
+Source window / character cap / relations & 40 lines / 4,500 / 12 & Request excerpts; not a full-context bound & G:18; C:112,247\\
+Maximum proposals / entry token floor & 4 / 64 & Proposal processing; loop admission & C:190,320\\
+$W,n_0,c_0,\rho$ & $3,4,256,0$ & Full window, valid rounds, reserve, consumed fraction & G:21--24\\
+$\tau_g,\tau_r,\tau_d$ & $0,0.5,0.5$ & Mean gain, repetition, lexical diversity & G:25--27\\
+Fixed reset interval & 3 attempts & Checked after accepted response & G:20; C:434\\
+Distance lexical/path coefficients & 0.6 / 0.4 & Mechanism terms and first-location path & P:11--18\\
+Probe reliability: source / other & 0.9 / 0.7 & Heuristic ordering weights & T:107--108\\
+Estimated cost: static / dynamic & 1 / 30 & Ordering denominator; floor 0.001 & T:107; P:48\\
+Evidence weight: source / AST / other & 0.25 / 1 / 2 & Signed score increment; inconclusive 0 & T:145--150\\
+No-probe proposal scores & $0.01(4-j)$, $j=0,\ldots,3$ & Maximum proposal-order score & C:346--349\\
+\bottomrule\end{tabular}
+\end{table*}
+
+\subsection{Experimental instrument and audit boundary}\label{sec:variants}
+The fourteen configurations in Table~\ref{tab:variants} are experimental manipulations of one implementation. They are not fourteen independently developed systems. In particular, \code{no_mde} and \code{stateless_summary} retain typed validation, execution, and scoring internally. Their observation-text view is a deterministic newline concatenation of each accessible observation's path, line, and JSON payload; no language model writes or compresses it. Both still receive the original report and source windows. It omits the agent-visible behavioral, hypothesis, prediction, and relation records. The contrast therefore tests this presentation package, not the value of every typed object in isolation. The isolated-role condition still reuses physical facts through the cache; it withholds other roles' hypothesis, behavior, and evidence views.
+% config.py:72-102; controller.py:149-166,209-217,373-405.
+
+\begin{table}[t]
+\caption{Controlled variants and the question each targets.}\label{tab:variants}
+\centering\scriptsize
+\begin{tabular}{@{}p{.30\columnwidth}p{.63\columnwidth}@{}}\toprule
+Configuration & Change and comparison purpose\\\midrule
+\code{morph} & Full configured adaptive-reset loop\\
+\code{no_forgetting} & Retain dialogue: are resets useful?\\
+\code{fixed_reset} & Periodic resets: does adaptive timing matter?\\
+\code{context_only} & Keep all live hypotheses at reset: does pruning matter?\\
+\code{single_hypothesis} & Portfolio bound one: do alternatives matter?\\
+\code{no_mde} & Observation text: effect of the model-view package?\\
+\code{no_probes} & No checks; proposal-order scores: do updates matter?\\
+\code{no_skeptic} & Omit skeptical role: does challenge guidance matter?\\
+\code{independent_agents} & Isolate role views: does shared state matter?\\
+\code{one_agent} & Structural role only: does role diversity matter?\\
+\code{stateless_summary} & Observation text and no dialogue: simple memory-policy control\\
+\code{rerank} & One model round: what does continuation add?\\
+\code{bm25} & No model rounds; lexical retrieval control\\
+\code{graph} & No model rounds; neighborhood-first retrieval control\\
+\bottomrule\end{tabular}
+\end{table}
+
+The \code{initial_clue} parameter supplies unverified text only on the first attempted request. It does not change retrieval scores or insert a verified fact; an invalid first response does not cause automatic clue replay. The prospective misdirection track chooses BM25 rank two without labels, then checks whether the clue was proxy-wrong and became the first valid-round leader before counting a recovery. This is a controlled operational proxy for following a wrong lead, not a validated psychological measure of fixation.
+% controller.py:249-252; experiments/full/suite.py:208-218; analyze.py:240-281.
+
+Requests, responses, and observation artifacts are content-addressed. The hash-linked audit records proposals, assessments, reset decisions, and costs; validation detects inconsistent chains. These checks provide provenance and tamper evidence under the storage interface, not protection against every filesystem attack or proof that the diagnosis is true. Token accounting charges model input and output even for invalid responses; cache hits avoid physical-probe charges. Wall limits are checked between operations and passed to probe execution, not enforced as a hard deadline around every model call. Dollar cost and calibrated confidence are not supplied by this cost model.
+% infrastructure/artifacts.py:11-59; controller.py:188-195,281-284,377-390; domain/models.py:143-163.
+
+\section{Related Work}\label{sec:related}
+\textbf{Retrieval and learned localization.} BugLocator combines report--source similarity with information from similar historical reports and fixes~\cite{buglocator2012}. DeepRL4FL learns representations of coverage and code dependencies for localization~\cite{deeprl4fl2021}. These approaches establish useful alternatives to direct agent investigation: source retrieval requires no conversational state, while execution-based learning uses different evidence and training assumptions. \tool{} reuses lexical retrieval and approximate structure; neither component is a claimed contribution.
+
+\textbf{Agentic, explanation-guided, and graph-guided search.} AutoFL couples bounded tool navigation with explanations and method predictions~\cite{autofl2024}. AgentFL decomposes project-level investigation into comprehension, navigation, and confirmation, with stored component results and task outputs~\cite{agentfl2024}. Agentless uses hierarchical localization before repair, while RGFL adds candidate-specific reasoning and ranking~\cite{agentless2025,rgfl2026}. LocAgent offers typed-graph search and traversal; ARISE supplies repository graphs, including local def-use relations, and token-budgeted tool evidence~\cite{locagent2025,arise2026}. Table~\ref{tab:closest} compares their reported state boundaries. Our graph is more approximate than a general semantic navigation system. The comparison target is evidence handling across resets, not superiority of our navigation tools.
+
+\textbf{Memory and restart policies.} MemFL constructs project/class summaries and debugging guidance using pseudo-training bugs, including buggy and patched methods~\cite{memfl2025}. Repository Memory supplies historical commits and issues alongside active-file summaries to a LocAgent-based workflow~\cite{repomem2026}. AdaRepair-Mem retrieves cross-task experiences by repair stage, including localization~\cite{adarepair2026}. These memories reuse prior project or task knowledge; our ledger concerns observations within one fixed-revision investigation. Thus persistent memory for localization predates this work. Reflexion retains verbal feedback across trials~\cite{reflexion2023}; MemGPT manages a context hierarchy with external memory and paging~\cite{memgpt2024}. Scaling Discovery Requires Forgetting clears agent sessions and search history while retaining a best scored candidate~\cite{forgetting2026}. Its optimization setting has an evaluation score unavailable for an unverified fault mechanism. \tool{} instead retains observations and a heuristic hypothesis portfolio. This is a proposed task-specific combination, whose usefulness and cost remain open; it is not a claim that summaries or existing memories fail.
+
+Ledger is the closest execution-state predecessor: it separates repair reasoning from deterministic records of observed file ranges, modifications, and attempted commands, renders a state view, and mediates redundant actions~\cite{ledger2026}. Its method retains interaction history and does not specify our hypothesis-portfolio reset policy. Our residual question concerns scoped assessments and the tested restart boundary, not invention of an external ledger or caching. The no-forgetting condition retains our ledger without adaptive resets, providing an internal policy contrast; it is not a reproduction of Ledger's repair runtime.
+
+\textbf{Diagnosis, execution evidence, and provenance.} Reiter's consistency-based diagnosis distinguishes observations from a formal system description~\cite{reiter1987}. Our natural-language hypotheses and approximate analysis do not implement that logical diagnosis procedure. Coverage-based localization and DeepRL4FL can use execution evidence~\cite{deeprl4fl2021}; a source-presence check cannot replace it. PROV-DM provides a vocabulary for entities, activities, agents, and derivation~\cite{prov2013}; our artifact links are a limited implementation mechanism, not a new provenance theory or a proof of causality.
+
+The resulting positioning is a study of one scoped-assessment and portfolio-restart policy. The contract makes its behavior inspectable, while practical significance must come from reproducible policy findings or repeatable failure mechanisms; a correct retention invariant and an inconclusive comparison alone would not establish that significance.
+
+Only restricted Agentless and RGFL localization components are implemented as external adaptations in the comparison protocol. Upstream prompts and compression are reused under local model/context restrictions; the full embedding and repair pipelines are absent. AutoFL, AgentFL, LocAgent, ARISE, and the memory systems are related work rather than executed reproductions. Published repair success and file-localization accuracy measure different outcomes and are not interchangeable.
+% baselines/local.py:1-5; docs/BASELINES.md; experiments/full/suite.py:21-40.
+
+\begin{table*}[t]
+\caption{Closest examined systems. Cells summarize the cited primary method, not an inference that an unreported capability is absent. ``Not stated'' means no explicit observation/interpretation separation or restart-policy experiment was established from the examined source. Granularity is localization output, not downstream repair success.}\label{tab:closest}
+\centering\scriptsize\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}p{.12\textwidth}p{.22\textwidth}p{.18\textwidth}p{.19\textwidth}p{.13\textwidth}p{.10\textwidth}@{}}\toprule
+System & State across steps/trials & Evidence used & Observation vs. interpretation & Memory/restart studied & Granularity\\\midrule
+Agentless~\cite{agentless2025} & Hierarchical localization outputs & Repository tree, skeletons, source & Not stated as separate ledger & Not stated & File, function, edit\\
+AutoFL~\cite{autofl2024} & Tool dialogue; repeated-run outputs & Failing test, coverage, source & Tool output and explanation; no scoped ledger stated & Run aggregation; reset not stated & Method\\
+AgentFL~\cite{agentfl2024} & Component results and task outputs & Test information, repository navigation & Stored tool results vs. task outputs & Component design; reset not stated & Method\\
+RGFL~\cite{rgfl2026} & Candidate explanations and rankings & Source, repository structure, embeddings & Reasoning vs. ranking; scoped ledger not stated & Not stated & File, code element\\
+LocAgent~\cite{locagent2025} & Agent action/observation history & Typed repository graph and source & Action/observation loop; scoped ledger not stated & Reset policy not stated & File, function\\
+ARISE~\cite{arise2026} & Graph and tool evidence bundles & Structure, local def-use, source & Tool evidence vs. agent reasoning & Evidence budget; reset not stated & File, function\\
+MemFL~\cite{memfl2025} & Project summaries; guidance learned on pseudo-training bugs & Test context and code tools & Summary/guidance memory; scoped ledger not stated & Memory components & Method\\
+Repository Memory~\cite{repomem2026} & Historical commits/issues; current-file summaries & Commits, issues, graph/source & Historical artifacts vs. generated summaries & Memory sources & File\\
+Ledger~\cite{ledger2026} & Within-run execution ledger and persistent history & Reads, modifications, commands & Mechanical execution state vs. semantic reasoning & Inform/govern ablations; reset not stated & Repair outcome\\
+Discovery forgetting~\cite{forgetting2026} & Best candidate and score at restart & Scored optimization evaluations & Candidate vs. score & Explicit search restarts & Optimization task\\
+\bottomrule\end{tabular}
+\end{table*}
+
+\section{Study Design: Outline}\label{sec:study}
+\begin{itemize}
+\item Purpose/RQs: distinguish ranking effectiveness (RQ1), operational mechanism (RQ2), and cost/evidence handling (RQ3).
+\item Subjects/provenance: pinned Lite/Verified splits; shared IDs executed once, separately reported; five pinned model families and three seeds; prior pilot exposure disclosed.
+\item Primary comparisons: MORPH-FL, no-forgetting, fixed-reset, stateless observation text, restricted Agentless, and restricted RGFL; 32,000-token ceiling, 16 attempts; native context limit separate from cumulative budget. Deterministic retrieval controls once per issue.
+\item Side studies: report-blind repository-balanced hash-selected 100 issues; eight component controls; 16k/32k/48k budget curves; BM25-rank-two clue eligibility; windows 3/4/5 and optional 0.15 consumed-fraction gate.
+\item Measures/inference: file/function proxy eligibility, Top-$k$, MRR, set measures; seeds averaged within case; repository-cluster bootstrap intervals; cluster sign-flip and Holm for declared primary file Top-1 family. Descriptive secondary contrasts; small-cluster limits.
+\item Completeness and fairness: frozen source/protocol/model signatures; partial and smoke exclusions; shared token ceilings versus actual consumed costs; adaptation coverage; interrupted/retried system costs separate.
+\item Placeholders/claims supported: \res{file-top1-delta}, \resrange{file-top1-ci}, \res{function-mrr-delta}; RQ1 ranking contrasts only, no adjudicated causal claim.
+\end{itemize}
+% experiments/full/{protocol.json,README.md,suite.py,analyze.py,extended_analysis.py}; evaluation/statistics.py.
+
+\section{Results: Outline}
+\begin{itemize}
+\item Purpose/RQs: report complete paired contrasts and all eligible denominators before interpretation (RQ1--RQ3).
+\item Subsections: coverage/failures; primary rankings; ablations; all clue outcomes and eligible recovery; retention audits; planned interpretation-loss/suppression audit (additional analysis required); budget curves and actual costs.
+\item Placeholders: \tabslot{primary-results}, \tabslot{ablations}, \figslot{budget-curves}, \res{recovery-delta}, \res{retention}, \res{tokens}, \res{probes}, \res{wall-seconds}.
+\item Claims supported: \claimslot{effectiveness}; \claimslot{mechanism}; \claimslot{efficiency}. Unavailable dynamic/causal/calibration endpoints explicitly unavailable.
+\end{itemize}
+
+\section{Discussion: Outline}
+\begin{itemize}
+\item Purpose/RQs: interpret boundary conditions rather than assume a winning configuration (RQ1--RQ3).
+\item Subsections: retention versus unmeasured view sufficiency versus ranking benefit; adequacy of the specific observation-text control; proxy-wrong-lead interpretation; lost interpretation links on hypothesis reintroduction; additive-support dominance; contexts that exceed reconstructed-view capacity; implications under positive, mixed, and unfavorable outcomes.
+\item Placeholders/claims supported: effectiveness, mechanism, efficiency claim slots; no claim stronger than their paired evidence.
+\end{itemize}
+
+\section{Threats to Validity: Outline}
+\begin{itemize}
+\item Purpose/RQs: bound every ranking, mechanism and cost conclusion (RQ1--RQ3).
+\item Subsections: patch-change proxies and class/function mismatch; source-only evidence; workflow-specific post-clue eligibility (not a common randomized subset); retrieval-pool recall; confounded presentation/role manipulations; heuristic constants; public contamination and pilot exposure; overlapping splits/few repositories; local-model nondeterminism; frozen-version mismatch; unmatched upstream coverage; incomplete/retried cost accounting.
+\item Placeholders/claims supported: primary and recovery denominators; causal validity and confidence calibration unavailable; no new outcome-dependent prose.
+\end{itemize}
+
+\section{Conclusion: Outline}
+\begin{itemize}
+\item Purpose/RQs: state the tested restart boundary and the conclusions actually supported (RQ1--RQ3).
+\item Subsections: specification and guarantees; evidence-conditioned findings; limits and next evidence required.
+\item Placeholders/claims supported: effectiveness, mechanism, efficiency; dynamic benchmark and reviewed-cause studies as future requirements.
+\end{itemize}
+
+\section*{Acknowledgments and AI Assistance}
+OpenAI Codex assisted repository inspection, literature search, drafting of the abstract and Sections~1--4, outline preparation, LaTeX, and AI reviewer and readability passes. These assessments are simulated reviews, not human or journal peer review. Human authors remain responsible for checking the manuscript, references, and eventual results. Author identities and funding information remain to be supplied.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

@@ -801,3 +801,23 @@ present, with six records each. The monitor reports retrieval job 17935 running
 and downstream jobs pending. No retrieval completion receipt or completed
 primary study is available yet. The source hash audit passed and no new inference
 failure signatures were detected. No further runtime change was justified.
+
+
+## October 20 retrieval and dependency recovery
+
+The final SymPy case exposed a recursive AST traversal failure at 1,412/1,414
+retrieval records. Original primary arrays 17937–17941 were canceled by their
+failed prerequisite, and side work began through `afterany` dependencies. The
+superseded downstream graph has now been stopped with completed records retained.
+
+An explicit runtime-maintenance manifest records depth-safe AST traversal and
+both memory-bounded checkpoint-resume passes, with the scientific protocol kept
+byte-identical. Scheduled validation 17970 reproduced the original failure and
+successfully analyzed the same source archive after repair. Retrieval recovery
+17979 is running; a temporary server-side callback waits for verified full
+retrieval before submitting the replacement primary/side/collection graph.
+
+The [repair report](runtime_recovery_20261020.md) contains exact failure evidence,
+validation counts, runtime provenance and continuation behavior. The living study
+document records progress and failures as receipts become available. This entry
+does not claim retrieval or the full study has finished.

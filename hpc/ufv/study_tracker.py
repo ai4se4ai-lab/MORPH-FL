@@ -55,9 +55,25 @@ def render_document(state):
     def relevant(track):
         return [v for v in stages if v['name'] == track or v['name'].startswith(track + '_m')]
 
+    def recovering(selected):
+        failed_stages = [v for v in selected if v.get('failures')]
+        return bool(failed_stages) and all(
+            v.get('cells') == 1 and v.get('jobs')
+            and active.get(v['jobs'][-1]) == 'RUNNING'
+            and all(f.get('job') and f['job'] != v['jobs'][-1] for f in v['failures'])
+            for v in failed_stages)
+
+    def recovery_label(track):
+        info = state.get('recovery_io') or {}
+        if track == 'retrieval' and info.get('phase') == 'COMPACTING' and info.get('fraction') is not None:
+            return f"RECOVERY RUNNING: checkpoint compaction {info['fraction']:.1%} of source bytes; telemetry {info.get('observed_utc', 'unknown')} UTC; awaiting verified receipt"
+        return 'RECOVERY RUNNING: earlier attempt failed; awaiting verified receipt'
+
     def status(track):
         selected = relevant(track)
         if any(v.get('failures') for v in selected):
+            if recovering(selected):
+                return recovery_label(track)
             return 'ATTENTION: failed step'
         cells = sum(v['cells'] for v in selected)
         valid = [v for k,v in receipts.items() if k.startswith(track + '__') and v.get('complete')]
@@ -72,9 +88,13 @@ def render_document(state):
     def step_status(name):
         selected = [v for v in stages if v['name'] == name]
         if any(v.get('failures') for v in selected):
+            if recovering(selected):
+                return 'RECOVERY RUNNING: earlier attempt failed; awaiting verified receipt'
             return 'ATTENTION: failed step'
         if selected and all(v.get('successful_steps', 0) == v.get('expected_steps', -1) for v in selected):
             return 'COMPLETE'
+        if any(active.get(job) == 'RUNNING' for v in selected for job in v.get('jobs', [])):
+            return 'RUNNING'
         return 'WAITING / unverified'
 
     def evidence(relative):
@@ -99,7 +119,7 @@ def render_document(state):
     row('0', 'Design and reproducibility', 'Freeze shared protocol, seeds and outcome definitions',
         'Make workflow comparisons interpretable under common BF16, context, sampling and token budgets.',
         'COMPLETE' if s.get('protocol') else 'UNVERIFIED',
-        f'{seeds} seeds; 16,384 context; 32k primary budget; up to 16 rounds. Active frozen protocol is authoritative; local future fixes are not deployed automatically.',
+        f'{seeds} seeds; 16,384 context; 32k primary budget; up to 16 rounds. The frozen scientific protocol is authoritative; explicitly recorded runtime repairs are listed below. Local future changes are not deployed automatically.',
         'Frozen deployment `experiments/full/protocol.json`; `L/config/`; `L/run_manifest.json`')
     row('1', 'HPC and validation history', 'SSH/Slurm access, A30 allocation, SIF and dependency/Git packaging',
         'Run computation in scheduled GPU allocations and keep environments reproducible without many shared-filesystem package files.',
@@ -147,6 +167,15 @@ def render_document(state):
         'Keep the growing result checkpoint within memory limits while preserving exact record identities and resumability.',
         'HISTORICAL COMPLETE', '315 records were packed and verified by before/after logical hashes; retrieval resumed. Later local v13 resume improvements are not silently part of active v12.',
         '[Maintenance evidence](../../hpc/logs/ufv-full-v12-20261020/checkpoint-maintenance/); [history](five_family_transition.md#verified-retrieval-recovery--october-20-094603-utc)')
+    maintenance = s.get('runtime_maintenance')
+    if maintenance:
+        validation = s.get('maintenance_validation') or {}
+        row('4', 'Runtime maintenance and recovery', maintenance['id'],
+            'Handle deep benchmark ASTs without recursion overflow; stream checkpoint resume to avoid loading a 209 GB file; preserve completed records and restore primary dependencies.',
+            'VALIDATED; recovery jobs governed by receipts' if validation.get('complete') else 'VALIDATION / RECOVERY IN PROGRESS',
+            ('Replacement graph submitted: ' + str((s.get('maintenance_recovery') or {}).get('complete', False)) + '. ') + 'Scientific protocol remains byte-identical. New predictions record the runtime-maintenance manifest hash; original source backups and failed attempts are retained. '
+            + (f"Failing case {validation.get('case')}: original crash reproduced and patched analysis completed; ordinary-source exact equivalence verified." if validation.get('complete') else 'Exact failing-case validation not established yet.'),
+            '`L/maintenance/ast-recovery-20261020/`; frozen deployment `experiments/full/runtime_maintenance.json`; [repair report](runtime_recovery_20261020.md)')
     row('5', 'Retrieval controls (RQ1)', 'BM25 + graph, once per unique issue',
         'Provide deterministic non-LLM reference rankings without model/seed pseudo-replication.', status('retrieval'), f"{count('retrieval'):,}/{planned['retrieval']:,} progress records. "+metrics('retrieval'), evidence('predictions/retrieval__m0__s1__p0.jsonl')+'; '+evidence('receipts/retrieval__m0__s1__p0.json'))
     for variant in ('bm25', 'graph'):
@@ -192,7 +221,9 @@ def render_document(state):
         if any(generated):
             overview = ' '.join(v for v in generated if v) + ' ' + overview
         row('11', 'Analysis and validation', detailed, why, analysis_status, overview, '; '.join(evidence('analysis/'+p.strip()) for p in paths.split(';')))
-    row('12', 'Collect and preserve results', 'Run collection job 17962 after all required stages terminate',
+    collection_jobs = [job for stage in stages if stage['name'] == 'collect' for job in stage.get('jobs', [])]
+    collection_job = collection_jobs[-1] if collection_jobs else 'not yet submitted'
+    row('12', 'Collect and preserve results', f'Run collection job {collection_job} after all required stages terminate',
         'Preserve tables, figures, raw prediction archives, step ledger and resource audit, including failed attempts.', step_status('collect'), 'Final collection is pending.' if not state.get('done') else ('Scheduler terminal; exact-key report determines success.'), '`L/results/`; `L/steps.tsv`; `L/gpu/`; '+evidence('analysis/report.md'))
     row('12', 'Collect and preserve results', 'Copy final compact artifacts locally; retain large graphs/evidence on UFV',
         'Make reviewable results available locally while keeping the full audit within available storage.', 'COMPLETE TRANSFER' if state.get('collected_locally') else 'MONITORING / WAITING', state.get('collected_locally', 'Automatic collector running; final result copy not available yet.'), f'`hpc/logs/ufv-full-v12-20261020/{run}/results/`; `status.json` inventories remote archive sizes')
@@ -201,14 +232,14 @@ def render_document(state):
     observed = sum(count(t) for t in planned)
     text = [
         '# MORPH-FL study phases, progress and results', '',
-        f"**Active run:** `{run}`  |  **Updated:** {state.get('checked_utc', 'unknown')} (UTC)", '',
+        f"**Active run:** `{run}`  |  **Remote snapshot:** {state.get('checked_utc', 'unknown')} (UTC)  |  **Document refreshed:** {state.get('publication', {}).get('utc', 'unknown')} (UTC)", '',
         f'**Current picture:** {observed:,}/{sum(planned.values()):,} study progress records; '
         f"{sum(bool(v.get('complete')) for v in s.get('preflights', {}).values())}/{m} model preflights passed. "
         f"Scientific completeness: **{completeness_label}**. "
         'The 30 separate preflight records and historical smoke are excluded from the study total.', '',
-        'This is the living execution plan. It refreshes with the existing monitor every minute while that monitor and SSH connection are available. '
+        ('This is the living execution plan. Cron on comp370 checks and refreshes it every 30 minutes, independently of an interactive login. ' if state.get('monitor_mode') == 'cron' else 'This is the living execution plan. It refreshes every 30 minutes while the continuous monitor is running; remote checks continue once per minute. A final collection triggers an additional refresh. ') +
         'Read the UTC timestamp to detect stale information. Completed experiment rows require receipts; record counts alone do not establish success. '
-        'Outcome statistics appear when analysis generates them; no missing scores are filled in.', '',
+        'RECOVERY RUNNING means a replacement job is active after a failed attempt; it does not establish completion. Historical failures stay in the failure log. Outcome statistics appear when analysis generates them; no missing scores are filled in.', '',
         'Execution order: design/history → data/assets → five real-inference gates → retrieval → primary → ablations → budgets → misdirection → policy → analysis/collection → scientific review. '
         'Primary and side model groups run serially; small-model arrays can run two cells concurrently.', '',
         '## How to read result locations', '',
@@ -228,8 +259,14 @@ def render_document(state):
         statuses = {r[4] for r in group}
         if any('ATTENTION' in value for value in statuses):
             phase_status = 'ATTENTION'
+        elif any(value.startswith('RECOVERY RUNNING') for value in statuses):
+            phase_status = 'RECOVERY RUNNING'
         elif any(value == 'RUNNING' for value in statuses):
             phase_status = 'RUNNING'
+        elif phase == '4' and len(s.get('preflights', {})) == m and all(v.get('complete') for v in s.get('preflights', {}).values()):
+            phase_status = 'COMPLETE (all model gates passed)'
+        elif phase == '5' and status('retrieval') == 'COMPLETE (receipts verified)':
+            phase_status = 'COMPLETE (receipts verified)'
         elif phase == '13':
             phase_status = 'Requires scientific review'
         elif phase == '1':
@@ -251,17 +288,45 @@ def render_document(state):
                  'It does not execute inference, run statistical analysis, change active source files, or modify Slurm jobs. '
                  'Edits to the table are overwritten on refresh; change the generator for durable plan edits. Historical narrative and repair evidence remain in [five_family_transition.md](five_family_transition.md).', '',
                  f"Metadata read errors: {len(s.get('errors', []))}. " + ('; '.join(s.get('errors', [])) or 'None reported.'), ''])
-    return '\n'.join(text)
+    publication = state.get('publication', {})
+    def cell(value):
+        return str(value).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('|', '&#124;').replace('\n', '<br>')
+    text.extend(['## Failure and recovery log', '',
+                 'Incidents persist after recovery. OPEN means unresolved by available evidence, not an inferred root cause. '
+                 'Log excerpts are bounded tails captured when inspected; full logs and the ledger are authoritative. '
+                 'A successful later step is recorded as recovery without erasing the failed attempt. Scheduler accounting failures are also captured; scheduler-only incidents remain OPEN until reviewed, even if another job succeeds.', '',
+                 '| ID / state | First / last observed (UTC) | Run / stage / cell / step | Failure details and command | Evidence / investigation |',
+                 '|---|---|---|---|---|'])
+    incidents = publication.get('failures', {})
+    for incident in incidents.values():
+        identity = ' / '.join(str(incident.get(k, '—')) for k in ('run', 'stage', 'cell', 'step'))
+        detail = '; '.join(f'{k}: {incident[k]}' for k in ('kind', 'time', 'job', 'task', 'restart', 'scheduler_state', 'rc', 'note', 'command', 'detail', 'tail') if incident.get(k) is not None)
+        evidence = '; '.join(str(incident[k]) for k in ('log', 'ledger') if incident.get(k))
+        evidence += '; Inspect the recorded attempt and surrounding log; establish cause before rerunning or changing the frozen study.'
+        text.append('| ' + ' | '.join(cell(v) for v in (incident['id'] + ' / ' + incident['status'], incident['first_seen'] + ' / ' + incident['last_seen'], identity, detail, evidence)) + ' |')
+    if not incidents:
+        text.append('| — | — | Active monitored run | No failures observed in available metadata. Historical superseded attempts are linked in phase 1. | Not proof that every scheduler attempt succeeded. |')
+    text.extend(['', '## Refresh change log', '',
+                 'Every document publication is recorded below, including refreshes with no measured progress. '
+                 'UTC publication time can differ from the last successful remote snapshot shown above. '
+                 'History starts when logging was enabled; earlier refreshes cannot be reconstructed. '
+                 'Persistent machine-readable history: `' + publication.get('history_path', 'hpc/logs/ufv-full-v12-20261020/tracker-history.json') + '`.', '',
+                 '| Refreshed (UTC) | Run | Remote snapshot (UTC) | Trigger | Updates made |',
+                 '|---|---|---|---|---|'])
+    for entry in publication.get('refreshes', []):
+        text.append('| ' + ' | '.join(cell(entry.get(k, '')) for k in ('utc', 'run', 'snapshot_utc', 'reason', 'changes')) + ' |')
+    return '\n'.join(text) + '\n'
 
 
-def update_document(state, output=DOCUMENT):
+def update_document(state, output=DOCUMENT, history_path=None):
     if not state.get('tracker'):
         return
+    try:
+        from .tracker_history import refresh
+    except ImportError:
+        from tracker_history import refresh
     output = Path(output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    temporary = output.with_suffix('.md.tmp')
-    temporary.write_text(render_document(state))
-    temporary.replace(output)
+    return refresh(state, output, history_path or ROOT / 'hpc/logs/ufv-full-v12-20261020/tracker-history.json', force=True)
 
 
 if __name__ == '__main__':

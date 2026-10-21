@@ -16,6 +16,27 @@ from morph_fl.domain import Relation, SourceLocation, SystemModel
 EXCLUDED = {".git", ".venv", "venv", "__pycache__", "tests", "test", "node_modules"}
 
 
+class _IterativeVisitor(ast.NodeVisitor):
+    """Drive generator visitors with an explicit stack, retaining DFS ordering/scopes."""
+
+    def visit(self, node):
+        def dispatch(current):
+            result = getattr(self, 'visit_' + current.__class__.__name__, self.generic_visit)(current)
+            return iter(()) if result is None else iter(result)
+
+        stack = [dispatch(node)]
+        while stack:
+            try:
+                child = next(stack[-1])
+            except StopIteration:
+                stack.pop()
+            else:
+                stack.append(dispatch(child))
+
+    def generic_visit(self, node):
+        yield from ast.iter_child_nodes(node)
+
+
 def analyze_python(root: Path, revision: str) -> SystemModel:
     sources, symbols, relations, diagnostics = {}, [], [], []
     for path in sorted(root.rglob("*.py")):
@@ -47,20 +68,20 @@ def analyze_python(root: Path, revision: str) -> SystemModel:
             diagnostics.append(f"{name}:{exc.lineno}: {exc.msg}")
             continue
 
-        class SymbolVisitor(ast.NodeVisitor):
+        class SymbolVisitor(_IterativeVisitor):
             def __init__(self):
                 self.scope = []
 
             def visit_ClassDef(self, node):
                 self.scope.append(node.name)
                 symbols.append(location(node, ".".join(self.scope)))
-                self.generic_visit(node)
+                yield from self.generic_visit(node)
                 self.scope.pop()
 
             def visit_FunctionDef(self, node):
                 self.scope.append(node.name)
                 symbols.append(location(node, ".".join(self.scope)))
-                self.generic_visit(node)
+                yield from self.generic_visit(node)
                 self.scope.pop()
 
             visit_AsyncFunctionDef = visit_FunctionDef
@@ -97,7 +118,7 @@ def analyze_python(root: Path, revision: str) -> SystemModel:
                 )
             )
 
-        class Visitor(ast.NodeVisitor):
+        class Visitor(_IterativeVisitor):
             def __init__(self):
                 self.scope = name
                 self.definitions = {}
@@ -105,15 +126,15 @@ def analyze_python(root: Path, revision: str) -> SystemModel:
             def visit_FunctionDef(self, node):
                 old_scope, old_defs = self.scope, self.definitions
                 self.scope, self.definitions = f"{name}::{node.name}", {}
-                self.generic_visit(node)
+                yield from self.generic_visit(node)
                 self.scope, self.definitions = old_scope, old_defs
 
             visit_AsyncFunctionDef = visit_FunctionDef
 
             def visit_Assign(self, node):
-                self.visit(node.value)
+                yield node.value
                 for target in node.targets:
-                    self.visit(target)
+                    yield target
 
             def visit_Name(self, node):
                 if isinstance(node.ctx, ast.Store):
@@ -144,16 +165,22 @@ def analyze_python(root: Path, revision: str) -> SystemModel:
                     and func.value.id in aliases
                 ):
                     target = aliases[func.value.id] + "::" + func.attr
+                if target is None:
+                    try:
+                        unresolved = ast.unparse(func)
+                    except RecursionError:
+                        # Preserve the exact source rather than discard a deep call expression.
+                        unresolved = ast.get_source_segment(text, func) or '<unresolved call>'
                 relations.append(
                     Relation(
                         self.scope,
-                        target or ast.unparse(func),
+                        target or unresolved,
                         "calls",
                         location(node),
                         resolution="syntactic" if target else "unresolved",
                     )
                 )
-                self.generic_visit(node)
+                yield from self.generic_visit(node)
 
         Visitor().visit(tree)
     return SystemModel(revision, sources, symbols, relations, diagnostics)

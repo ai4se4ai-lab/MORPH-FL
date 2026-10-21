@@ -46,9 +46,8 @@ def digest(path):
 
 def locked():
     spec = json.loads((ROOT / "experiments/full/protocol.json").read_text())
-    for relative, expected in spec["source_files"].items():
-        if digest(ROOT / relative) != expected:
-            raise ValueError("Frozen source differs: " + relative)
+    from hpc.ufv.runtime_maintenance import verify_sources
+    verify_sources(ROOT, spec)
     return spec
 
 
@@ -281,6 +280,8 @@ def run(args):
                     initial_clue_path=clue_path,
                     end_to_end_seconds=time.monotonic() - started,
                     backend=backend.metadata if backend else None,
+                    runtime_maintenance_sha256=(digest(ROOT / "experiments/full/runtime_maintenance.json")
+                                                if (ROOT / "experiments/full/runtime_maintenance.json").exists() else None),
                 )
                 # Preserve original prompt/evidence artifacts without shared-filesystem inode amplification.
                 if evidence.exists():

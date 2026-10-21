@@ -23,6 +23,8 @@ def repair_interrupted_tail(path: Path) -> None:
     """Recover only a truncated final JSON record; reject corruption elsewhere."""
     if not path.exists():
         return
+    import uuid
+
     offset = 0
     last = b""
     with path.open("rb") as source:
@@ -34,6 +36,8 @@ def repair_interrupted_tail(path: Path) -> None:
                 # fragment. Completed-line corruption must never be repaired.
                 if line.endswith(b"\n"):
                     raise ValueError("Corrupt completed result record") from None
+                backup = path.with_name(path.name + ".tail-" + uuid.uuid4().hex + ".bin")
+                backup.write_bytes(line)
                 with path.open("r+b") as stream:
                     stream.truncate(offset)
                     stream.flush()

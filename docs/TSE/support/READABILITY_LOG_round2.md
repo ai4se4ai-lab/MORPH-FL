@@ -1,0 +1,137 @@
+# Stage F fresh-reader log, round 2
+
+Reader stance: PhD reader familiar with software engineering, testing and fault localization, without specialist LLM-memory knowledge. I read only `docs/TSE/main.tex`, Sections 1–4, in source order. I did not consult earlier reviews, support notes, implementation, or study results. Source locations below identify paragraph openings in the version read; headings and code comments are not prose paragraphs. Scores mean 1 = immediate, 2 = requires attention but clear, 3 = reread needed, 4 = substantial reconstruction, 5 = cannot explain. “None” means no confusion; “keep” means no readability fix needed. This evaluates explanation, not empirical completeness.
+
+## Paragraph-by-paragraph record
+
+| Paragraph opening / location | Main point I took away | Confusion or difficulty | Score | Concrete fix |
+|---|---|---|---:|---|
+| §1, “A report that a disabled feature” | Symptom location can differ from faulty operation. | None. | 1 | Keep. |
+| “Language-model workflows address” | Existing agents navigate and rank, but restart retention remains a separate choice. | Many named systems, but central contrast remains clear. | 2 | Keep. |
+| “The distinction matters” | Repeated explanations need not be new evidence; restarting can also lose useful conditions. | None. | 2 | Keep. |
+| “We keep checked observations” | Store facts separately; clear dialogue and retain selected explanations at restart. | “Discarded score or evidence link” has no concrete referent yet. | 3 | Say a retained quote can lose its old link to a pruned explanation; defer score detail. |
+| “A text summary” | External memory and summaries already exist. | None. | 1 | Keep. |
+| “Our simple control” | Compare against raw file/line and JSON observation handoff; this is a package comparison. | Dense list of excluded content and confounds requires rereading. | 3 | Give one plain example of the raw handoff, then one sentence on package attribution. |
+| “MORPH-FL instantiates” | Prototype uses structured records, sequential roles and static Python checks. | Lexical portfolio and plateau are unfamiliar but forward explanation is signposted. | 2 | Keep. |
+| “We ask three research questions” | Patch changes are imperfect evaluation labels. | None. | 1 | Keep. |
+| RQ1 | Compare ranking accuracy under matched budgets. | “Coherent positive contrasts” is abstract statistical prose. | 2 | Say consistently better paired rankings. |
+| RQ2 | Compare continuation behavior and inspect runs after misleading leads. | “Paired common-case contrasts,” “ordered trajectories,” and qualitative synthesis obscure the operational question. | 3 | Say compare the same cases and inspect time-ordered investigation records. |
+| RQ3 | Evaluate ranking versus actual computational expense and evidence failures. | Null confidence appears without explaining the output field here. | 2 | Say the tool supplies no confidence estimate. |
+| “The primary object of study” | Study the whole implemented policy; controls do not isolate typed formatting. | Interpretation-loss/reassessment-suppression are introduced before they are understandable. | 3 | First name lost hypothesis links and skipped repeated requests; introduce labels later. |
+| “The results preview remains unbound” | Contributions are protocol, executable specification, and audit; results remain pending. | Long contribution list plus many caveats makes the central contribution harder to retain. | 3 | Lead with one sentence identifying the policy comparison, then list the three artifacts. |
+| §2.1, “Localization returns” | Ranking patch-touched elements differs from explaining causes. | None. | 1 | Keep. |
+| “A hypothesis contains” | Separate candidate explanation, check result, and interpretation of result. | None; this is the most useful vocabulary paragraph. | 1 | Keep. |
+| “The evidence scope” | Source match, AST structure and runtime outcome justify different claims. | None. | 2 | Keep. |
+| “An agent’s context” | Reset preserves records, but record retention does not imply useful view or better rankings. | Three properties and their measurement limits need attention. | 2 | Keep; optional three short sentences naming each property. |
+| “An access scope” | Visibility permissions differ from what evidence proves. | None. | 1 | Keep. |
+| §2.2, “Consider the following” | The false-enabled example is synthetic. | None. | 1 | Keep. |
+| “The handler is the visible” | Competing explanations can be checked statically without running the reported input. | None. | 1 | Keep. |
+| “In this constructed expression” | Python semantics explains the example, but implemented static probes do not reproduce failure. | None. | 1 | Keep. |
+| “Suppose subsequent valid rounds” | Restart retains observed facts and selected alternatives. | Plateau is not defined yet, but this is clearly a forward reference. | 2 | Keep. |
+| §2.3, “The inputs are” | Public report/source and permitted tools enter the investigator; answer labels stay evaluator-only. | None. | 1 | Keep. |
+| “The outputs are” | Returns rankings and audit state; file/function metrics use eligible patch proxies. | Output inventory shifts abruptly into symbol eligibility and metric denominators. | 3 | Split outputs from evaluation definitions; illustrate a class-only symbol once. |
+| “The task is budgeted ranking” | Scope is Python localization, with approximate analysis and no confidence calibration. | None. | 2 | Keep. |
+| §3.1, “The design addresses” | Reusable observations, scoped claims and alternatives motivate the architecture, not particular constants. | None. | 2 | Keep. |
+| “Figure shows the boundary” | Execution yields observations; interpretation yields hypothesis records; four roles run sequentially. | None. | 2 | Keep. |
+| §3.2, “Four groups of dataclasses” | M1 represents report interpretation; M2 approximate source structure. | “Local def-use” requires normal SE background but is intelligible. | 2 | Keep. |
+| “M3, FaultHypothesis” | Hypothesis records include mechanism, predictions, assumptions, links and score. | None. | 2 | Keep. |
+| “M4, the investigation records” | Requests, observations, assessments and budgets have separate records. | None. | 1 | Keep. |
+| “There is an important limit” | Assessment lacks a prediction ID, so ordered proposals are needed to recover exactly what was checked. | None; clear example makes an implementation limitation understandable. | 2 | Keep. |
+| “The transformations follow” | T1–T7 move report/source through proposals, checks and fresh views. | Seven operations plus misleading internal `no_mde` name create bookkeeping burden. | 3 | Let table carry T1–T7; give `no_mde` naming warning near variants. |
+| §3.3, “BM25” | Lexical seeds expand through structure into a bounded investigation pool. | Order of seed/neighborhood/retrieved paths needs deliberate tracking. | 2 | Keep. |
+| “The first request shows” | Calls show bounded rotating source excerpts; validation does not require a line to have been displayed. | Anchor and rotating-list mechanism is compact but understandable. | 2 | Keep. |
+| “A round limit bounds” | Invalid calls spend budget but do not update monitor; context failures stop; role changes reuse the attempt ceiling. | Several exceptional paths compete with the valid-round definition. | 3 | Separate normal/invalid/context-limit cases into short sentences or a compact table. |
+| “For the running example” | Controller may record and later reuse a quote observation. | None. | 1 | Keep. |
+| §3.4, “Synthesis requires” | Proposed hypothesis/check must have basic valid fields and source location. | None. | 1 | Keep. |
+| “Hypothesis identity uses” | Identity merges same-path/mechanism/kind proposals; probe identity adds parameters. | Identity rules are easy to read but their consequences are not yet concrete. | 2 | Keep, paired with later microtrace. |
+| “Predicate checking has” | Validator permits some mismatched check/prediction pairs and may yield weaker support. | Source-presence-first rule needs rereading. | 3 | Show `AST check + substring prediction -> source-presence support` before describing fallback. |
+| “A source-quote probe” | Quote checks a line; AST checks whole file; runtime checks require registered container procedures. | None. | 2 | Keep. |
+| “The physical cache key” | Reuse avoids execution cost, while evidence identity validates provenance; isolated role may gain access to existing fact. | “Gain” is not fully defined until plateau section. | 2 | Say newly available to the role and forward-reference gain definition. |
+| “Reusing a result” | A hypothesis already linked to an observation will not be reassessed for a changed prediction. | None after the example. | 2 | Keep. |
+| “Logical probe suppression” | Recreating a pruned hypothesis can skip its old probe without restoring its score/links. | Must mentally combine three identities and two stores. | 3 | Show before-reset, after-pruning, and after-recreation state for one ID. |
+| “Changing only the prediction” | Same probe ID can suppress a changed prediction even after inconclusive evidence. | Distinction between observation visibility and executable interpretation takes a reread. | 3 | Extend the same microtrace with a changed expectation and explicit skipped assessment. |
+| “T6 evaluates only” | Assessments adjust heuristic scores by scope/kind, not calibrated likelihood. | “AST observation outside that source-presence scope” is dense. | 3 | Use a three-row weight table with the exact rule precedence. |
+| “Distinct observation IDs” | Duplicate information can inflate scores enough to overwhelm diversity. | None; numerical bound clarifies limitation. | 2 | Keep. |
+| §3.5, “Probe ordering favors” | Define lexical terms and primary path for heuristic dissimilarity. | None. | 2 | Keep. |
+| “The formula combines” | Distance is word/path difference, not independent explanations; empty text has surprising distance. | None. | 2 | Keep. |
+| “Each probe carries” | Reliability/cost are ordering heuristics, not measured uncertainty/cost. | None. | 1 | Keep. |
+| “Algorithm’s first procedure” | Alternatives and constants determine probe utility; shared and isolated filters differ. | Lots of constants and access distinctions in one paragraph. | 3 | Split alternative definition, constants, and filtering into separate sentences/paragraphs. |
+| “In the illustration” | Different paths add 0.4; score/diversity selection may still omit an alternative. | None. | 1 | Keep. |
+| §3.6, “The monitor asks” | Track new accessible observations, prior-cache repetition, diversity and token expense. | Distinction between pre-round repeats and repeats within batch needs attention. | 2 | Keep. |
+| “A reset requires” | All readiness/cost/low-progress gates must pass. | None. | 1 | Keep. |
+| “Here n0 is” | Defines gate ranges, default reference, latest-round estimate and post-reset window behavior. | Multiple monitor details require cross-checking algorithm; no contradiction found. | 3 | Separate parameter definitions from reset-history consequences. |
+| §3.7, “As defined” | Portfolio cap is per access scope; all dialogues clear together. | None. | 1 | Keep. |
+| “T7 classifies support” | A single dynamic support can make all predictions disappear from unresolved list. | Surprising coarse behavior, but clearly explained. | 2 | Keep. |
+| “The rebuilt view includes” | Retaining few hypotheses does not bound context because all accessible observations return. | None. | 1 | Keep. |
+| “Retention property” | Reset preserves observation IDs, not all reasoning or immutable nested content. | Probe-ID alias exception and shallow immutability distract from a simple invariant. | 3 | Separate ID-set proof from payload-mutation limitations; explain alias in plain words. |
+| “For the illustration” | Quote persists after originating hypothesis disappears, but effectiveness is unproven. | None. | 1 | Keep. |
+| “For a concrete trace” | Two synthetic hypotheses give distance 0.88 and both fit portfolio. | Easy arithmetic after equation; source clearly labels synthetic inputs. | 2 | Keep. |
+| “Table completes” | Four synthetic rounds yield a full stagnant window and trigger restart. | None. | 2 | Keep. |
+| “The reset retains both” | Lists exact retained/reconstructed state while limiting conclusion to deterministic transition. | Long state inventory makes this paragraph heavier than the example needs. | 3 | Give the next request's contents in a compact list; retain short empirical caveat. |
+| §3.8, “For each retrieved file” | File score uses live hypotheses' first paths; symbol ranking is separate. | Negative live scores below uninvestigated files is surprising but explained. | 2 | Keep. |
+| “The controller stops” | Dynamic-support stop can refer to a hypothesis pruned immediately before checking. | Reference to pre-pruning pool is implementation jargon requiring reconstruction. | 3 | Say “if H was leader before pruning and is removed, the check can still stop for H.” |
+| “Returned causal abstention” | Any historical dynamic causal support switches off run-level abstention, independent of final leader. | None; explicit historical-versus-leading distinction helps. | 2 | Keep. |
+| “Algorithm expands both ways” | Bounded relation expansion preserves seeds but is not guaranteed fault coverage. | None. | 1 | Keep. |
+| §3.9, “The fourteen configurations” | Variants change one prototype, not fourteen independent systems. | None. | 1 | Keep. |
+| “In particular, no_mde” | Raw-observation controls retain typed internals and original report/source, omit structured memory and relations. | None, though names suggest more sweeping differences. | 2 | Keep explicit naming clarification. |
+| “Both controls omit” | One retains dialogue until reset; one starts dialogue-free every call. | None. | 1 | Keep. |
+| “Per-call portfolio selection” | Several variants alter presentation and retention together, limiting component attribution. | “The contrast” lacks a unique immediate referent among three named variants. | 3 | Name which comparison(s) test the presentation package. |
+| “The isolated-role condition” | Roles hide views from each other but share physical cache facts. | None. | 1 | Keep. |
+| “RQ1 uses paired” | Ranking comparisons share cases; misleading-lead recovery percentages condition on each workflow following the wrong clue. | Side-study subjects/seeds, clue, workflow, and changing denominator arrive together before clue procedure. | 4 | Move clue introduction earlier; state eligible-case rule in plain countable terms; separate paired comparisons from conditional percentages. |
+| “The additional audit” | Proposed audit is not supplied by existing retention summary. | None. | 1 | Keep. |
+| “For recreation” | Count reappearing pruned hypothesis IDs and missing formerly attached evidence links. | “Potential interpretation-loss” is appropriately weaker than demonstrated semantic failure. | 2 | Keep. |
+| “For logical suppression” | Count handled-ID proposals and identify changed predictions from ordered artifacts. | Numerator says proposal IDs while the mechanism earlier refers to probe IDs; unsure whether these are the same identifier. | 3 | Explicitly name logical probe IDs in both denominator/numerator description or define proposal-ID correspondence. |
+| “Both audits reconstruct” | Audit needs complete scope-aware artifacts; counts do not establish consequences. | None. | 2 | Keep. |
+| “The initial_clue parameter” | First request gets unverified misdirection; recovery counts only proxy-wrong clues actually followed. | Good explanation arrives after a paragraph that already needed it. | 2 | Move before inference paragraph. |
+| “Requests, responses” | Artifacts and audit chains support provenance; actual token/probe accounting and soft wall limits define costs. | Security boundary, accounting, deadlines and calibration combine four subjects. | 3 | Split provenance and cost accounting into two paragraphs. |
+| §4, “Retrieval and learned localization” | Retrieval/learned alternatives use different evidence; reused retrieval is not new. | None. | 1 | Keep. |
+| “Agentic, explanation-guided” | Prior agents have rich search/navigation; novelty question is evidence across resets. | Many systems in one paragraph, but comparison target is explicit. | 2 | Keep. |
+| “Memory and restart policies” | Existing systems reuse historical/task memory; this study tests within-investigation observations plus restart portfolio. | Large literature inventory requires attention but main boundary is clear. | 2 | Optional split historical memory from restart literature. |
+| “Ledger is the closest” | Closest predecessor retains execution state/history; this study adds a tested portfolio restart policy. | None. | 2 | Keep. |
+| “Diagnosis, execution evidence” | Formal diagnosis, runtime evidence and provenance are relevant but not implemented guarantees. | None. | 2 | Keep. |
+| “This work studies” | Inspectability alone does not establish practical significance. | None. | 1 | Keep. |
+| “Only restricted Agentless” | External comparisons are limited adaptations; most related systems are not reproduced. | None. | 1 | Keep. |
+
+## Algorithms, equation, tables, figure, listing and definitions
+
+These explanations record what I could tell a colleague after the source-order read. Inputs/outputs for descriptive objects mean the information they organize, not a claim that they execute.
+
+| Object | Plain-language inputs | Plain-language output | Purpose and reader difficulty |
+|---|---|---|---|
+| Listing: two-file illustration | Options dictionary passed through `handle` and `normalize`. | Boolean passed toward omitted rendering; false becomes true in the constructed expression. | Concrete separation of symptom and suspected faulty operation. 1/5; clear. |
+| Table: notation | Symbols used by later algorithms. | Dictionary of repository/report, pools/ledger/dialogues/cache, budgets, monitor quantities and distance. | Lets reader decode formulas. 2/5; no confusion, but `B` means report rather than budget, so repeated lookup is needed. |
+| Figure: investigation flow | Report/source, retrieved candidates, role proposals, permitted checks. | Observations, assessments and reconstructed next request through monitor/reset feedback. | Shows separation of execution and interpretation. 3/5: the dashed arrow is defined as clearing but appears as another input flow; label it “clear dialogue” on the arrow. |
+| Table: transformations | Report, source, paths, model proposals, predictions and retained records. | Behavioral fields, structure, neighborhood, hypotheses, probes, assessments and fresh requests. | Names T1–T7 and their data flow. 2/5; clear when used with prose. |
+| Algorithm: budgeted controller | Report, fixed repository/revision, model, configuration and budgets. | Rankings, records, cost, abstention, audit and stop reason. | Coordinates retrieval, calls, checks, monitoring, resets and final scoring. 3/5: many exceptional branches; valid-round prose clarifies but requires rereading. Mark which branches increment attempts versus valid rounds. |
+| Equation: D(h,h') | Mechanism word sets and first source paths for two hypotheses. | Number from zero to one: weighted word difference plus different-file bonus. | Encourages lexical/path variety rather than semantic independence. 2/5; empty sets yielding nonzero distance is explicitly explained. |
+| Algorithm: OrderProbes | Proposed probes, live hypothesis pool, handled logical IDs. | Unhandled probes sorted by heuristic utility then ID. | Spend checks on cheap, nominally distinguishing proposals first. 3/5: sum of distances and alternative count are two distinct proxies; add plain-language utility sentence directly before formula. |
+| Algorithm: SelectPortfolio | Scored hypotheses and maximum size k. | At most k hypotheses, greedily trading score against distance to already chosen records. | Supply alternatives to next call and bound retained pool. 2/5; clear, including empty-set convention. |
+| Algorithm: plateau decision | Recent valid-round samples, cumulative valid count, budgets/reserve and chosen thresholds. | Boolean reset request plus diagnostics. | Require readiness, affordability and low progress before restart. 3/5: nested conjunction/disjunction is dense; label readiness/expense/stagnation groups in return. |
+| Algorithm: reset | Scoped hypothesis pools, dialogues, ledger and monitor. | Pruned pools, cleared dialogues/window, unchanged observation IDs and future reconstructed request. | Defines precisely what is forgotten and kept. 2/5; caption “Evidence-preserving” is broader than ID preservation, so consider “Observation-ID-preserving reset.” |
+| Table: constructed reset | Synthetic four-round state and library defaults. | Each gate's arithmetic and pass/fail. | Demonstrates an actual reset decision without implying measurement. 1/5; clear. |
+| Algorithm: dependency neighborhood | Approximate system relations, ordered seed paths, hop cap. | Seeds followed by sorted reachable source paths within cap. | Expand lexical candidates through resolved relations in either direction. 2/5; clear but source placement is late relative to candidate construction. |
+| Table: defaults | Chosen configuration constants and source references. | Values governing ceilings, presentation, scores, ordering and resets. | Makes policy reproducible and shows heuristics are chosen. 3/5: many unrelated constant families; group rows by controller/presentation/reset/scoring. |
+| Table: variants | Fourteen names and policy changes. | Comparison purpose for each configuration. | Defines controls and ablations. 2/5; preceding prose is essential because short rows alone can imply isolated effects. |
+| Table: closest systems | Authors' summaries of cited methods. | Comparison of retained state, evidence, separation, restart study and output granularity. | Locate contribution without treating silence as absence. 2/5; clear but wide/dense; assessment is source readability, not rendered layout. |
+| Definition: localization / explanation | Repository candidates and a proposed failure mechanism. | Ordered locations versus explanation connecting operation and behavior. | Prevent patch-hit accuracy becoming causal proof. 1/5. |
+| Definition: hypothesis / observation / assessment | Candidate mechanism and predictions; check result; relation of result to expectation. | Three separately stored forms of information. | Central reasoning vocabulary. 1/5. |
+| Definition: evidence scope | Kind of permitted check. | Source-presence, static-structure or dynamic-prediction limit on support. | Prevent stronger conclusions than executed checks justify. 2/5. |
+| Definition: context / reset | Messages, role dialogues and external records. | Reset empties dialogues while preserving external observations. | Defines forgetting boundary. 1/5. |
+| Definition: record retention / view sufficiency / localization benefit | Before/after IDs, reconstructed input, measured rankings. | Distinct implementation property, semantic adequacy question and empirical outcome. | Avoid equating retained records with successful continuation. 2/5. |
+| Definition: access scope | Role and sharing configuration. | Which hypotheses/observations a role may see. | Separate permissions from evidence strength. 1/5. |
+| Definition: patch-proxy label / Top-k / reciprocal rank | Reference patch locations and ranked answers, with eligible labels. | Imperfect target set, first-k hit and inverse position of first hit. | Defines evaluation without equating patch changes with causes. 2/5. |
+| Definition: valid round | Accepted structured response that reaches monitor. | Increment of monitor's round count even if proposals are empty/rejected. | Distinguish attempted calls and progress samples. 2/5. |
+| Definition: hypothesis/probe/cache/observation identity | Path/mechanism/kind; parameters; physical check; source/procedure/result. | Different identifiers controlling merges, suppression, reuse and provenance. | Explain why fact reuse and interpretation restoration diverge. 3/5: collect a four-row identity table before suppression microtrace. |
+| Definition: diversity and monitor gain/repetition/cost | Live hypotheses, cache before round, newly accessible nonblocked observations and actual tokens. | Pairwise lexical distance, availability gain, repeated-proposal fraction and expense. | Trigger monitor without claiming causal progress. 2/5. |
+| Definition/property: retention invariant | Ledger IDs immediately before isolated reset. | Exactly equal ID set immediately afterward. | Narrow checkable preservation claim. 3/5 for full paragraph's alias/mutability detour; invariant itself 1/5. |
+| Definition: final file/symbol ranking | Retrieved order and live scored hypotheses/locations. | File list with fallback scores and separate deduplicated symbol list. | Produce localization answers, potentially disagreeing across granularities. 2/5. |
+| Definition: dynamic-support stop / causal abstention | Current-scope pre-pruning leader and dynamic IDs; separately all historical assessments. | Stop flag and separate run-level abstention flag. | Explicitly expose two unequal decision rules. 3/5: add a side-by-side two-row rule table and one pruned-leader example. |
+| Definition: recreation/suppression audit events | Ordered proposals, prior pruning, stored links, handled IDs, scope and artifacts. | Counts of reappearance, missing links and skipped logical requests; missing records unassessable. | Operationalize policy behavior without diagnosing cognitive failure. 3/5: distinguish probe ID from proposal ID consistently. |
+
+## Priority flags communicated during reading
+
+I reported the introductory RQ2 jargon and premature loss/suppression labels, the suppression explanation's interacting identities, the pre-pruning stopping rule, the audit paragraph's early clue/denominator assumptions, and the retention paragraph's alias/mutability detour promptly to the coordinating agent. Additional local >2 scores are recorded above so a smooth overall narrative cannot hide paragraph-level friction. The largest single obstacle is the first inference/audit paragraph (4/5), not absence of study results. No section is impossible to understand, and the running example substantially helps.
+
+## Five-sentence reader summary
+
+The problem is how a fault-localization agent can restart its conversation without losing useful observations or repeatedly trusting an unsupported explanation. The idea is to retain checked observations separately from dialogue and carry a small scored, lexically varied set of competing hypotheses into the next request. The approach retrieves Python source candidates, obtains sequential role proposals, executes permitted checks, assigns scoped heuristic support, detects stagnant windows, and resets while keeping observation IDs. The research questions compare ranking quality, inspect how policy components and misleading leads change continuation, and assess localization gains against computation and evidence-handling failures. The limits are a source-only prospective benchmark, imperfect patch labels, heuristic scores/diversity, possible lost interpretation links and suppressed reassessment, unbounded reconstructed observation views, and controls that compare packages rather than isolate typed formatting.

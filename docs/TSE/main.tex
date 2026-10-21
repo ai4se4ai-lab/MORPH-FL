@@ -1,0 +1,849 @@
+\RequirePackage[T1]{fontenc}
+\documentclass[letterpaper,journal]{IEEEtran}
+\usepackage{amsmath,amsfonts}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage{placeins}
+\usepackage{array}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{tikz}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+% Adapted from docs/tse-template.tex; all manuscript content is in this file.
+% Revised approach audited against support/mde_source_manifest.json.
+% Historical study/source snapshots remain in support/source_manifest.json.
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds}
+\newif\ifdraftresults
+\draftresultstrue % Change only after audited, complete results have been bound.
+\ifdraftresults
+  \newcommand{\resultslot}[1]{\textcolor{blue!65!black}{\textbf{[RESULT: #1]}}}
+  \newcommand{\res}[1]{\resultslot{#1}}
+  \newcommand{\resrange}[1]{\resultslot{#1}}
+  \newcommand{\claimslot}[1]{\resultslot{#1}}
+  \newcommand{\figslot}[1]{\resultslot{figure #1}}
+  \newcommand{\tabslot}[1]{\resultslot{table #1}}
+\else
+  \InputIfFileExists{generated/results.tex}{}{\PackageError{morph-results}{Missing audited results}{Final mode requires generated/results.tex}}
+  \newcommand{\boundresult}[1]{\ifcsname result@#1\endcsname\csname result@#1\endcsname\else\PackageError{morph-results}{Missing result key #1}{Supply audited binding}\fi}
+  \newcommand{\res}[1]{\boundresult{#1}}
+  \newcommand{\resrange}[1]{\boundresult{#1}}
+  \newcommand{\claimslot}[1]{\boundresult{#1}}
+  \newcommand{\figslot}[1]{\boundresult{#1}}
+  \newcommand{\tabslot}[1]{\boundresult{#1}}
+\fi
+\newcommand{\tool}{MORPH-FL}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,columns=fullflexible,frame=single,numbers=left,numberstyle=\tiny,xleftmargin=1em}
+\lstdefinestyle{transformationexample}{
+  language={},backgroundcolor=\color{black!5},
+  rulecolor=\color{black!20},frame=single,numbers=none,
+  basicstyle=\ttfamily\footnotesize,breaklines=true,
+  columns=fullflexible,keepspaces=true,showstringspaces=false,
+  xleftmargin=0pt,framexleftmargin=3pt,framexrightmargin=3pt,
+  aboveskip=7pt,belowskip=7pt,captionpos=b
+}
+
+\hyphenation{lo-cal-iza-tion ob-ser-va-tions}
+\begin{document}
+\raggedbottom % Avoid stretched paragraph gaps beside figures and algorithms.
+\title{MORPH-FL: Model-Driven Fault Localization with Evidence-Preserving Context Resets}
+\author{Author information to be supplied}
+\maketitle
+\begin{abstract}
+Large language model (LLM) agents localize faults by inspecting source code and refining candidate explanations. Their conversations mix observations, assumptions, and earlier decisions, making it difficult to decide what should survive a context reset. This paper presents \tool{}, a model-driven fault-localization approach that maintains behavioral, structural, hypothesis, and investigation models outside role conversations. Executable transformations ground proposed hypotheses in versioned source, materialize investigation probes, assess observations against predictions, and construct subsequent investigator contexts. This separates the results of checks from the explanations that motivated them. When recent rounds yield little new evidence and show repetition or limited hypothesis diversity, the controller selects a hypothesis portfolio and clears dialogue while preserving observation records and cumulative resource use. The next context is projected from the retained models. We specify the model schemas, transformation interfaces, and reset policy, trace a constructed example through their implementation, and define a controlled evaluation of accuracy, investigation behavior, and cost. The Python prototype uses dataclasses and imperative transformations; the source-only evaluation targets file and function rankings rather than runtime causal verification. Empirical findings are reserved for the completed evaluation.
+\end{abstract}
+\begin{IEEEkeywords}
+Fault localization, model-driven engineering, model transformation, large language models, context management.
+\end{IEEEkeywords}
+
+\section{Introduction}\label{sec:intro}
+Locating a fault from a bug report requires more than finding source code that resembles the report. The report describes an observed failure, whereas the responsible operation may occur earlier in the execution or in another module. An investigator must connect that description to candidate locations, examine the relevant code, and decide whether the available evidence supports the proposed explanation. For example, a feature that remains visible after being disabled may suggest a rendering error, although the fault lies in configuration code that replaces an explicit false value with a default.
+
+Large language models (LLMs) provide a basis for this form of investigation. Existing approaches use tools to navigate source code, generate explanations, and narrow the search to suspicious files or methods. AutoFL combines repository exploration with explainable method-level localization~\cite{autofl2024}, while Agentless uses successive localization stages before generating a repair~\cite{agentless2025}. Graph-based approaches expose structural relationships for navigation~\cite{locagent2025,arise2026}, and reasoning-guided approaches generate candidate-specific explanations before ranking locations~\cite{rgfl2026}. These studies motivate localization as an iterative process in which the investigator's next action depends on what it has already learned.
+
+An important design question concerns the state carried between these actions. A conversation records source observations, candidate explanations, and earlier decisions together. Keeping that conversation preserves the investigation history, but also carries its unverified assumptions into subsequent reasoning. Starting a new conversation changes those assumptions' immediate context, at the risk of losing useful observations and repeating earlier checks. The issue is therefore not simply whether to retain more or less history. It is \emph{what should survive a restart of the investigation}.
+
+Prior work establishes several relevant mechanisms. External memory can supply project knowledge and earlier debugging experience~\cite{memfl2025,repomem2026}. Ledger maintains coding-agent execution state separately from semantic reasoning and mediates repeated actions~\cite{ledger2026}. Search restarts have also been studied in automated discovery, where the next search can begin from the best scored candidate~\cite{forgetting2026}. Fault localization presents a different retention decision: the investigator may have several plausible explanations, and its current score does not establish which explanation is correct. Restarting from only the leading explanation may restrict the renewed investigation to the same line of reasoning. Retaining alternatives gives the next investigation additional directions to examine.
+
+We propose \tool{}, a fault-localization approach that retains \emph{observations and competing hypotheses} while resetting conversational history. A hypothesis specifies a candidate location, a proposed mechanism, and a predicted observation. For example, a hypothesis may identify a configuration function, propose that it replaces an explicit false value with a default, and predict that its return expression contains \code{or True}. That structural prediction can be checked without executing the application; reproducing the reported behavior would require an additional execution check. The system checks that prediction through an available source, structural, or registered execution procedure and records the result outside the conversation. When recent investigation rounds show little evidence gain and substantial repetition or limited hypothesis diversity, the controller clears the role conversations. It then constructs the next context from the report, recorded observations, and a small set of selected hypotheses. The central design choice is to preserve check results independently of the explanations that motivated them.
+
+Model-driven engineering (MDE) provides a way to make this retention decision operational: represent the investigation through explicit models and use transformations to construct and update the artifacts needed by the next activity. Model-to-model transformations relate source and target schemas and support automated analysis or manipulation~\cite{mtanalysis2017}. In \tool{}, four model families separate the report's behavioral interpretation, repository structure, competing hypotheses, and recorded investigations. Their transformations ground generated proposals in source, construct typed checks, update assessments, and project retained state into the next request. Models therefore drive candidate preparation, evidence assessment, and continuation rather than serving only as documentation. The scientific question concerns the contribution of this model-based investigation and reset policy, not the existence of an external store or a new transformation language.
+
+This design leads to three empirical questions: \textbf{RQ1:} How does the approach compare with other localization workflows? \textbf{RQ2:} How do model-based context construction, reset timing, and hypothesis retention affect investigation behavior? \textbf{RQ3:} What accuracy--cost tradeoffs do these policies produce? An evidence-only context provides a simple comparison for examining whether hypothesis retention and adaptive resets offer better rankings at their additional cost.
+
+The evaluation design compares \tool{} with continuous context, periodic resets, and an evidence-only baseline, alongside component ablations and restricted upstream localization adaptations. Reference-patch locations provide the evaluation targets; the current source-only protocol does not establish the correctness of a runtime causal explanation.
+
+This paper makes three contributions:
+\begin{itemize}
+\item A model-driven localization approach with four linked model families and executable transformations for source-grounded hypothesis construction, prediction assessment, and context reconstruction.
+\item An evidence-preserving reset policy that selects competing hypotheses and reconstructs investigator input from retained model state, together with a Python realization and an executable illustrative trace.
+\item A controlled evaluation design for comparing localization accuracy, reset behavior, and computational cost, including investigations that begin with a disclosed misleading lead.
+\end{itemize}
+Section~\ref{sec:background} introduces the localization task and running example. Section~\ref{sec:approach} presents the investigation procedure before detailing its models, transformations, and policies. Section~\ref{sec:related} positions these mechanisms against prior work, and Section~\ref{sec:study} defines the evaluation. Sections~\ref{sec:results}--\ref{sec:conclusion} distinguish the pending empirical findings from the design conclusions and validity limits.
+
+\section{Background and Motivating Example}\label{sec:background}
+A reset policy is useful only if the retained information supports the localization task. We first establish what that task observes and returns, then use a small example to distinguish explanations, check results, and the state needed for continuation.
+
+\subsection{Fault Localization from Bug Reports}\label{sec:problem}
+The input to report-based fault localization is a bug report and a repository snapshot preceding the fix. The output is a ranking of source locations that a developer should inspect. We consider two granularities: files, identified by repository-relative paths, and functions, identified by qualified names within those files. A localization result proposes \emph{where} to investigate; an explanation additionally proposes \emph{how} an operation could produce the reported failure.
+
+The available evidence depends on the investigation environment. Source inspection can establish that an expression occurs in a file. An abstract syntax tree (AST) query can establish that the file contains a particular syntactic structure. Execution procedures can record outcomes for selected inputs or tests. These observations answer different questions. In particular, finding an expression consistent with a fault hypothesis does not show that the reported execution reached that expression. \tool{} retains this distinction when it assesses predictions and reports the localization result.
+% datasets/contracts.py:10-50; investigation/executor.py:64-123; pipeline.py:112-157.
+
+We assume that the investigator can access the public report, the pre-fix source, and explicitly permitted procedures. Reference patches, evaluation labels, and post-fix test patches are excluded from the investigator's input. The reference patch is used only by the evaluator to identify changed production files and functions. These change locations are an imperfect approximation to fault locations: a fix can include edits beyond the cause of the failure.
+% datasets/contracts.py:30-50; datasets/labels.py:14-94.
+
+\subsection{Motivating Example}\label{sec:example}
+Listing~\ref{lst:example} shows a synthetic example used throughout the paper. A report states that setting \code{enabled} to false still displays a feature. The handler passes the normalized option to a rendering function. The fault is in \code{normalize}: the expression \code{options.get("enabled") or True} returns true when the supplied option is false. The rendering function is omitted because the example concerns the value passed to it.
+\begin{lstlisting}[float=t,language=Python,numbers=none,caption={Illustrative configuration fault in two Python files.},label={lst:example}]
+# config.py
+def normalize(options):
+    return {"enabled": options.get("enabled") or True}
+
+# handler.py
+from config import normalize
+def handle(options):
+    config = normalize(options)
+    return render(config["enabled"])
+\end{lstlisting}
+Source locations count lines separately within each file, excluding the file-name comments: the defaulting return is \code{config.py:2}, and the handler return is \code{handler.py:4}.
+
+An investigation can begin with two explanations. The first is the bypass hypothesis: the handler passes the raw option to rendering instead of using the normalized value. The second is the defaulting hypothesis: configuration handling replaces explicit false with a default. These explanations suggest different checks.
+
+To make the investigation concrete, suppose the first hypothesis predicts that the handler bypasses normalization and returns an expression containing the raw \code{options}; the second predicts a defaulting expression containing \code{or True}. Table~\ref{tab:example_checks} shows the two AST checks and their outcomes in this constructed source. The handler check contradicts the first prediction, whereas the configuration check supports the second. With the scoring rule defined in Section~\ref{sec:probes}, their scores become $-1$ and $1$, respectively. These scores order the explanations for further investigation; they do not reproduce the application failure.
+
+\begin{table}[t]
+\caption{Two illustrative checks on Listing~\ref{lst:example}; these are constructed examples, not benchmark observations.}\label{tab:example_checks}
+\centering\small\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{.20\columnwidth}p{.43\columnwidth}p{.10\columnwidth}p{.18\columnwidth}@{}}\toprule
+Hypothesis & AST query; expected result & Result & Assessment\\\midrule
+Handler bypasses normalization & Return contains \code{options}; expected true & False & Contradicts\\
+Default overrides false & Return contains \code{or True}; expected true & True & Supports\\
+\bottomrule\end{tabular}
+\end{table}
+
+Now suppose the investigator repeatedly inspects the same expressions without obtaining new observations. A context reset should not require it to rediscover those expressions. Nor should the restart be restricted to whichever explanation happened to lead the previous conversation. \tool{} retains the checked observations and selects a small set of alternative hypotheses. The next investigation receives the supported defaulting hypothesis and, when selected, the competing bypass hypothesis, together with both check results. This continuation illustrates the intended information flow; it is not a recorded benchmark run.
+
+\subsection{Investigation State}\label{sec:state}
+The example shows why an investigator must retain more than a single explanation or an undifferentiated conversation. To make the reset boundary precise, \tool{} separates hypotheses, observations, and dialogue, and records assessments linking hypotheses to observations. A \emph{hypothesis} identifies candidate locations, a proposed fault mechanism, predictions, and assumptions. An \emph{observation} records the result of a check, together with its procedure and source provenance. The \emph{conversation} contains the requests and responses through which a role develops its investigation. An \emph{assessment} is the link between an observation and a hypothesis: it states whether the checked prediction is supported, contradicted, or inconclusive.
+% domain/models.py:66-140; agents/sessions.py:47-72.
+
+For the defaulting hypothesis, the proposed mechanism is replacement of an explicit false value by a default. A prediction is that the return expression contains \code{or True}. The AST query result is an observation; interpreting its match as support for the prediction is an assessment. The observation remains a source fact even if the hypothesis is later rejected. Likewise, another role's agreement with the explanation does not create another observation.
+
+A \emph{role} is a model session with an investigation instruction, such as examining structure or challenging an explanation. Roles share hypotheses and observations by default. A role can therefore use another role's recorded check without adopting its conversation.
+
+A \emph{context reset} clears the role conversations and constructs new model input from retained state. Preserving the observation records is an implementation property. Whether the reconstructed context contains enough information for productive continuation, and whether the reset helps localization, are separate empirical questions. The planned evaluation targets localization accuracy and investigation behavior; it does not independently measure the semantic completeness of a reconstructed context.
+
+\subsection{Models and Transformations as Investigation State}\label{sec:mde_background}
+Keeping these records separate requires a representation that the controller can inspect and update independently of dialogue. Models provide that representation, while transformations connect one investigation activity to the next. A model represents selected aspects of a system or activity in an explicit structure. Its metamodel specifies admissible element types, fields, and relationships; transformation procedures construct or update model instances. Model-to-model transformation is useful when a later activity needs a different representation of the same problem. For example, model-driven performance evaluation maps software architecture descriptions into analysis models and relates predicted metrics back to design decisions~\cite{performance2011}. The contribution depends on what the representations enable and which properties the mappings preserve.
+
+Here the modeled activity is a fault investigation. A source model describes the repository; a hypothesis model describes a proposed explanation; an investigation model records the planned check and its outcome. These models need different status and lifetime rules. A source relation derived by analysis should not acquire the same meaning as a reported behavior or an LLM-generated causal edge. Likewise, transforming an explanation into a probe does not make the explanation observed. The approach below specifies these distinctions using executable Python schemas and transformation interfaces, then uses them to control continuation and forgetting.
+
+\section{The MORPH-FL Approach}\label{sec:approach}
+\subsection{Overview}\label{sec:controller}
+\tool{} takes a bug report and a pre-fix repository and returns ranked fault locations with supporting observations. It organizes the investigation through linked models of reported behavior, source structure, candidate explanations, and check results. Investigators propose explanations, inspect relevant code, and use observations to revise their candidates. When progress stalls, the approach starts a fresh conversation from retained observations and selected competing explanations. This allows the investigation to reconsider its direction while keeping the evidence already obtained. Figure~\ref{fig:flow} summarizes this preparation, investigation, and continuation cycle.
+
+For the running example in Section~\ref{sec:example}, the investigation considers whether the handler bypasses normalization or the normalization function replaces an explicit false value with a default. Checks of the two source files contradict the bypass prediction and support the defaulting prediction. If repeated investigation stops producing new observations, a reset retains these check results and the selected explanations while clearing the earlier dialogue. The renewed investigation can then reconsider the candidates using the recorded evidence, which favors the configuration function. This constructed example illustrates how the approach carries progress across a reset.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[x=1mm,y=1mm,font=\scriptsize,
+ process/.style={draw=black!65,rounded corners=.8mm,fill=black!3,align=center,text width=27mm,minimum height=16mm,inner sep=1mm},
+ arrow/.style={-{Stealth[length=1.6mm]},semithick,draw=black!75},
+ control/.style={arrow,dashed},
+ lab/.style={font=\scriptsize,fill=white,inner sep=1pt},
+ icon/.style={draw=black!75,line width=.5pt,line cap=round,line join=round}]
+% Artifacts use small, original vector pictograms rather than process boxes.
+\begin{scope}[shift={(10,23)},icon]
+ \draw[fill=white] (-3,-3)--(-3,4)--(1,4)--(3,2)--(3,-3)--cycle;
+ \draw (1,4)--(1,2)--(3,2); \draw (-1.8,1)--(.5,1) (-1.8,-.4)--(1.8,-.4) (-1.8,-1.8)--(1,-1.8);
+\end{scope}
+\node[anchor=west,align=left] at (15,23) {Bug report};
+\begin{scope}[shift={(10,12)},icon]
+ \draw[fill=white] (-4,-2.5)--(-4,3)--(-1,3)--(0,1.7)--(4,1.7)--(4,-2.5)--cycle;
+ \node[font=\tiny] at (0,-.4) {$\langle/\rangle$};
+\end{scope}
+\node[anchor=west,align=left] at (15,12) {Pre-fix source};
+\node[anchor=west,font=\small\bfseries] at (59,23) {MORPH-FL};
+\node[anchor=west] at (59,17) {Investigate, record evidence, and renew context};
+\node[process] (retrieve) at (17,-5) {\textbf{1 Model preparation}\\T1: behavior; T2: source\\T3: candidate expansion};
+\node[process] (context) at (51,-5) {\textbf{2 Context construction}\\T7: model-to-view\\Add source and dialogue};
+\node[process] (investigate) at (85,-5) {\textbf{3 Hypothesis generation}\\T4/T5: hypothesis + probe\\Ground locations in M2};
+\node[process] (checks) at (119,-5) {\textbf{4 Check selection}\\Order M4 probes\\Discrimination and cost};
+\node[process] (assess) at (153,-5) {\textbf{5 Check and assess}\\Execute or reuse (M4)\\T6: update M3 and M4};
+\draw (7,20)--(-2,20)--(-2,5)--(10,5);
+\draw[arrow] (10,8)--(10,3);
+\draw[arrow] (retrieve)--(context);
+\draw[arrow] (context)--(investigate);
+\draw[arrow] (investigate)--(checks);
+\draw[arrow] (checks)--(assess);
+% Investigation state: model families and role dialogue have distinct lifetimes.
+\node[draw=black!50,rounded corners=.8mm,fill=black!1,minimum width=132mm,minimum height=24mm] (state) at (68,-36) {};
+\node[anchor=west,font=\scriptsize\bfseries] at (3,-27) {Model state and role dialogue};
+\node[align=center,text width=28mm] at (17,-38) {\textbf{M1: behavior}\\\textbf{M2: source structure}\\\emph{retained at reset}};
+\node[align=center,text width=28mm] at (85,-38) {\textbf{M3: hypotheses $H$}\\Predictions + scores\\\emph{portfolio retained}};
+\node[align=center,text width=28mm] at (119,-38) {\textbf{M4: investigations}\\Observations $E$ + provenance\\\emph{observations retained}};
+\draw[black!20] (34,-31)--(34,-45) (68,-31)--(68,-45) (102,-31)--(102,-45);
+% Dialogue is an artifact, not an additional model family.
+\begin{scope}[shift={(51,-32)},icon]
+ \draw[fill=white] (-3,1.8)--(3,1.8)--(3,-.8)--(0,-.8)--(-1.5,-2)--(-1.5,-.8)--(-3,-.8)--cycle;
+ \draw (-2,.6)--(2,.6);
+\end{scope}
+\node[align=center,text width=28mm] (dialogue) at (51,-41) {\textbf{Role dialogue $A$}\\\emph{cleared at reset}};
+\draw[arrow] (17,-24)--(17,-17)--node[lab,below]{model view}(42,-17)--(42,-13);
+\draw[arrow] (47,-24)--node[lab,left,pos=.25]{history}(47,-13);
+\draw[arrow] (investigate.south west)--(70.5,-20)--node[lab,above]{append exchange}(57,-20)--(57,-24);
+\draw[arrow] (investigate.south)--node[lab,right]{revise}(85,-24);
+\draw[arrow] (assess.south west)--(138.5,-18)--node[lab,above]{record}(117,-18)--(117,-24);
+\node[process] (monitor) at (153,-36) {\textbf{6 Progress monitor}\\Gain, repetition, diversity\\Remaining budget};
+\draw[control] (assess.south)--node[lab,right]{statistics}(monitor.north);
+% Return paths occupy reserved outer corridors and never traverse a component.
+\draw[control] (monitor.east)--(174,-36)--(174,9)--node[lab,above]{continue}(51,9)--(context.north);
+\node[process,text width=43mm] (reset) at (85,-65) {\textbf{7 Context reset}\\Select M3 portfolio; clear dialogue\\Preserve observations and budget use};
+\draw[control] (monitor.south west)--(138.5,-65)--node[lab,above]{stagnating + affordable}(reset.east);
+\draw[control] (reset.north)--node[lab,right]{select portfolio}(85,-48);
+\draw[control] (reset.north west)--(51,-57)--node[lab,left]{clear}(51,-48);
+\draw[control] (reset.west)--(0,-65)--(0,-15)--(38,-15)--(38,-13);
+\node[lab,rotate=90] at (0,-55) {rebuild context};
+\node[process] (output) at (153,-85) {\textbf{8 Localization output}\\Rank files and functions\\Attach observations};
+\draw[control] (monitor.south)--node[lab,right,pos=.68]{stop}(output.north);
+% Ranked-result document, separate from the ranking component.
+\begin{scope}[shift={(113,-85)},icon]
+ \draw[fill=white] (-4,-4)--(-4,4)--(2,4)--(4,2)--(4,-4)--cycle;
+ \draw (2,4)--(2,2)--(4,2);
+ \foreach \y in {1, -1, -3} {\draw (-1.5,\y)--(2,\y);}
+ \node[font=\tiny] at (-2.6,1) {1};\node[font=\tiny] at (-2.6,-1) {2};\node[font=\tiny] at (-2.6,-3) {3};
+\end{scope}
+\draw[arrow] (output.west)--(119,-85);
+\node[align=center] at (85,-85) {Ranked locations\\and supporting records};
+\draw[arrow] (2,-99)--(10,-99);\node[anchor=west] at (12,-99) {information flow};
+\draw[control] (52,-99)--(60,-99);\node[anchor=west] at (62,-99) {control / reset};
+\node[anchor=east] at (174,-99) {Budget remains cumulative across resets.};
+\end{tikzpicture}
+\caption{Overview of \tool{}. Numbered boxes denote approach components; document and folder icons denote input and output artifacts. The state panel distinguishes model families M1--M4 from role dialogue $A$. Context construction reads the dialogue, hypothesis generation appends accepted request--response exchanges, and reset explicitly clears it. T1--T7 denote extraction, model transformation, query, and view-construction stages (Table~\ref{tab:transformations}). Solid arrows show information flow; dashed arrows show continuation, reset, and termination. Reset preserves M1/M2 and all observations, selects an M3 portfolio, and clears dialogue; T7 constructs the next context. On termination, component~8 ranks locations using accumulated hypothesis scores and the candidate ranking.}\label{fig:flow}
+\end{figure*}
+
+\subsection{The Investigation Procedure}\label{sec:procedure}
+The investigation must coordinate source preparation, proposed explanations, and check results before deciding whether to continue or reset. Algorithm~\ref{alg:controller} shows that overall order; the following subsections explain the state and operations it uses.
+
+\begin{algorithm}[t]
+\caption{Model-driven fault investigation (shared pool)}\label{alg:controller}
+\begin{algorithmic}[1]\small
+\Require Report $r$, repository $R$ at revision $v$, budget $B$, attempt limit $n_{max}$
+\Ensure Ranked locations, observations, and assessments
+\State $s\gets\textsc{ExtractSystem}(R,v)$ \Comment{T2}
+\State $b\gets\textsc{ExtractBehavior}(r,\emptyset)$ \Comment{T1}
+\State $(C,L)\gets\textsc{RetrieveCandidates}(r,s)$ \Comment{T3 + retrieval}
+\State Initialize $H,E,J,A,M$
+\For{$t\gets1$ to $n_{max}$}
+  \If{$\textsc{Stop}(H,E,B)$} \State \textbf{break} \EndIf
+  \State $role\gets\textsc{NextRole}(t)$
+  \State $x\gets\textsc{BuildContext}(b,s,C,H,E,B,role)$ \Comment{T7}
+  \State $(z,A)\gets\textsc{Investigate}(x,A,B)$
+  \If{$z=\bot$} \State \textbf{continue} \EndIf
+  \State $b\gets\textsc{ExtractBehavior}(r,z)$ \Comment{T1 refresh}
+  \State $(H,P)\gets\textsc{Materialize}(z,s,H)$ \Comment{T4/T5}
+  \State $P\gets\textsc{OrderChecks}(P,H)$
+  \State $(H,E,J)\gets\textsc{AssessChecks}(P,H,E,J,B)$ \Comment{T6}
+  \State $M\gets\textsc{MonitorProgress}(M,H,E,P,B)$
+  \If{$\textsc{ShouldReset}(M,B)$}
+    \State $(H,A,M)\gets\textsc{ResetContext}(H,E,A,M)$
+  \EndIf
+\EndFor
+\State \Return $\textsc{RankLocations}(L,H),E,J$
+\end{algorithmic}
+\end{algorithm}
+\FloatBarrier % Present the procedure before its explanatory walkthrough.
+
+
+Algorithm~\ref{alg:controller} takes the report, the repository at a fixed revision, and limits on investigation resources and attempts. It produces ranked candidate locations together with the observations and assessments used during investigation. The labels T1--T7 identify operations whose model representations and construction rules are detailed in Sections~\ref{sec:metamodels} and~\ref{sec:transformations}.
+
+Algorithm~\ref{alg:controller} begins by preparing the investigation (lines 1--4). It extracts source structure from the repository and records the report's behavioral information, then combines textual retrieval with source relationships to select candidate files. Here $R$ is the repository, $s$ its extracted structure, $r$ the report, and $b$ its behavioral interpretation. The bounded pool $C$ supplies files for investigation; the full lexical ranking $L$ remains available for the final ranking. The controller also initializes hypotheses $H$, observations $E$, assessments $J$, role dialogues $A$, and progress history $M$.
+
+The loop in Algorithm~\ref{alg:controller} alternates explanation and checking (lines 5--18). A role receives the report interpretation, relevant source, current explanations, recorded observations, and remaining budget. Roles cycle through behavioral, skeptical, structural, and dynamic perspectives, with separate dialogues. The role proposes explanations and checks of their predictions. The controller validates each proposal against the source, orders the planned checks, obtains their results, and assesses whether those results support or contradict the corresponding predictions. A rejected response, denoted by $\bot$, does not update the models but still consumes its attempt and charged tokens. For an accepted response, invalid individual proposals are skipped. Thus generation suggests what to investigate, while source grounding and recorded check results determine what enters the retained investigation state.
+
+For the running example, preparation connects \code{handler.py} with \code{config.py}. An investigator may propose that the handler bypasses normalization or that normalization replaces false with a default. The handler query finds no return expression containing \code{options}; the normalization query finds a return expression containing \code{or True}. These results contradict the bypass prediction and support the defaulting prediction. Later roles receive these results when considering what to check next; the explanations remain distinct from the observations that bear on them.
+
+After each accepted round, the controller measures progress and decides whether to reset (lines 19--22). If recent rounds yield little new evidence and show repetition or limited hypothesis diversity, it selects competing hypotheses, clears role dialogue and the recent progress window, and preserves observations and cumulative resource use. The next iteration constructs a fresh input from the retained state. In the example, renewed investigation can therefore begin with the defaulting explanation, an alternative bypass explanation when retained, and both recorded check results. A reset neither reruns those checks nor replenishes the budget. When a stopping condition or the attempt limit is reached, Algorithm~\ref{alg:controller} ranks locations using hypothesis scores and the lexical fallback (line 24).
+
+The remainder of the Approach explains the state and operations underlying Algorithm~\ref{alg:controller}. Section~\ref{sec:metamodels} defines the four model families, and Section~\ref{sec:transformations} explains how T1--T7 construct and connect them. Sections~\ref{sec:candidates}--\ref{sec:output} then develop candidate selection, assessment, investigation ordering, reset, and output decisions. Physical-check caching and role-specific observation scopes are specified in Section~\ref{app:implementation}.
+
+\subsection{Executable Models and Their Responsibilities}\label{sec:metamodels}
+Continuing the investigation after a reset requires a record of what was reported, what was checked, and which explanations remain under consideration. These kinds of information have different meanings and lifetimes. We first define the models that keep them distinct and make them available to later investigation steps.
+
+We use four model families, summarized in Table~\ref{tab:models}: behavioral information (M1), repository structure (M2), fault hypotheses (M3), and investigations and observations (M4). These are complementary views of one investigation; their numbering identifies responsibilities rather than metamodeling levels. Their schemas form a lightweight, implementation-level metamodel: named object types, fields, links, and validation procedures implemented in Python. Section~\ref{app:implementation} identifies the realization and its limits.
+
+\emph{M1: interpreting the report.} The behavioral model retains the original report and optional trigger, expected behavior, reported behavior, invariants, and ambiguities. These fields organize the investigation's understanding of the failure. They remain conjectural: an LLM's extraction of expected behavior is not an execution observation, and the natural-language invariants are not executable constraints. Initially only the report is available. Accepted investigator responses replace the scoped behavioral model's extracted fields, which then inform later requests.
+
+After an accepted interpretation in the running example, M1 records the trigger as an explicitly false \code{enabled} option, the expected behavior as a disabled feature, and the reported behavior as a feature that remains displayed. A candidate invariant is that an explicit false option should be preserved. This gives each investigator a common statement of the discrepancy to explain, while leaving open whether the handler or configuration logic is responsible. Retaining M1 across a reset preserves the investigation's task and current behavioral interpretation.
+
+\emph{M2: grounding the investigation in source.} The system model contains the fixed revision's production Python sources, symbols, relations, and analysis diagnostics. A source location records a path, line range, revision, content digest, and optional qualified symbol. Relations identify imports, calls, reads, writes, and local definition--use links. Relations are extracted from syntax; resolvable call targets are marked \code{syntactic}, while unresolved calls remain explicitly \code{unresolved}. M2 supports candidate expansion and the validation of locations in later hypothesis proposals. It is constructed once per run and survives conversation resets.
+
+For the same example, M2 contains the \code{handle} and \code{normalize} symbols and the import and call relationships connecting \code{handler.py} to \code{config.py}. Each location carries the inspected revision and source digest. The call relationship lets candidate expansion reach configuration handling from the symptom-related handler; the symbol information grounds a proposed location in \code{normalize}. Thus M2 provides both a route to a less obvious candidate and a source reference against which the investigator's proposal can be checked.
+
+\emph{M3: representing explanations that can be checked.} Each fault hypothesis contains source locations, a mechanism, predictions, assumptions, optional conjectured causal edges, support and contradiction references, and a heuristic score. A prediction records a description, a predicate, an expected value, and assumptions. This structure connects a proposed explanation to an assessable question. The current implementation grounds the proposal in one source location and can merge additional locations or predictions into an existing hypothesis. Accepted hypotheses and generated causal edges remain conjectural after source or AST support.
+
+M3 can hold two competing explanations for this behavior. The bypass hypothesis points to \code{handler.py} and predicts a return expression containing the raw \code{options}; the defaulting hypothesis points to \code{config.py} and predicts a return expression containing \code{or True}. Each explanation therefore identifies both where to look and what to check. Keeping these entries separate lets an observation challenge one prediction without discarding the other explanation. The retained portfolio can carry both into a fresh conversation, together with their current assessments.
+
+\emph{M4: separating investigation from interpretation.} A probe associates a hypothesis and prediction with a procedure kind and parameters. An observation records the procedure outcome, source location, provenance, and artifact digest. An assessment links an observation to a hypothesis with a verdict and evidential scope. Budget records track resources independently of dialogue. Thus a hypothesis can be revised or pruned without deleting the observation that prompted its assessment. M4 includes transient probe proposals as well as persistent observations and assessment records; it does not assign every investigation object the same lifetime.
+
+For the defaulting hypothesis, M4 contains an AST probe asking whether \code{config.py} has a return expression containing \code{or True}, with an expected result of true. Execution records a matching expression and its procedure and source provenance; the assessment links that observation to support for the prediction, with static-structure scope. The handler probe instead returns false and contradicts the bypass prediction. Keeping these results independently of the hypotheses makes them available for reuse and post-reset comparison, even when the earlier discussion is removed. These are the constructed checks in Table~\ref{tab:example_checks}, not observations from a benchmark run.
+
+The links between these families make the models useful to the controller. Hypothesis locations refer to the same versioned source represented by M2; probes identify their hypotheses; assessment records identify both the hypothesis and observation. When constructing a request, the implementation checks that retained support and contradiction references resolve to accessible observations. These checks make selected structural and traceability constraints executable. They do not constitute a complete conformance checker or establish that the natural-language mechanism is consistent with every source path.
+
+\begin{table*}[t]
+\caption{Model families that drive investigation. Type names identify the implemented schemas; M1--M4 denote domain views, not OMG metalevels.}\label{tab:models}
+\centering\small\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.15\textwidth}>{\raggedright\arraybackslash}p{.26\textwidth}>{\raggedright\arraybackslash}p{.29\textwidth}>{\raggedright\arraybackslash}p{.23\textwidth}@{}}\toprule
+Family & Principal types and content & Role in the approach & Lifetime and status\\\midrule
+M1: behavior & \code{BehavioralModel}: report, trigger, expected/reported behavior, invariants, ambiguities & Makes the current interpretation of the report available when constructing investigator context & Latest accepted extraction; conjectural; retained at reset\\
+M2: structure & \code{SystemModel}, \code{Relation}, \code{SourceLocation}: source snapshot, symbols, dependencies, diagnostics & Expands retrieved candidates and grounds proposed file/line/symbol locations & Fixed per revision/run; relations derived; resolution explicit\\
+M3: hypotheses & \code{FaultHypothesis}, \code{Prediction}: mechanism, predicate, expected value, score, observation references & Defines explanations, orders candidates, and supplies the retained portfolio & Updated during investigation; selected at reset; conjectural\\
+M4: investigation & \code{Probe}, \code{Evidence}, \code{Assessment}, \code{Budget}: planned checks, results, verdicts, provenance, resource use & Executes checks, separates results from assessments, and supports reconstruction and monitoring & Probe proposals are transient; observations, global assessments, and incurred costs survive reset\\
+\bottomrule\end{tabular}
+\end{table*}
+
+\subsection{Transformations Connecting the Models}\label{sec:transformations}
+
+The model families define what the investigation retains, but they also need to guide its next actions. Transformations connect these representations by grounding proposals, constructing checks, assessing outcomes, and assembling investigator input. Building on the procedure in Algorithm~\ref{alg:controller}, this subsection explains how each operation constructs or updates the investigation state.
+
+Seven named stages connect these models to the investigation loop (Table~\ref{tab:transformations}). The stages have different inputs and outputs: T1/T2 extract models from external artifacts; T4 materializes an investigator proposal against the system model; T5 maps a hypothesis and proposed procedure into an investigation model; T6 updates a hypothesis from an observation and creates an assessment. T3 is a structural query/projection, and T7 constructs a role-specific model view. We distinguish these operations rather than calling the entire pipeline a sequence of homogeneous model-to-model transformations.
+
+The following steps specify each transformation's input, construction rules, and output. Listings~\ref{lst:transform-preparation}--\ref{lst:transform-context} trace those rules on the two files in Listing~\ref{lst:example}. Each box shows the input, the transformation's action, and its result in plain language. The examples are illustrative rather than measured investigator responses; the surrounding prose specifies the implementation details. The illustrative source revision is named \code{illustration}; file-local line numbers follow Section~\ref{sec:example}.
+
+\emph{Preparation: T1--T3.} Before proposing explanations, the investigator needs a shared account of the reported discrepancy and a bounded set of source locations to inspect. T1 constructs an M1 object with the original report as its mandatory field. With no extraction, the trigger, expected behavior, and observed behavior remain unset. When an accepted response supplies extracted fields, T1 copies string-valued \code{trigger}, \code{expected}, and \code{observed} fields, and retains string entries from the \code{invariants} and \code{ambiguities} lists. If expected or observed behavior is absent, it adds an ambiguity stating that these behaviors have not been independently established. Each refresh constructs a replacement behavioral object for the current investigation scope; it does not accumulate earlier extracted fields or execute the stated invariants. Thus ``materialization'' here means constructing a typed record from the report and accepted fields, rather than automatically deriving a behavioral specification. Algorithm~\ref{alg:controller} calls T1 in \textsc{ExtractBehavior} both before investigation and after an accepted response.
+
+T2 constructs M2 from a source snapshot at revision $v$. It enumerates eligible Python files, excluding test and environment directories, test-prefixed files, and symbolic links. For each file, it stores the relative path and source text and computes the text's SHA-256 digest. Parsing with Python's \code{ast.parse} yields a syntax tree; traversal creates class/function symbols with qualified names and start/end lines. Further traversal records import aliases, calls, name reads/writes, and local definition--use links. A call to a top-level definition or an explicit import alias receives a syntactic target; other calls retain an unresolved target. Syntax errors become diagnostics rather than invented structure. For example, \code{from config import normalize} allows the call in \code{handle} to target \code{config.py::normalize}; \code{render} remains unresolved. T2 does not execute these functions or resolve arbitrary dynamic dispatch. Its output supplies \textsc{ExtractSystem} in Algorithm~\ref{alg:controller}.
+
+T3 takes M2 and retrieval seed paths. Starting from the seeds, each hop scans resolved relations and adds both endpoint files whenever either endpoint's file is already reached. The next hop uses the expanded set; unresolved relations are skipped. The result contains the original seeds followed by sorted newly reached paths that exist in M2. The controller combines this neighborhood with BM25 order and bounds the final candidate pool in \textsc{RetrieveCandidates}. In the example, starting from \code{handler.py} reaches \code{config.py} through the import/call relation. Despite the implementation name \code{compose_slice}, the output is a list of candidate paths, with no semantic-slicing guarantee.
+
+\begin{lstlisting}[style=transformationexample,float=tbp,caption={From a report and source files to behavioral information and candidate locations (T1--T3).},label={lst:transform-preparation}]
+Report:
+  "Setting enabled to false still displays the feature."
+
+T1 -- Organize the report interpretation (M1).
+  Given an investigator's interpretation, record:
+  expected: feature disabled
+  reported: feature still displayed
+
+T2 -- Extract source structure (M2).
+  Read the two Python files and record:
+  handle in handler.py calls normalize in config.py.
+
+T3 -- Find connected candidate files.
+  Start with handler.py; follow its link to config.py.
+  Result: investigate both files.
+\end{lstlisting}
+
+\emph{Proposal and grounding: T4.} A generated explanation needs a source location and a prediction before it can guide a check. The investigator supplies a mechanism, prediction, and probe parameters in one response; T4 turns each admissible proposal into M3 and invokes T5 for its probe. T4 first requires the proposed path to be a key in M2's source map and the mechanism to be a nonempty string. Probe parameters must be an object, and their path, if supplied, must equal the hypothesis path. The proposed line is converted to an integer (default 1) and checked against the number of lines in that file. The controller separately requires the file to have appeared in the current request; the line need not fall inside the displayed excerpt.
+
+T4 then builds a source location from the path, line, M2 revision, and SHA-256 digest of M2's stored file text. Among M2 symbols whose intervals contain the line, it chooses the one with the shortest interval; if none exists, the symbol is empty. This is the ``narrowest containing symbol'': for \code{config.py:2} it is \code{normalize}. A structured prediction supplies a nonempty description, a predicate (default \code{source_contains}), an expected value (default true), and assumptions; a nonempty string is also accepted as a prediction description with schema defaults. These checks validate the prediction's representation, not its truth or semantic entailment by M2. A stable hypothesis identifier is derived from the path, case-folded mechanism, and investigation kind. Proposed causal edges are copied with status \code{conjectured}, regardless of any generated certainty claim. The result is an M3 hypothesis with source provenance, prediction links, and an initially zero score. In Algorithm~\ref{alg:controller}, \textsc{Materialize} applies T4/T5 and merges accepted entries with the live pool, skipping invalid entries.
+
+\begin{lstlisting}[style=transformationexample,float=tbp,caption={From a proposed explanation to a source-grounded hypothesis (T4).},label={lst:transform-grounding}]
+Input -- Investigator's proposal:
+  "normalize replaces an explicit false with true."
+  Location: config.py, line 2.
+  Prediction: the return expression contains "or True".
+
+T4 -- Check and attach the source location:
+  Does config.py exist? Yes.
+  Does line 2 exist? Yes; it belongs to normalize.
+  Are an explanation and a prediction supplied? Yes.
+
+Output -- Hypothesis (M3):
+  Explanation linked to normalize at config.py:2,
+  with its prediction and the source version recorded.
+  The explanation is still unverified.
+\end{lstlisting}
+
+\emph{Probe construction and ordering: T5.} Grounding an explanation identifies where to investigate, but a separate plan must state which check to perform. T5 maps each M3 hypothesis and its investigator-supplied procedure parameters into an M4 probe. It accepts only \code{source_quote}, \code{ast_query}, \code{test}, \code{trace}, or \code{counterfactual}, using \code{source_quote} when kind is omitted. It copies the parameters, links the hypothesis ID and first prediction, and derives a logical probe ID from the hypothesis ID, kind, and parameters. The executor later validates kind-specific parameters: for example, an AST query must be an object with an allowed node type, and a source quote must be nonempty. Dynamic checks require a registered isolated procedure. T5 therefore constructs a check record from a proposed procedure; it does not synthesize executable tests from a mechanism alone.
+
+When several checks are proposed, the controller needs a priority rule that distinguishes inexpensive inspection from execution-based procedures. T5 supplies two ordering inputs: estimated cost $c(p)$ and reliability weight $q(p)$, assigned by a fixed lookup on probe kind:
+\begin{equation}\label{eq:probe-weights}
+\begin{aligned}
+c(p)&=\begin{cases}1,&\text{source quote or AST query},\\30,&\text{test, trace, or counterfactual},\end{cases}\\
+q(p)&=\begin{cases}0.9,&\text{source quote},\\0.7,&\text{all other allowed kinds}.\end{cases}
+\end{aligned}
+\end{equation}
+These are chosen dimensionless ordering parameters, not costs measured from execution or reliability probabilities estimated from data. The cost lookup penalizes execution-based checks relative to static inspection; the reliability lookup gives exact source matching a higher ordering weight. Neither weight establishes that a checked mechanism causes the failure. Actual model tokens and elapsed execution time are accounted for separately. Reliability $q(p)$ is also distinct from the evidence weight used by T6 to update hypothesis scores.
+
+Algorithm~\ref{alg:utility}'s \textsc{OrderChecks}, invoked after \textsc{Materialize} in Algorithm~\ref{alg:controller}, uses these fields to compute
+\begin{equation}\label{eq:probe-utility-approach}
+u(p,H)=\frac{q(p)\left[\max(1,a(p))+\sum_{h'\in H\setminus\{h_p\}}D(h_p,h')\right]}{\max(0.001,c(p))},
+\end{equation}
+where $h_p$ is the probe's hypothesis and $a(p)$ counts its distinct recorded alternatives. As proposals are processed, the controller records other live hypotheses having a prediction with a different predicate or expected value. Thus the two example probes, both predicting \code{ast_matches=true}, have $a(p)=0$; their different mechanisms still contribute to the dissimilarity term. The dissimilarity $D$ combines mechanism-term Jaccard distance (weight 0.6) and different-file membership (weight 0.4), as specified in Eq.~\ref{eq:distance}. Handled probe IDs are removed and the others are sorted by decreasing utility, breaking ties by increasing ID. This makes the connection between T5's mapping and the controller's next action explicit.
+
+\begin{lstlisting}[style=transformationexample,float=tbp,caption={From a hypothesis and a proposed check to an investigation plan (T5). Algorithm~\ref{alg:utility} then orders the planned checks.},label={lst:transform-ordering}]
+Input -- Explanation and proposed check:
+  Explanation: normalize replaces false with true.
+  Proposed check: inspect the return in config.py
+                  for the expression "or True".
+
+T5 -- Create an investigation plan (M4):
+  Kind: AST inspection.
+  Question: does the return contain "or True"?
+  Expected answer: yes.
+  Ordering weights: cost 1; reliability 0.7.
+
+Next -- Order the planned checks:
+  With other ordering factors equal, prefer this
+  low-cost inspection to an execution-based check.
+  Creating the plan has not yet answered the question.
+\end{lstlisting}
+
+\emph{Execution and assessment: T6.} A check plan expresses an expectation; the next step must obtain an observation and compare it with that expectation. \textsc{AssessChecks} in Algorithm~\ref{alg:controller} first obtains an M4 observation through execution or cache reuse, then invokes T6. For an AST query, the executor parses the selected file and searches nodes of the allowed type whose unparsed text contains the optional query string. The query ranges over the file; its location line anchors provenance rather than restricting the search to that line. In the example, the handler's return contains \code{config} rather than \code{options}, so the bypass query returns \code{matched=false}; the normalization return contains \code{or True}, so the defaulting query returns \code{matched=true}. The executor stores the result and procedure as an artifact with a digest and records the source revision, path, and digest. Obtaining this result from source or execution is an interaction with an external artifact, distinct from transforming a hypothesis into another model.
+
+T6 extracts the observed value appropriate to the declared predicate---for \code{ast_matches}, the observation's \code{matched} field---and compares it with the prediction's expected value. Equality means support; inequality means contradiction. A missing value, blocked/timed-out procedure, or unsupported predicate/result combination is inconclusive. T6 links the observation to the hypothesis's support or contradiction list and emits a hypothesis--observation assessment. Its signed score increment is $+w$ for support, $-w$ for contradiction, and zero for inconclusive results. The evidence weight is $w=0.25$ for a source-presence assessment, $w=1$ for other AST assessments, and $w=2$ for other assessed observations. Thus the example's AST predictions receive $-1$ and $+1$, independently of their common ordering reliability 0.7. Static support establishes the checked structure, leaving the causal explanation unverified. The assessment links are hypothesis--observation links; recovering the exact prediction can also require the recorded proposal and probe.
+
+\begin{lstlisting}[style=transformationexample,float=tbp,caption={From recorded check results to hypothesis assessments (T6).},label={lst:transform-assessment}]
+Check the defaulting explanation:
+  Expected: config.py returns an "or True" expression.
+  Observed in normalize:
+    options.get("enabled") or True
+  T6: the result supports the prediction.
+      Hypothesis score changes from 0 to +1.
+
+Check the competing bypass explanation:
+  Expected: the handler returns the raw "options".
+  Observed: return render(config["enabled"])
+  T6: the result contradicts the prediction.
+      Hypothesis score changes from 0 to -1.
+
+Retain both check results as observations (M4).
+They establish source structure; the cause remains
+an explanation to investigate.
+\end{lstlisting}
+
+\emph{Continuation and reconstruction: T7.} The next investigator needs the retained findings in a usable request, whether or not a reset occurred. T7 receives M1, the selected M3 hypotheses, accessible M4 observations, remaining tokens, and the next role. It validates each hypothesis's observation references and constructs a dictionary with candidate locations, mechanisms explicitly labeled unverified, predictions, causal edges, and observation IDs. Support is split into static-source observations and observations from dynamic procedure kinds; contradictions are exposed separately. Predictions without dynamic support remain in the unresolved list, even when their static check was supported. The dictionary also contains the behavioral object and full accessible observation records. The controller adds source excerpts and selected M2 relations; the session layer serializes this view into textual model input and attaches any retained role dialogue. T7 constructs the view in \textsc{BuildContext} before every investigator call in Algorithm~\ref{alg:controller}, rather than only after resets.
+
+When \textsc{ShouldReset} detects a plateau, Algorithm~\ref{alg:reset} invokes the portfolio selector from Algorithm~\ref{alg:utility}, clears dialogue and the progress window, and preserves observations and cumulative resource use. T7 then rebuilds the next request from that retained state. It does not summarize the discarded dialogue, rerun checks, or promote the highest-scored explanation to an observed cause. Listing~\ref{lst:transform-context} shows how these algorithms use the outputs of T1--T6 to continue the example.
+
+\begin{lstlisting}[style=transformationexample,float=tbp,caption={From retained investigation state to the next investigator input (T7), following the reset in Algorithm~\ref{alg:reset}.},label={lst:transform-context}]
+Before reset:
+  The conversation is repeating earlier reasoning.
+  Recorded checks support the defaulting prediction
+  and contradict the bypass prediction.
+
+Reset -- Select what survives:
+  Keep both explanations when the portfolio has room.
+  Keep the report, source model, and check results.
+  Clear the previous conversation.
+
+T7 -- Build the next investigator's input:
+  Task: explain why explicit false still shows a feature.
+  Leading explanation: normalize replaces false.
+  Alternative: the handler bypasses normalization.
+  Known checks: defaulting expression found;
+                predicted bypass expression absent.
+  Include the remaining budget and open predictions.
+
+The next role continues from these records,
+without rereading the discarded conversation.
+\end{lstlisting}
+
+\begin{table*}[t]
+\caption{Implemented transformation interfaces and their connection to the controller. $b,s,h,p,e,a,x$ denote a behavioral model, system model, hypothesis, probe, observation, assessment, and request view; $z$ denotes an accepted investigator response, and $C_{seed}$ denotes retrieval seed paths. $H_k$ is the hypothesis subset selected for a request, with portfolio bound $k$.}\label{tab:transformations}
+\centering\small\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.08\textwidth}>{\raggedright\arraybackslash}p{.24\textwidth}>{\raggedright\arraybackslash}p{.31\textwidth}>{\raggedright\arraybackslash}p{.30\textwidth}@{}}\toprule
+Stage & Interface and transformation kind & Implemented responsibility & Controller connection\\\midrule
+T1 & $(r,z)\mapsto b$; report/proposal to model & \code{complaint_to_contract}: retain report; copy accepted string/list fields; record missing behavioral information & Initialize M1; replace scoped extraction after an accepted response\\
+T2 & $(R,v)\mapsto s$; source to model & \code{analyze_python}: production-source snapshot, versioned symbols, syntactic relations, unresolved calls, diagnostics & Construct M2 before candidate preparation\\
+T3 & $(s,C_{seed})\mapsto C_s$; model query/projection & \code{compose_slice}: bounded bidirectional traversal over resolved relation endpoints & Prepare a fixed candidate pool with lexical retrieval\\
+T4 & $(z_i,s)\mapsto h$; proposal to grounded model & \code{synthesize}: validate location and prediction; create hypothesis identity and conjectured causal edges & Materialize/merge proposed M3 entries; invokes T5\\
+T5 & $(h,\theta_i)\mapsto p$; model-to-model mapping & \code{hypothesis_to_probe}: connect hypothesis/prediction to proposed procedure parameters and ordering weights & Produce M4 probes before utility ordering and execution\\
+T6 & $(h,p,e)\mapsto(h',a)$; model update and mapping & \code{evidence_update}: assess a predicate, link the observation, and change the hypothesis score & Update M3; append the M4 assessment after execute/reuse\\
+T7 & $(b,H_k,E,B,role)\mapsto x$; model-to-view projection & \code{fresh_context}: check references; expose hypotheses, outcomes, and uncertainty; session layer later renders JSON & Build every request; reconstruct after portfolio pruning and dialogue reset\\
+\bottomrule\end{tabular}
+\end{table*}
+
+\subsection{Candidate Retrieval and Hypothesis Generation}\label{sec:candidates}
+The transformation pipeline begins with deciding where to investigate. A report may describe a symptom in one file even when the relevant operation occurs in another. Candidate preparation therefore combines textual relevance with structural relationships, giving investigators a bounded search space from which to propose explanations.
+
+\textsc{RetrieveCandidates} uses the T2 system model to identify an initial search space from the report and repository. It ranks files by their lexical relevance using BM25, a term-based retrieval scoring function, then expands the leading candidates through import, call, and local data-flow relationships. Traversal in both directions allows the investigation to reach code that influences, or is influenced by, a symptom-related location. In the running example, the handler's dependency on configuration normalization connects the reported behavior to the defaulting expression. These relationships guide exploration; they do not establish a causal explanation.
+
+The T3 hop bound limits this expansion to a local dependency neighborhood, as specified in Section~\ref{sec:transformations}. In the running example, one hop reaches the configuration module from the handler even if the report never names configuration handling.
+
+The resulting candidate set is bounded and remains fixed during the investigation. \textsc{BuildContext} combines the T7 projection with source excerpts and selected structural relations, presenting the behavioral interpretation, selected hypotheses, and accessible observations. Later rounds revisit a leading candidate while rotating through alternatives. This balances continued examination of an active explanation with exploration of other locations. The initial candidate set therefore bounds which files can receive hypothesis-based investigation.
+
+\textsc{Investigate} asks an investigator to propose or refine hypotheses and identify checks of their predictions. T4/T5 materialize the accepted proposals as M3 hypotheses and M4 probes; this separates LLM generation from deterministic grounding and validation. Each hypothesis connects a source location to a proposed fault mechanism. A check states what observation would support or contradict that mechanism's prediction. Proposals must identify valid source locations and provide the information needed to perform the check. Passing these requirements makes a proposal suitable for investigation; it does not establish its correctness.
+
+\subsection{Investigating and Assessing Hypotheses}\label{sec:probes}
+Candidate generation produces plausible explanations, but plausibility alone does not distinguish them. Each explanation must lead to a question that can be checked against the available artifacts. Assessment connects these check results back to the hypotheses while preserving the scope of what was observed.
+
+\textsc{AssessChecks} obtains M4 observations and applies T6 to compare them with M3 predictions. Checks can examine source text, query program structure, or use available execution procedures. Their evidential scope differs: a source check establishes that an expression exists, whereas an execution check can establish behavior under specified inputs. An unavailable or timed-out procedure, or an unsupported predicate/result combination, yields an inconclusive assessment. A completed check whose result differs from the expected value instead contradicts the prediction.
+
+The observation store separates obtaining a result from interpreting it. If an equivalent check has already been performed, its recorded result can be reused. Several hypotheses may assess the same observation without treating it as several independent facts. Each observation retains the source revision and the procedure that produced it, so subsequent investigation can distinguish checked facts from generated explanations.
+
+An assessment classifies the result as supporting, contradicting, or inconclusive with respect to the declared prediction. Support increases the hypothesis score, contradiction decreases it, and an inconclusive result leaves it unchanged. The magnitude depends on the type of evidence. These scores prioritize further investigation; they are not probabilities of correctness. In the running example, the structural check supports the defaulting hypothesis's prediction and contradicts the bypass hypothesis's prediction. Neither result alone proves that the reported failure follows the proposed mechanism.
+
+\subsection{Selecting Investigations and Competing Hypotheses}\label{sec:utility}
+Assessments establish how individual checks bear on the hypotheses, but the investigation usually has more possible checks and explanations than its budget allows it to pursue. It therefore needs to choose what to examine next and which alternatives to keep available. These two selection decisions use the current scores and differences between hypotheses.
+
+\textsc{OrderChecks} prioritizes checks that can distinguish competing explanations. Its heuristic favors declared alternatives, dissimilar hypotheses, and lower estimated investigation cost. For example, examining how the handler uses the option can challenge the bypass hypothesis, whereas repeating an already recorded expression adds no new observation. This ordering directs the available budget toward potentially useful distinctions without claiming to estimate expected information gain.
+
+\textsc{SelectPortfolio} chooses the hypotheses carried into a fresh conversation. It starts with the highest-scored hypothesis and then selects additional hypotheses by balancing their scores against their dissimilarity to those already selected. Dissimilarity considers the proposed mechanisms and source locations. The resulting set contains at most $k$ hypotheses, where $k$ is the portfolio bound. This \emph{hypothesis portfolio} preserves alternative directions rather than only the current leader.
+
+Algorithm~\ref{alg:utility} implements the two selection policies. \textsc{Unhandled} removes previously handled logical-check identifiers; an attempted check can be handled even if execution did not produce an assessment. \textsc{Utility} combines the number of declared alternatives and the associated hypothesis's dissimilarity from the current pool, weighted by reliability and divided by estimated cost. \textsc{SortDescending} orders the remaining checks by this value.
+
+\textsc{BestCandidate} returns the unselected hypothesis maximizing its score plus a diversity bonus. The bonus is the minimum dissimilarity to the selected hypotheses, or one when the portfolio is empty. Thus the first choice has the highest score; subsequent choices reward explanations that differ from every selected hypothesis. Dissimilarity combines lexical differences between mechanisms and differences between source files. The heuristic does not establish causal independence. Section~\ref{app:policies} gives the exact formulas, weights, and tie-breaking rules.
+
+\begin{algorithm}[t]
+\caption{Check ordering and hypothesis selection}\label{alg:utility}
+\begin{algorithmic}[1]\small
+\Procedure{OrderChecks}{$P,H$}
+  \State $P\gets\textsc{Unhandled}(P)$
+  \State \Return $\textsc{SortDescending}(P,\textsc{Utility}(\cdot,H))$
+\EndProcedure
+\Procedure{SelectPortfolio}{$H,k$}
+  \State $S\gets\emptyset$
+  \While{$H\setminus S\ne\emptyset$ and $|S|<k$}
+    \State $h\gets\textsc{BestCandidate}(H\setminus S,S)$
+    \State $S\gets S\cup\{h\}$
+  \EndWhile
+  \State \Return $S$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+In the running example, the bypass and defaulting hypotheses concern different locations and mechanisms. Both can survive a reset when the portfolio has room. Their retention allows the renewed investigation to reconsider either explanation in light of the recorded checks. The selection heuristic does not guarantee that the alternatives are causally independent or equally useful; its effect is an empirical question.
+
+\subsection{Detecting Stagnation and Resetting Context}\label{sec:reset}
+Prioritizing checks can still leave an investigation revisiting the same observations or explanations. The controller therefore uses the progress made by recent rounds to decide whether the current conversation should continue. A reset is considered when evidence gain stalls and sufficient resources remain for renewed investigation.
+
+\textsc{MonitorProgress} tracks newly obtained usable observations, repeated checks, hypothesis diversity, and resource consumption over recent investigation rounds. Low observation gain suggests that continued discussion is producing little additional evidence. Repeated checks and similar hypotheses indicate that the investigation may be revisiting the same explanation.
+
+\textsc{ShouldReset} combines these signals. A reset requires a sufficiently long observation window, low evidence gain, and either substantial repetition or limited hypothesis diversity. It also requires enough remaining budget to construct a fresh context and continue investigating. These conditions avoid resetting solely because one round is unproductive.
+
+Algorithm~\ref{alg:plateau} combines the reset decision and state transition. \textsc{WindowMeans} returns mean evidence gain $g$, repetition $r$, and diversity $d$ over the recent window. Gain counts new usable observations; repetition measures checks already performed; diversity averages pairwise hypothesis dissimilarity. The thresholds $\tau_g$, $\tau_r$, and $\tau_d$ define low gain, high repetition, and low diversity, respectively. Stagnation requires low gain together with either high repetition or low diversity.
+
+\textsc{Ready} requires a complete window and sufficient investigation before a reset is considered. \textsc{Affordable} checks recent expenditure and whether the remaining budget covers estimated reconstruction cost plus a reserve. These guards prevent premature or unaffordable resets. Section~\ref{app:reset_parameters} specifies their exact conditions and chosen thresholds.
+
+\begin{algorithm}[t]
+\caption{Adaptive context reset}\label{alg:plateau}\label{alg:reset}
+\begin{algorithmic}[1]\small
+\Procedure{ShouldReset}{$M,B$}
+  \State $(g,r,d)\gets\textsc{WindowMeans}(M)$
+  \State $stalled\gets(g\le\tau_g)\land(r\ge\tau_r\lor d<\tau_d)$
+  \State \Return $\textsc{Ready}(M,B)\land stalled\land\textsc{Affordable}(M,B)$
+\EndProcedure
+\Procedure{ResetContext}{$H,E,A,M$}
+  \State $H\gets\textsc{SelectPortfolio}(H,k)$
+  \State $A\gets\emptyset$; $M\gets\textsc{ClearWindow}(M)$
+  \State \Return $H,A,M$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+A reset preserves the M1/M2 models and M4 observations while selecting the live M3 portfolio and clearing conversational history. The next invocation of \textsc{BuildContext} combines the report, retained hypotheses, recorded observations, unresolved predictions, remaining budget, and relevant source excerpts. The investigator can therefore continue from checked facts while reconsidering its explanations. Resetting consumes the same overall investigation budget; it does not begin a new trial with additional resources.
+
+When \textsc{ShouldReset} returns true, Algorithm~\ref{alg:controller} invokes \textsc{ResetContext}. Portfolio selection retains competing explanations, while assigning the empty set to $A$ discards prior dialogue. \textsc{ClearWindow} removes recent progress samples while retaining the cumulative investigation count. Observations $E$ and resource use remain unchanged. The next \textsc{BuildContext} call reconstructs the investigator's input from the retained state; \textsc{ResetContext} in Algorithm~\ref{alg:plateau} does not generate a new summary or rerun earlier checks.
+
+For the running example, repeated checks of the recorded expressions yield little evidence gain. If the repetition and budget conditions hold, the next conversation begins with those observations and the selected bypass and defaulting hypotheses. The defaulting hypothesis is selected first because its score is higher; the bypass hypothesis can remain as an alternative. The earlier dialogue is discarded. Section~\ref{app:trace} provides a constructed numerical calculation of the same transition. This illustrates the intended state transition, rather than a measured improvement in localization.
+
+\subsection{Why the Models Matter at a Reset}\label{sec:mde_reset}
+The reset policy determines when to renew a conversation; the model architecture determines what the renewed investigation can use. This connection is central to the approach because discarding dialogue should not require rediscovering recorded observations. We now examine the retained state and follow the running example through that transition.
+
+The purpose of this decomposition is to make forgetting an explicit operation over state rather than a request to summarize a conversation. The controller prunes M3 to a portfolio, clears role dialogue, and clears the progress window. M1, M2, observation records in M4, global assessments, accessible-observation references, the physical-check cache, and cumulative resource use remain available. T7 can then construct the next context without extracting state from the discarded dialogue. The reset is a state-selection operation around T7, not a new transformation language or an automatic repair of the repository.
+
+Three consequences connect MDE directly to localization. First, T2/T4 make candidate locations traceable to the source snapshot used by the investigation. Second, T5/T6 separate a predicted outcome from a recorded check result and its interpretation, allowing source evidence to challenge an explanation. Third, T7 reconstructs the request from selected model objects, so that the next conversation need not inherit the entire discussion that produced them. These are implemented mechanisms. Their effect on ranking quality, useful alternative explanations, and token expenditure remains the subject of the controlled evaluation.
+
+In the running example, T1 can represent the claim that an explicit false option should disable the feature, while preserving its status as report interpretation. T2 records the handler's call to \code{normalize}; T3 can use that relationship when expanding handler-based seeds. An investigator supplies the bypass and defaulting proposals. T4 grounds them in \code{handler.py} and \code{config.py}, and T5 creates the two AST probes in Table~\ref{tab:example_checks}. The executor records false for the predicted bypass expression and true for the defaulting expression. T6 creates contradiction/support assessments and scores $-1$ and $1$. If both hypotheses are selected at reset, T7 exposes those results and retained explanations to the next role after its earlier dialogue has been cleared. This end-to-end model trace is a constructed example checked against the transformation functions, not an empirical localization result.
+
+Preserving observations is narrower than preserving every interpretation. Pruned hypotheses can lose their live scores and support/contradiction links; reintroducing the same hypothesis does not automatically rebuild them from global assessments. The T7 unresolved list is also computed at hypothesis granularity from dynamic-support kinds, rather than proving that every prediction is resolved. Finally, retaining all observations does not bound reconstructed context size. These implementation boundaries matter when judging what model-based reconstruction contributes; Section~\ref{app:semantics} specifies their operational consequences.
+
+\subsection{Termination and Localization Results}\label{sec:output}
+Model-based reconstruction supports further investigation, but continuation must eventually give way to a result. The controller uses its stopping conditions to end the search and the accumulated hypothesis assessments to order source locations. The resulting ranking carries the observations needed to understand its evidential basis.
+
+\textsc{Stop} ends the investigation when its resource budget is exhausted or an applicable evidence-based stopping condition is satisfied. The resource budget limits model use, checks, and elapsed time. If execution evidence is available, a stopping rule can additionally require corroborating procedures and the absence of contradictory observations. Stopping ends the search; it does not certify the proposed cause.
+
+\textsc{RankLocations} projects the live M3 hypotheses back to source locations. A file receives the highest score among hypotheses whose primary location identifies it; files without such hypotheses receive the fallback score $-1$, with lexical order breaking ties. Function output is constructed separately from all symbol-bearing hypothesis locations. The returned observations and assessments explain the evidence underlying the ranking, while preserving the distinction between a suspicious location and a verified causal explanation.
+
+\section{Related Work}\label{sec:related}
+Fault localization connects a reported failure to source locations using textual relevance, execution behavior, program structure, or learned representations. For an LLM investigator, a further design question is how the information collected during this process should influence later rounds. We organize related work by the mechanisms that supply candidates, guide investigation, and preserve progress. Across these groups, we compare the available evidence, the state maintained by the approach, and the decision that state supports. Table~\ref{tab:closest} summarizes the closest approaches to state and context management.
+
+\subsection{Report-Based Retrieval and Query Reformulation}
+Report-based localization treats the report as a query over a repository. BugLocator combines report--source similarity with information from similar historical reports and their fixes~\cite{buglocator2012}. This establishes two useful sources of candidate relevance: what the current report says and where related problems were previously fixed. Query reformulation addresses the quality of the report used for retrieval. KBL learns to identify localization-relevant keywords using a constructed golden-keyword benchmark, then removes noise and expands the query with shared historical keywords~\cite{kbl2025}. These approaches improve the information used to rank source files before a detailed investigation.
+
+\tool{} also begins with report-based retrieval, but uses the resulting ranking as an initial search space and a fallback for uninvestigated files. Its subsequent unit of reasoning is a location together with a proposed mechanism and a checkable prediction. A source observation can therefore change the ranking by supporting or contradicting that prediction. Query reformulation and evidence-preserving resets address different decisions: the former changes what is searched for, whereas the latter changes what an ongoing investigation carries into a new conversation. Better retrieval could supply stronger initial candidates to our controller; the present design does not establish an improvement over specialized retrieval or reformulation methods. Its dependence on the prepared candidate pool also means that preserving state cannot compensate for every retrieval omission.
+
+\subsection{Execution-Based and Learned Fault Localization}
+Execution-based localization uses observed program behavior to distinguish suspicious elements. DeepRL4FL learns representations of coverage, statement dependencies, and source code for localization~\cite{deeprl4fl2021}. SmartFL builds a probabilistic model from dynamic dependencies and approximated program semantics to reason about the correctness of values~\cite{smartfl2025}. Although their representations differ, these approaches make execution information central to relating a failing run to candidate locations. Their analysis concerns the program's behavior rather than the lifetime of an investigator's conversational state.
+
+Learned localization can also operate without test coverage. LLMAO adds trainable bidirectional adapters to pretrained code language models and predicts faulty lines from source code~\cite{llmao2024}. Its learned scoring mechanism differs from \tool{}'s explicit investigation loop: our controller asks for candidate explanations, obtains permitted check results, and accumulates hypothesis assessments during the current task. The present prototype does not train a localization-specific model.
+
+The main distinction from this group concerns both evidence and output. Our planned source-only evaluation uses report, source, and AST observations to rank files and functions; it does not supply the runtime evidence used by execution-based methods, nor does it target LLMAO's statement-level prediction setting. A match for a predicted expression supports a claim about source structure, but does not establish that the reported execution reached it. Registered execution procedures can extend the approach, yet their presence is separate from the reset policy. Accordingly, comparisons with this group motivate clear evidence boundaries rather than a claim that hypothesis scores provide equivalent behavioral analysis.
+
+\subsection{LLM-Based Investigation and Reasoning}
+LLM-based localizers use generated reasoning and repository access to narrow the search. AutoFL combines tool-guided exploration with a natural-language explanation and method prediction, and aggregates predictions from repeated runs~\cite{autofl2024}. AgentFL organizes investigation into comprehension, navigation, and confirmation; its State Storage and prompt generator carry program-analysis material and parsed task outputs between steps~\cite{agentfl2024}. These approaches already demonstrate that an LLM investigation can use intermediate results and external state. The presence of structured records or explanations alone therefore does not distinguish \tool{}.
+
+A second line organizes localization as successive ranking stages. Agentless narrows the repository to files, code elements, and edit locations before repair~\cite{agentless2025}. RGFL generates candidate-specific explanations and uses them to rank files and elements within a hierarchical workflow~\cite{rgfl2026}. Both are relevant to our use of bounded candidate context. They also show why reasoning quality and context selection must be considered alongside the final ranking.
+
+\tool{} differs in the relationship between explanations and subsequent checks. A hypothesis declares a mechanism and prediction; the result of an allowed procedure is recorded separately and assessed against that hypothesis. Several explanations can refer to the same observation without making it new evidence. The controller then decides whether to continue the dialogue or construct a fresh conversation from retained records and competing hypotheses. This defines a state-retention policy within an investigation, while AutoFL's repeated-run aggregation combines predictions across runs and Agentless's hierarchy narrows the search across stages. These mechanisms need not be mutually exclusive. The evaluation isolates the retention policy through shared-controller variants; its restricted Agentless and RGFL localization adaptations support only the comparisons specified in Section~\ref{sec:study}, not conclusions about the complete upstream repair systems.
+
+\subsection{Graph-Guided Repository Navigation}
+Repository graphs expose relationships that may be difficult to recover from isolated text excerpts. LocAgent provides typed code entities and relations with search, traversal, and retrieval tools, maintaining an action--observation interaction log~\cite{locagent2025}. ARISE extends structural navigation with intra-procedural definition--use relationships, data-flow queries, and token-budgeted evidence bundles~\cite{arise2026}. These approaches determine which code can be reached and how retrieved context is assembled. They are especially relevant when the location describing a symptom differs from the location responsible for it.
+
+\tool{} uses a bounded, approximate dependency neighborhood to expand lexical candidates. In the running example, this can connect a handler to the normalization function it calls. Our contribution does not depend on a richer repository graph or a more precise slice than those prior systems. Instead, the controller records what a check established, associates it with candidate predictions, and specifies how those records survive a conversation reset. Graph construction and state retention thus address complementary parts of the investigation. A richer navigation backend could change which observations become available, but combining it with our controller and measuring the resulting accuracy and cost remain separate experiments. In particular, a structural edge guides exploration; it does not by itself confirm the proposed runtime mechanism.
+
+\subsection{Project Knowledge and Reusable Debugging Memory}
+Memory-based approaches differ in where their knowledge comes from and how long it remains useful. MemFL supplies project/class summaries and stage-specific debugging guidance refined through pseudo-training bugs~\cite{memfl2025}. Repository Memory combines historical commits and linked issues with summaries of active files, integrating these resources into a localization agent~\cite{repomem2026}. AdaRepair-Mem selects repair experiences using coverage, quality, and stage considerations, broadening retrieval when repository-specific experience is sparse~\cite{adarepair2026}. Together, these methods show that useful memory includes both descriptions of the repository and experience with earlier debugging or repair tasks.
+
+The principal comparison is between prior knowledge and current-investigation state. \tool{}'s retained observations arise from checks performed at the target revision; its hypotheses represent explanations still being considered for the current report. Resetting selects among those explanations while preserving their underlying observations. This differs from deciding which historical repair experience or project summary should be retrieved for a new task. It also avoids requiring a historical memory bank for the reset mechanism itself. However, it supplies no replacement for the architectural knowledge or reusable debugging guidance provided by these systems. Historical memory could inform hypothesis generation, provided that evidence from earlier revisions remains distinguishable from checks on the target snapshot. The present evaluation studies retention within a task and does not establish the benefit of such a combination.
+
+\subsection{Persistent Execution State and Context Management}
+Within-task memory addresses how an agent continues after many interactions. Ledger maintains observed source, modifications, and commands in an execution ledger, renders a current state view, and mediates redundant actions~\cite{ledger2026}. In its examined formulation, that view supplements persistent interaction history. This is a close precedent for keeping mechanically recorded execution state separate from semantic reasoning. Reflexion instead retains verbal reflections from feedback across trials~\cite{reflexion2023}. MemGPT manages information movement between a bounded main context and external storage, including message eviction and recursive summaries~\cite{memgpt2024}. These mechanisms establish several alternatives to retaining an ever-growing visible trajectory.
+
+\tool{} makes the retained state specific to localization: observations record procedure outcomes and provenance, hypotheses contain proposed mechanisms and predictions, and assessments connect the two. Its reset clears role dialogue and selects a hypothesis portfolio while leaving observation records available for reconstruction. The difference from Ledger is this explicit reset decision over competing explanations, rather than the existence of an external ledger or the reuse of earlier tool results. The difference from reflective or summarized memory is the decision to preserve check results independently of the prose interpreting them. This preserves access to recorded observations, but does not guarantee that the reconstructed context is sufficient or compact; retaining all observations can itself increase context cost. The evaluation therefore compares memory policies under common budgets and measures localization and resource use rather than assuming that structured retention is inherently preferable.
+
+\subsection{Search Restarts and Hypothesis Retention}
+Search restarts change the information conditioning a renewed search. Scaling Discovery Requires Forgetting clears agent sessions and candidate history while retaining the best evaluated candidate and score in optimization tasks~\cite{forgetting2026}. It supplies a direct precedent for treating forgetting as a search policy. Its retained candidate has an externally evaluated objective value, whereas our hypothesis score aggregates assessments of selected predictions. A high score can prioritize an explanation without establishing that its location caused the reported failure.
+
+This difference motivates \tool{}'s retention unit: all recorded observations and a small portfolio of competing hypotheses, selected using score and dissimilarity. The next conversation receives recorded checks alongside alternative explanations, so it can reconsider them without first obtaining those observations again. The reset trigger also considers recent evidence gain, repetition, diversity, and remaining resources, rather than merely the length of the conversation. These are testable policy choices, not guarantees that a restart escapes an incorrect line of reasoning. Continuous context, periodic resets, evidence-only reconstruction, and hypothesis-retention ablations provide distinct controls for studying their effects. Evidence that forgetting helps optimization does not establish that either resetting or retaining alternatives improves fault localization.
+
+\subsection{Diagnosis, Prediction Checking, and Provenance}
+Hypothesis-driven investigation is related to formal diagnosis. Reiter defines diagnosis through consistency between a system description and observations~\cite{reiter1987}. \tool{} uses the corresponding investigative distinction between an explanation and an observation, but its natural-language mechanisms and approximate source models do not provide a logical diagnosis procedure. Supporting one declared prediction neither proves the full mechanism nor excludes explanations that were never proposed. Maintaining alternatives makes uncertainty explicit without establishing completeness of the hypothesis set.
+
+Provenance addresses a different requirement: identifying how an observation was produced. PROV-DM describes entities, activities, agents, and derivations~\cite{prov2013}. Our records associate a result with its source revision and procedure so that it can be reused and reassessed after a reset. This supports traceability of the ranking, while the correctness of an assessment remains a separate question. The resulting contribution is a specified combination of prediction assessment, observation retention, portfolio selection, and adaptive conversation reset for localization. Its empirical value must be assessed through the controlled comparisons in Section~\ref{sec:study}.
+
+\subsection{MDE-Based Fault Localization}\label{sec:related_mde_fl}
+Research connecting MDE and fault localization uses models in two closely related settings: diagnosing executable system models and identifying faulty model-transformation rules. These studies make metamodel structure, model execution, transformation traces, or contracts part of the localization mechanism. They are therefore more direct predecessors for our use of models than general work on transformation engineering alone.
+
+\emph{Localization in executable system models.} Liu et al.'s SimFL combines statistical debugging with dynamic slicing of Simulink models; its iterative extension, iSimFL, adds observable outputs at lower hierarchy levels to refine suspicious-block rankings while considering oracle effort~\cite{simfl2016}. Here the executable model is the artifact being debugged, and model dependencies and test observations determine the localization evidence. \tool{} instead extracts an approximate source model from an existing Python repository and maintains additional models of the investigation. Its model transformations ground hypotheses, assess checks, and reconstruct context; they do not execute a Simulink behavioral model. The shared concern is choosing useful observations under a cost constraint, but our source-only checks do not provide the behavioral evidence available from model execution.
+
+\emph{Localization through metamodels and contracts.} Burgue\~no et al. extract the metamodel footprints of transformation specifications and implementations, matching OCL constraints to ATL rules to help identify rules responsible for constraint violations~\cite{mtstaticfl2015}. This uses the source and target metamodels as a common vocabulary for relating a failed requirement to candidate implementation elements. \tool{} also links an expectation to a candidate location, but through an investigator-proposed prediction and a recorded procedure outcome. M1's behavioral invariants are natural-language interpretations, and M2 is an approximate source representation; our implementation does not compute constraint--rule footprint alignments or treat the report as an executable transformation contract.
+
+\emph{Localization through transformation execution traces.} Troya et al. apply spectrum-based localization to model transformations, constructing rule coverage and failure information from executions on source models and OCL assertions~\cite{mtspectrum2018}. Mu\~noz et al. subsequently combine dynamic suspiciousness with static information, including footprints for breaking ranking ties, and introduce structured contract dependencies~\cite{mthybrid2022}. In these approaches, MDE artifacts provide both the units to rank and the links between model-level failures and transformation execution. In \tool{}, the ranked units are Python files and source symbols, while the links record how a particular observation supports or contradicts a hypothesis. T6 accumulates prediction assessments rather than calculating suspiciousness from a transformation-rule coverage matrix. Our context reset changes which explanations and dialogue condition the next investigation, without replacing these earlier ranking techniques.
+
+\emph{Localization through symbolic model analysis.} Oakes et al.'s SBFL-Verif constructs coverage and contract-satisfaction information from symbolic executions of DSLTrans transformations, allowing rule localization without a concrete input-model test suite~\cite{mtsymbolic2024}. Its path conditions and structural contracts supply an analysis semantics for the localization evidence. \tool{} does not symbolically execute its Python transformations or prove fault hypotheses over a modeled state space. Its check results establish the narrower source, AST, or registered-procedure properties described in Section~\ref{sec:probes}. The absence of a required failing test in our source-only setting should therefore not be read as equivalent to the symbolic verification available in that work.
+
+The distinction is the role MDE plays in the localization process. In the studies above, executable model structure, contract alignments, or model/transformation executions produce information about faulty blocks or rules. In \tool{}, four linked model families organize an LLM investigator's evolving state: T2/T4 ground candidates in source, T5/T6 connect predictions to recorded checks, and T7 projects retained models into subsequent requests. Our proposed extension concerns the lifetime of that investigation state, particularly observation retention and hypothesis selection across dialogue resets. The comparison does not establish that this representation is more accurate than contract-, slice-, or spectrum-based localization. Applying their model-level analyses as additional check backends would require separate integration and evaluation.
+
+\subsection{Model-Driven Analysis and Transformation Engineering}\label{sec:related_mde}
+Beyond the localization-specific studies in Section~\ref{sec:related_mde_fl}, transformation engineering provides methods for checking and manipulating the models themselves. S\'anchez Cuadrado et al. analyze ATL transformations through typing, path conditions, and generated witness models~\cite{mtanalysis2017}. Their models support checking transformation programs; \tool{} instead uses transformation procedures as part of a fault investigator for production Python code. Its path, reference, and provenance checks are narrower than formal transformation verification. In particular, behavioral invariants in M1 remain natural-language conjectures rather than OCL constraints, and no constraint solver establishes that an M3 mechanism follows from M2.
+
+Salay et al. lift graph transformations to product lines and define correctness through agreement with transformations of individual products~\cite{lifting2014}. This illustrates why a transformation claim needs an explicit source, target, and preservation obligation. Our relevant obligation at reset is preservation of observation records while changing the hypothesis set and dialogue. It does not imply semantic equivalence between old and reconstructed conversations, and a hypothesis portfolio is not a product-line representation. Likewise, the separation between architecture and analysis models in model-driven performance evaluation~\cite{performance2011} motivates explaining what each representation enables; it does not supply a behavioral semantics for our fault hypotheses.
+
+H\"oppner and Tichy's empirical study identifies tracing and reuse as important capabilities of model-transformation languages and emphasizes context-dependent assessment~\cite{mttrace2024}. Our prototype realizes selected schema checks and cross-model links in general-purpose Python. It uses no dedicated transformation language, generated transformation engine, or automatic bidirectional synchronization. Its MDE contribution is the executable organization of investigation state and transitions described in Sections~\ref{sec:metamodels}--\ref{sec:mde_reset}. The model-view ablation tests part of that organization; it does not compare transformation languages or isolate the effect of removing every model and transformation.
+
+\begin{table*}[t]
+\caption{State and context policies in closely related approaches. Descriptions concern the examined versions. The last column states the relationship to \tool{}; it is not a claim of empirical superiority or an exhaustive feature inventory.}\label{tab:closest}
+\centering\small\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.16\textwidth}>{\raggedright\arraybackslash}p{.18\textwidth}>{\raggedright\arraybackslash}p{.27\textwidth}>{\raggedright\arraybackslash}p{.32\textwidth}@{}}\toprule
+Approach & Information scope & Principal policy & Relationship to \tool{}\\\midrule
+AutoFL~\cite{autofl2024} & Current run; repeated predictions & Tool exploration and prediction aggregation & Combines predictions across runs; our reset preserves state within an investigation.\\
+AgentFL~\cite{agentfl2024} & Analysis and task outputs & State Storage feeds task prompts & External task state is established; we specify retention across dialogue resets.\\
+Agentless / RGFL~\cite{agentless2025,rgfl2026} & Current issue and candidate code & Hierarchical narrowing; candidate reasoning & Our check assessments and reset policy operate across investigation rounds.\\
+LocAgent / ARISE~\cite{locagent2025,arise2026} & Repository structure and retrieved context & Graph tools; structural/data-flow context & Navigation controls what can be inspected; retention controls what survives a reset.\\
+MemFL~\cite{memfl2025} & Project and pseudo-training bugs & Summaries and refined debugging guidance & Prior guidance differs from observations generated for the current report.\\
+Repository Memory~\cite{repomem2026} & Historical changes and active code & Retrieve commits, issues, and summaries & Repository history can complement current-revision investigation records.\\
+AdaRepair-Mem~\cite{adarepair2026} & Earlier repair experiences & Retrieve and select memories by repair stage & Experience selection differs from selecting current fault hypotheses at reset.\\
+Ledger~\cite{ledger2026} & Current repair execution & Render execution state; mediate repeated actions & Close state-management precedent; our policy resets dialogue and retains competing hypotheses.\\
+Reflexion / MemGPT~\cite{reflexion2023,memgpt2024} & Trial feedback or external memory & Retain reflections; page or summarize context & Motivate alternative memory policies to compare with explicit check records.\\
+Discovery forgetting~\cite{forgetting2026} & Optimization search episodes & Restart from best evaluated candidate & Our heuristic scores motivate retaining observations and several explanations.\\
+\tool{} & Current localization investigation & Assess predictions; monitor progress; reset dialogue & Retain all observations and a selected hypothesis portfolio under cumulative budgets.\\
+\bottomrule\end{tabular}
+\end{table*}
+
+\section{Evaluation Design}\label{sec:study}
+\subsection{Study Protocol}
+The evaluation separates three questions that the constructed example cannot answer: ranking effectiveness (RQ1), the contribution of context and retention policies (RQ2), and the accuracy--cost tradeoff (RQ3). All comparisons use the declared protocol and preserve failed or incomplete attempts in the coverage accounting. The design below specifies the planned evidence; empirical findings remain pending.
+
+\emph{Subjects and controls.} The subjects are the pinned SWE-bench Lite and Verified splits~\cite{swebench2024}, evaluated with five pinned model families and three seeds. Issues shared by the splits are executed once and reported under each split's membership; the split reports are therefore not independent replications. Reference-patch changes define proxy file/function targets, while the investigator receives only the public report and pre-fix source. Prior pilot exposure must be disclosed alongside the final subject and provenance inventory.
+
+The primary comparison includes \tool{}, continuous context, fixed-interval resets, the evidence-only control, and restricted Agentless and RGFL localization adaptations. The evidence-only control supplies observation locations and JSON results without prior dialogue or explicit hypotheses; its implementation name, \code{stateless_summary}, does not denote a generated summary. Comparisons share a 32,000-token cumulative ceiling and 16-attempt limit; the model's native context limit constrains an individual request separately. Deterministic retrieval controls are run once per issue. Adaptation coverage and executed workflow identities must accompany the results so restricted components are not treated as full upstream systems.
+
+\emph{Mechanism and resource studies.} A report-blind, repository-balanced hash selection fixes 100 shared issues for the eight component controls, budget sensitivity, misleading-clue experiments, and reset-policy sensitivity. Budget curves use 16k and 48k additional runs and the matched 32k primary point. Reset windows 3/4/5 and the optional 0.15 consumed-fraction gate examine sensitivity to chosen thresholds. The misleading clue is the second BM25-ranked file; recovery eligibility and the limits of conditional comparisons are defined below.
+
+\emph{Outcomes and inference.} Top-$k$ measures whether a proxy target appears among the first $k$ locations; mean reciprocal rank (MRR) averages the inverse rank of the first eligible target. Set measures supplement these ranking outcomes. File and function eligibility are reported separately, and seeds are averaged within each issue before repository-cluster comparisons. The declared primary file Top-1 family uses cluster sign-flip tests and Holm adjustment; repository-cluster bootstrap intervals express uncertainty. Other contrasts are descriptive, with the small number of repository clusters limiting inference. Token use, probes, and elapsed time measure actual costs rather than assuming equal ceilings imply equal expenditure.
+
+Before any ranking contrast is interpreted, exact subject/model/seed/condition coverage and frozen source, protocol, and model identities must be checked. Smoke and incomplete results are excluded from full-study claims; interrupted and retried system costs are reported separately from completed-case metrics. The pending ranking quantities include \res{file-top1-delta}, \resrange{file-top1-ci}, and \res{function-mrr-delta}. These quantities address ranking performance, not an adjudicated causal explanation.
+% experiments/full/{protocol.json,README.md,suite.py,analyze.py,extended_analysis.py}; evaluation/statistics.py.
+
+\subsection{Implementation and Experimental Configuration}\label{app:implementation}
+This subsection specifies the Python realization of the model-driven approach in Section~\ref{sec:approach} and the experimental settings used to instantiate it. The prototype targets Python and uses approximate structural analysis. The planned primary evaluation uses source and AST checks; registered execution procedures are an extension outside that source-only protocol. The model/transform audit is documented in \code{support/mde_source_manifest.json}; source identities inspected during this presentation review are recorded separately in \code{support/presentation_source_manifest.json}. These records preserve the distinction between the described implementation and frozen experiment versions.
+
+\subsubsection{Operational Scope and Assessment Weights}
+The same controller can operate with different kinds of checks, so the evidence available in the evaluated configuration must be distinguished from the prototype's optional execution support. The following settings specify that boundary and how observations affect scores.
+
+The default roles examine behavior, challenge the leading explanation, follow structural relationships, and propose execution-based checks. They run sequentially through a shared model backend, with separate conversations. Source checks use substring matching on a specified line; AST checks query an allowed node type and optional text. Registered execution procedures run in a predefined environment. Observation insertion checks provenance and artifact integrity. Source-presence assessments have weight 0.25, other AST assessments weight 1, and other assessed observations weight 2. The running example uses AST-match predictions with weight 1, yielding scores $-1$ and $1$.
+
+In the source-only configuration, termination follows attempt, resource, or backend context limits; confidence is unset and the output abstains from a causal conclusion. The optional dynamic stopping rule and its limitations are specified below. Pruning a hypothesis can remove its assessment links and score without removing observations; recreating it does not automatically restore those links. The observation store, access references, check cache, artifacts, and cumulative costs survive a reset.
+
+\subsubsection{State Representation and Access}
+The retained models must be available outside any one role's conversation. Their Python representation and access rules determine which roles can use them and which parts of the state remain shared.
+
+The schemas in \code{domain/models.py} implement the four families in Table~\ref{tab:models} as dataclasses with identifier links. \code{program_analysis/python.py} implements T2; \code{transformations/pipeline.py} implements T1 and T3--T7, with T4 calling T5. The controller supplies their execution order, proposal merging, observation access, and reset policy. The implementation uses these Python transformations directly: it does not load EMF/Ecore metamodels, evaluate OCL, or invoke ATL/QVT. Dataclass annotations alone do not enforce field types; the pipeline, executor, ledger, and context builder check the specific constraints described in the Approach. The latest accepted response replaces the behavioral fields for its investigation pool; those conjectural fields survive dialogue reset.
+% domain/models.py:28-158; transformations/pipeline.py:23-207.
+
+By default, roles share hypotheses and observations. In the independent-role condition, each role has its own hypothesis pool, behavior fields, and accessible-observation references; the physical-check cache remains shared. A reset retains at most the portfolio bound per existing pool. Selection also occurs before each typed request: context-only retains all hypotheses internally at reset but still shows a selected subset, while single-hypothesis changes both ongoing visibility and reset retention.
+% controller.py:149-166,196-217,441-463.
+
+\subsubsection{Candidate and Request Limits}
+Source grounding alone does not determine how much repository content fits into a request. The following limits bound candidate preparation and source excerpts while leaving the observation store available for reconstruction.
+
+The controller uses up to five BM25 seeds, a two-hop neighborhood, and a default pool of 20 files. It combines seeds, retrieval-ordered neighborhood files, and remaining retrieval results, keeping first occurrences. The first request shows the first four candidates. Later requests anchor the original retrieval leader and first selected hypothesis path, then rotate remaining candidates. Windows prefer report trace/function locations, otherwise identifier overlap, and are limited to 40 lines and 4,500 characters per file. Up to 12 relation excerpts are shown. Path validation requires a displayed file; line validation requires an existing file line, not necessarily a displayed line.
+% controller.py:33-112,140-145,218-247,320-325.
+
+The dependency expansion described in Section~\ref{sec:candidates} uses the previous hop's selected set, ignores unresolved relations, and returns seeds followed by sorted new existing source paths. It is finite and bidirectional, but supplies no semantic-slicing guarantee.
+
+\subsubsection{Investigation and Portfolio Policies}\label{app:policies}
+Both check ordering and portfolio selection need a reproducible measure of how explanations differ. We define that measure first, then state how it enters the two selection rules introduced in Section~\ref{sec:utility}.
+
+Let $H$ be the finite live hypothesis set, $P$ the proposed probes, $V$ the handled logical-probe IDs, and $k$ the positive portfolio bound. For a hypothesis $h$, $T(h)$ contains its lowercase alphabetic mechanism terms of length at least three, and $\pi(h)$ is its first location's path. Dissimilarity is
+\begin{equation}\label{eq:distance}
+\begin{aligned}
+D(h,h')={}&.6\left(1-\frac{|T(h)\cap T(h')|}{\max(1,|T(h)\cup T(h')|)}\right)
+\\ &+.4\,\mathbf{1}[\pi(h)\ne\pi(h')].
+\end{aligned}
+\end{equation}
+The value lies in $[0,1]$. Empty term sets yield lexical distance one under this rule. Pool diversity is the mean over distinct hypothesis pairs, or zero for fewer than two hypotheses. In probe ordering, declared alternatives are captured as each proposal is processed, so an earlier proposal cannot count a newly introduced later alternative in the same batch. The diversity sum uses the live pool at ordering time. Source quotes have reliability weight 0.9 and other kinds 0.7; estimated costs are 1 for static checks and 30 for dynamic checks. These are chosen ordering parameters.
+% policies.py:11-50,159-161; controller.py:352-376.
+For a check $p$ associated with hypothesis $h$, the ordering utility is Eq.~\ref{eq:probe-utility-approach}. Its inputs $q(p)$, $a(p)$, and $c(p)$ are the reliability weight, recorded-alternative count, and estimated cost defined in Section~\ref{sec:transformations}. Handled logical checks are excluded; ties follow increasing check ID. Portfolio selection maximizes the score plus minimum dissimilarity to a selected hypothesis, using dissimilarity one for an empty portfolio; ties follow decreasing score and then increasing ID.
+
+\subsubsection{Reset Trigger and Execution}\label{app:reset_parameters}
+A reset should follow sustained stagnation rather than one unproductive response, and it must leave resources for continuation. The monitor therefore combines a recent-round window with readiness and affordability conditions.
+
+For each valid round $t$, the monitor records gain $g_t$, repetition fraction $r_t$, diversity $d_t$, and actual input-plus-output tokens $c_t$. Gain counts newly accessible non-blocked observations. Repetition counts proposals already present in the physical cache before the round, divided by at least one proposed probe; duplicates arising within the new batch do not enter that pre-round count.
+
+Let $\mathcal{I}$ index the recent history window of capacity $W$, $n$ be the cumulative valid-round count, $B_0$ the original token budget, $B_{rem}$ the remaining tokens, and $c_0$ the token reserve. This window is part of progress history $M$; it is distinct from the assessment collection $J$ and candidate pool $C$ in Algorithm~\ref{alg:controller}. The minimum-round count $n_0$ is positive; consumed-fraction, repetition, and diversity thresholds $\rho,\tau_r,\tau_d$ lie in $[0,1]$; the gain threshold $\tau_g$ is nonnegative. The reset policy uses the latest valid round to estimate restart cost. A reset clears the history but retains $n$ and incurred cost. Readiness requires $n\ge n_0$, $|\mathcal{I}|=W$, and consumed fraction $1-B_{rem}/B_0\ge\rho$. The restart estimate is $\widehat c=\max(c_0,\lfloor c_t/2\rfloor)$. Affordability requires $B_{rem}>\widehat c+c_0$ and window expenditure at least $c_0$. Stagnation requires mean gain at most $\tau_g$ and either mean repetition at least $\tau_r$ or mean diversity below $\tau_d$. All readiness, affordability, and stagnation conditions must hold.
+Algorithm~\ref{alg:reset} uses a single shared hypothesis pool for clarity. In the independent-role configuration, selection is applied separately to each role-specific pool. Here $A$ is the collection of dialogues and $E$ is the observation map. \textsc{ResetContext} in Algorithm~\ref{alg:reset} modifies the pools, dialogues, and window while preserving the keys of $E$. The context-only condition skips pruning. Budget, scope references, cache, and artifacts remain unchanged.
+
+\subsubsection{Constructed Reset Calculation}\label{app:trace}
+The symbolic reset conditions can be checked on a small continuation of the running example. The calculation below illustrates the library defaults; its 16,000-token budget is separate from the prospective study's 32,000-token ceiling.
+
+For the running example, use the bypass and defaulting mechanisms ``handler bypasses normalization'' and ``default overrides false'', with scores $-1$ and $1$. Their term sets are disjoint and their files differ, giving dissimilarity $1$. With portfolio bound three, selection retains the defaulting hypothesis first and the bypass hypothesis second. The scores and token counts here are constructed inputs, not measured results.
+
+Suppose four valid rounds each consume 512 tokens. The first exposes two observations; the final three expose none and propose only cached checks. Each recent sample is then $(g_t,r_t,d_t,c_t)=(0,1,1,512)$. Table~\ref{tab:synthetic} checks every gate. The reset retains both hypotheses and all observation IDs and leaves the remaining token budget unchanged. A deterministic check against the policy functions is supplied with the manuscript support files.
+\begin{table}[t]
+\caption{Constructed reset calculation, not empirical measurements.}\label{tab:synthetic}
+\centering\small
+\begin{tabular}{@{}p{.41\columnwidth}p{.52\columnwidth}@{}}\toprule
+Gate or quantity & Synthetic value and check\\\midrule
+Valid rounds/window & $n=4\ge4$; three recent samples\\
+Original/remaining tokens & $B_0=16{,}000$; $B_{rem}=13{,}952$\\
+Consumed fraction & $0.128\ge\rho=0$\\
+Window expenditure & $3\times512=1{,}536\ge256$\\
+Mean observation gain & $0\le\tau_g=0$\\
+Repetition/diversity branch & $1\ge0.5$ (passes); $1<0.5$ is false\\
+Restart estimate & $\max(256,512/2)=256$\\
+Affordability & $13{,}952>256+256$\\
+\bottomrule\end{tabular}
+\end{table}
+
+\subsubsection{Literal Assessment and Termination Semantics}\label{app:semantics}
+Preserving observations does not by itself specify how repeated checks, recreated hypotheses, or stopping decisions behave. The following operational details explain those boundaries so the higher-level retention claims can be interpreted precisely.
+
+Hypothesis identity contains path, case-folded mechanism, and probe kind. Repeated hypotheses can add predictions and locations. Logical probe identity contains hypothesis identity, kind, and parameters, but excludes prediction fields. Physical caching uses kind, path, and parameters; observation identity additionally includes source digest, procedure, and result. The controller assesses a reused observation for another hypothesis, but skips reassessment once that observation appears in a hypothesis's support or contradiction list. Assessment records contain hypothesis and observation IDs, but no prediction/probe ID; identifying the precise prediction can require ordered proposal artifacts.
+% pipeline.py:67-108; executor.py:116-123; controller.py:329-407.
+
+Handled logical-probe IDs survive resets. If pruning removes a hypothesis and it is later recreated identically, its former score and links are absent, while the handled probe can be filtered before cache lookup. Changing only a prediction can likewise leave a handled ID unchanged, including after an inconclusive result. Raw observations remain visible, but the old interpretation is not automatically restored. Semantic duplicates are not normalized: several source checks may accumulate support for closely related facts.
+
+String predictions default to \code{source_contains}. The source-presence rule reads the returned matched field before checking the other predicate/kind combinations, so an AST result may receive source-presence scope. Otherwise AST-matches uses static-structure scope; supported execution predicates use the implementation label \code{causal_prediction}. Unsupported combinations, blocked procedures, and timeouts are inconclusive. Scoring prioritizes source-presence scope (0.25), then AST kind (1), then other kinds (2); support adds and contradiction subtracts the corresponding weight.
+% pipeline.py:112-157.
+
+Reconstruction classifies dynamic support by observation kind at the hypothesis level. A hypothesis with no test/trace/counterfactual support contributes all its predictions to the unresolved list; otherwise it contributes none. Thus one supported prediction can leave another untested prediction out of that list. Every accessible observation is included, so bounded portfolio size does not bound context length. The insertion API rejects changed same-ID observations except an originating probe-ID alias; nested payload dictionaries are not deeply immutable.
+% pipeline.py:160-207; ledger.py:15-33.
+
+A valid round is a schema-accepted response reaching monitor update, including an empty hypothesis list or invalid individual proposals. Invalid responses consume tokens and an attempt, but skip monitoring/reset. Admission requires at least 64 remaining tokens; check and wall limits are tested between operations. Fixed resets use attempted-step modulo after valid responses and do not apply adaptive affordability gates. Model calls have no controller-enforced hard wall deadline.
+% controller.py:188-195,267-303,418-475.
+
+The dynamic early-stop rule requires leader support from at least two registered dynamic procedure IDs, nonempty assumptions, and no contradictions. It does not filter by assessment scope. It uses the earlier pool reference after pruning, and can therefore stop for a removed hypothesis. Returned causal abstention is computed separately: any historical supporting dynamic \code{causal_prediction} assessment suffices to clear that flag, even for a pruned or nonleading hypothesis. Confidence is null. Neither the rule nor the flag certifies the final leading location.
+% controller.py:464-510.
+
+For final file ranking, paths without a live hypothesis receive score $-1$. A hypothesis score below $-1$ places its file below such paths; at exactly $-1$, lexical order breaks the tie. The symbol ranking orders all symbol-bearing locations by hypothesis score and keeps first occurrences; a location inside a class but outside a function can yield a class-only entry. Exact-function scoring must keep those entries distinct from functions. Artifact digests and the hash-linked audit provide integrity checks and provenance, rather than a proof of diagnostic correctness.
+% controller.py:476-529; pipeline.py:64-66; infrastructure/artifacts.py:11-59.
+
+\subsubsection{Parameters and Experimental Configurations}
+To separate controller behavior from study-specific overrides, Table~\ref{tab:defaults} records the library defaults, which are chosen rather than empirically calibrated. They are distinct from the prospective study's 32,000-token and 16-attempt settings. Table~\ref{tab:variants} lists the fourteen configurations.
+\begin{table*}[t]
+\caption{Library defaults and engineering constants. All values are chosen, not tuned or calibrated in this manuscript. Study overrides are separate. Paths are under \code{src/morph_fl/}: C=\code{search/controller.py}, P=\code{search/policies.py}, G=\code{search/config.py}, T=\code{transformations/pipeline.py}.}\label{tab:defaults}
+\centering\small
+\begin{tabular}{@{}p{.28\textwidth}p{.18\textwidth}p{.34\textwidth}l@{}}\toprule
+Parameter & Default & Role & Code lines\\\midrule
+Attempt/token/probe/wall ceilings & 12 / 16,000 / 48 / 3,600 s & Separate cumulative limits & G:7--13\\
+Portfolio / candidate pool / files per call & 3 / 20 / 4 & Retained hypotheses and shown paths & G:14--17\\
+Seed paths / neighborhood hops & up to 5 / 2 & Lexical/structural candidate preparation & C:140; T:38\\
+Source window / character cap / relations & 40 lines / 4,500 / 12 & Request excerpts; not a full-context bound & G:18; C:112,247\\
+Maximum proposals / entry token floor & 4 / 64 & Proposal processing; loop admission & C:190,320\\
+$W,n_0,c_0,\rho$ & $3,4,256,0$ & Full window, valid rounds, reserve, consumed fraction & G:21--24\\
+$\tau_g,\tau_r,\tau_d$ & $0,0.5,0.5$ & Mean gain, repetition, lexical diversity & G:25--27\\
+Fixed reset interval & 3 attempts & Checked after accepted response & G:20; C:434\\
+Distance lexical/path coefficients & 0.6 / 0.4 & Mechanism terms and first-location path & P:11--18\\
+Probe reliability: source / other & 0.9 / 0.7 & Heuristic ordering weights & T:107--108\\
+Estimated cost: static / dynamic & 1 / 30 & Ordering denominator; floor 0.001 & T:107; P:48\\
+Evidence weight: source scope / other AST / other & 0.25 / 1 / 2 & Signed score increment; inconclusive 0 & T:145--150\\
+No-probe proposal scores & $0.01(4-j)$, $j=0,\ldots,3$ & Maximum proposal-order score & C:346--349\\
+\bottomrule\end{tabular}
+\end{table*}
+\begin{table}[t]
+\caption{Controlled variants and the question each targets.}\label{tab:variants}
+\centering\scriptsize
+\begin{tabular}{@{}p{.30\columnwidth}p{.63\columnwidth}@{}}\toprule
+Configuration & Change and comparison purpose\\\midrule
+\code{morph} & Full configured adaptive-reset loop\\
+\code{no_forgetting} & Retain dialogue: are resets useful?\\
+\code{fixed_reset} & Periodic resets: does adaptive timing matter?\\
+\code{context_only} & Keep all live hypotheses at reset: does pruning matter?\\
+\code{single_hypothesis} & Portfolio bound one: do alternatives matter?\\
+\code{no_mde} & Omit M1/M3/relations from model input: effect of the view package?\\
+\code{no_probes} & No checks; proposal-order scores: do updates matter?\\
+\code{no_skeptic} & Omit skeptical role: does challenge guidance matter?\\
+\code{independent_agents} & Isolate role views: does shared state matter?\\
+\code{one_agent} & Structural role only: does role diversity matter?\\
+\code{stateless_summary} & Observation text and no dialogue: simple memory-policy control\\
+\code{rerank} & One model round: what does continuation add?\\
+\code{bm25} & No model rounds; lexical retrieval control\\
+\code{graph} & No model rounds; neighborhood-first retrieval control\\
+\bottomrule\end{tabular}
+\end{table}
+The \code{no_mde} condition removes typed hypothesis/behavior/relations from agent-visible memory but retains internal validation and scoring. Both it and \code{stateless_summary} concatenate each accessible observation's path, line, and JSON payload. The former retains role dialogue until an adaptive reset; the latter omits prior dialogue on every call. Internally, M2 construction, T3 candidate preparation, T4/T5 validation and probe materialization, and T6 scoring remain active in these conditions; T7 is computed before its payload is replaced. Thus \code{no_mde} is an agent-visible model-view ablation, not removal of MDE from the controller. These contrasts change available information and context policy as well as format. Role-removal conditions change the instruction schedule under the same attempt ceiling, not the number of parallel model workers.
+
+\subsubsection{Misdirection and Planned Trajectory Audits}
+Final rankings alone cannot show whether an investigator recovers from an early misleading lead or loses interpretations after pruning. The misdirection study and planned trajectory audits examine those separate questions.
+
+The \code{initial_clue} input supplies unverified text on the first attempted request without changing retrieval or scores. The prospective misdirection track selects BM25 rank two without labels. Recovery eligibility is then checked per workflow: the clue must be wrong under reference-patch labels and its file must become the first valid-round leader. Conditional recovery percentages are descriptive because workflows can have different eligible subsets. Common-case component comparisons use matched side-study subjects and seeds.
+
+The additional link-loss and suppression audits are planned, exploratory analyses, not outputs of the existing retention-ID summary. Recreation counts each return of a previously pruned hypothesis ID in a run/pool; a link-loss event occurs when former support/contradiction IDs are absent on return. Suppression counts validated proposal occurrences in probe-enabled shared rounds whose logical IDs are already handled when ordering begins; repeated occurrences count separately. A changed-prediction subset uses the same ID but differing predicate or expected value in ordered artifacts. Both audits report total opportunities, assessable opportunities, events, and missing/unassessable counts; percentages use assessable opportunities. Their implementation and counting version must be fixed before frequencies are interpreted.
+
+\section{Results}\label{sec:results}
+The results must first establish which planned comparisons were completed before addressing the three research questions. Full-study findings are not yet bound to this draft, so the entries below remain explicit result placeholders. The running example and its reset calculation illustrate execution semantics and are excluded from empirical outcomes.
+
+Coverage and failure accounting will establish the eligible paired denominators for the primary rankings in \tabslot{primary-results} and the component comparisons in \tabslot{ablations}. RQ1 then concerns the ranking differences under the declared primary inference family. RQ2 examines ablations, all misleading-clue outcomes and workflow-specific recovery eligibility, and retention behavior. RQ3 relates accuracy to actual resource use through \figslot{budget-curves}. Pending quantities are \res{recovery-delta}, \res{retention}, \res{tokens}, \res{probes}, and \res{wall-seconds}. The additional interpretation-link-loss and handled-check-suppression audits require separate analysis before any frequencies can be reported.
+
+Outcome-dependent conclusions remain \claimslot{effectiveness}, \claimslot{mechanism}, and \claimslot{efficiency}. Dynamic causal verification and confidence calibration are outside the source-only protocol; they cannot be inferred from ranking scores or from retention of observation identifiers.
+
+\section{Discussion}\label{sec:discussion}
+Interpreting the planned comparisons requires separating three properties: whether observations survive reset, whether the reconstructed input supports useful continuation, and whether that continuation improves rankings at an acceptable cost. The implementation and constructed trace establish selected state transitions. Empirical evidence is needed for the latter two properties; preserving records alone does not establish them.
+
+The model-view ablation changes the information exposed to the investigator while retaining internal validation and scoring. Its outcome therefore concerns that view package, rather than removal of every model transformation. Similarly, comparison with the observation-text control concerns the specified memory policy, not all possible summarization systems. Role and reset comparisons must be interpreted under their shared attempt limits and actual resource use. Any conclusions about effectiveness, mechanism, and efficiency remain conditioned on the pending results in Section~\ref{sec:results}.
+
+Several implementation boundaries are relevant under favorable, mixed, or unfavorable results. Reintroduced hypotheses can lose prior interpretation links, additive scores can reward closely related observations, and retained observations can make the reconstructed request large. Conditional recovery rates also depend on which misleading leads become each workflow's first leader. These mechanisms provide possible explanations to examine in trajectories; they are not established causes of an outcome. Their interpretation requires the eligibility, link-loss, suppression, and cost accounting specified in the evaluation design.
+
+\section{Threats to Validity}\label{sec:threats}
+The validity of a localization result depends on what its targets and observations represent. Reference-patch changes are proxies for fault locations, not reviewed causal labels. Class-only symbol entries must be distinguished from function targets, and source-only checks establish static facts rather than reproduced behavior. The study therefore supports file/function ranking comparisons within its eligibility rules, without calibrated confidence or verified runtime causes.
+
+Internal comparisons also depend on what each intervention changes. The model-view and role variants alter available information or instruction schedules; they do not isolate representation format alone. Misleading-clue recovery uses workflow-specific eligible subsets rather than one common randomized subset. Restricted upstream adaptations may have different coverage, and partial schema validation or coarse hypothesis--observation links can limit trajectory interpretation. These distinctions must accompany any mechanism claim.
+
+Generalization is limited by retrieval-pool recall, the selected repositories and Python tasks, overlap between benchmark splits, possible public-data contamination and pilot exposure, and local-model nondeterminism. Chosen policy constants are not calibrated probabilities, and few repository clusters restrict statistical precision. Versioned manifests must keep the described implementation distinct from frozen experiment deployments; a result from one source version cannot silently substantiate a different one. Finally, retry and interruption costs can make completed-case resource summaries understate total system expenditure. Reporting coverage, missingness, actual costs, and version identities is necessary to bound these limitations.
+
+\section{Conclusion}\label{sec:conclusion}
+\tool{} specifies a reset boundary for model-driven fault investigation: retain recorded observations and selected competing explanations, clear role dialogue, and reconstruct the next request under cumulative budgets. Its linked models and transformations connect source-grounded proposals to checks, assessments, and subsequent investigator input. The constructed example demonstrates that information flow without serving as a benchmark result.
+
+The evaluation design tests whether these mechanisms improve localization and at what cost. Empirical conclusions about effectiveness, investigation behavior, and efficiency remain pending the complete comparisons in Section~\ref{sec:results}. Runtime verification and reviewed causal explanations require evidence beyond the present source-only protocol.
+
+\section*{Acknowledgments and AI Assistance}
+OpenAI Codex assisted repository inspection, literature search, drafting and substantive revision of the abstract and Sections~1--5 (including the model and transformation specification), evaluation and closing-section preparation, manuscript-wide consistency and presentation editing, LaTeX, and AI reviewer and readability passes. These assessments are simulated reviews, not human or journal peer review. Human authors remain responsible for checking the manuscript, references, and eventual results. Author identities and funding information remain to be supplied.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

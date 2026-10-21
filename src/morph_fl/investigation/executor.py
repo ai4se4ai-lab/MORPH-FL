@@ -81,6 +81,8 @@ class ProbeExecutor:
             )
         elif probe.kind == "ast_query":
             query = probe.parameters.get("query", {})
+            if not isinstance(query, dict):
+                raise ValueError("AST query must be an object")
             allowed = {"Call", "Assign", "Return", "Attribute", "Name", "FunctionDef", "Compare"}
             if query.get("node_type") not in allowed:
                 raise ValueError("AST query requires an allowed node type")

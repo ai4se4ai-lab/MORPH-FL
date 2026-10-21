@@ -2,6 +2,8 @@
 
 Model-driven fault hypothesis search with evidence-preserving strategic forgetting. The [research proposal](docs/MORPH-FL_Research_Proposal.md) defines the hypotheses; the [implementation map](docs/ARCHITECTURE.md) traces its conceptual algorithms and T1–T7 transformations to source and tests.
 
+For a connected explanation of the research questions, algorithm workflow, comparison conditions, and source locations, see the [approach and implementation guide](docs/APPROACH_AND_IMPLEMENTATION.md).
+
 The Python implementation includes typed behavioral/system/hypothesis/evidence models, AST dependency analysis and local def-use, investigation selection, static and registered container probes, scoped support/contradiction updates, independent investigator contexts, adaptive forgetting, diverse portfolios, budget enforcement and abstention. Fourteen policy conditions cover the proposed ablations and controlled baselines.
 
 ```bash

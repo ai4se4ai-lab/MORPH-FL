@@ -118,6 +118,14 @@ class MethodTests(unittest.TestCase):
         self.assertEqual(a.verdict, "supports")
         self.assertEqual(a.scope, "static_structure_only")
 
+    def test_ast_probe_rejects_non_object_query(self):
+        _, probe = synthesize(self.item(), self.system)
+        for query in ("Call", None, [], 42, True):
+            with self.subTest(query=query):
+                malformed = replace(probe, kind="ast_query", parameters=dict(line=4, query=query))
+                with self.assertRaisesRegex(ValueError, "AST query must be an object"):
+                    self.executor.execute(malformed)
+
     def test_dynamic_without_sandbox_is_inconclusive(self):
         h, p = synthesize(self.item(), self.system)
         p = replace(p, kind="test", prediction=Prediction("p", "failure", "test_fails", True))
