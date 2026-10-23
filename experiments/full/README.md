@@ -59,6 +59,13 @@ Historical Nibi smoke: `am-smoke-20261019-161100` in deployment `MORPH-FL-full-v
 
 The full benchmark may include the previously inspected pilot subjects listed in `prior_cases.json`; it must not be described as an untouched holdout. Main logical-token means refer to completed attempts. Interrupted/retried work is additionally reflected in the preserved audit/Slurm accounting and must be included in system-level cost interpretation.
 
-## Active UFV five-family revision
+## UFV five-family deployment history
 
 Run `ufv-fivefam-20261020-01` uses isolated deployment `/home/babaei/projects/MORPH-FL-ufv-fivefam-20261020`. It supersedes the four-model run, reuses its identical dataset preparation and compatible pinned weights, and preserves all earlier artifacts. UFV splits the full matrix into 34 model-specific stage submissions covering 733 cells. All five per-model preflights must succeed before primary inference. See [UFV operations](../../hpc/ufv/README.md).
+
+That run is superseded by active run `ufv-full-v12-20261020-01` in
+`/home/babaei/projects/MORPH-FL-full-v12-20261020`. All five gates and retrieval
+passed. Primary inference and queued recovery tasks are still in progress;
+consult the [living tracker](../../docs/UFV/study_progress.md) for current receipts
+and the [runtime recovery record](../../docs/UFV/runtime_recovery_20261020.md)
+for preserved failures and repairs.

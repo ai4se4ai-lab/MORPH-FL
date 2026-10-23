@@ -149,3 +149,244 @@ needed. Thirty-five local method, maintenance and tracker tests passed using
 phase overview now reflects the complete model gates and receipt-verified
 retrieval. UFV shared storage has 26 TB free; local storage has 31 GB free.
 The independent half-hour reporting cron remains installed.
+
+## October 21, 04:59 UTC — full-run health audit
+
+Refreshed the live tracker: **2,326/99,544** study progress records, with all
+five inference gates passed and retrieval receipt-verified at 1,414/1,414.
+Four Qwen primary cells have successful step exits and completion receipts.
+Tasks `17980_7` and `17980_8` are running; their logs show ongoing case execution.
+The three earlier AST-query failures remain historical unresolved attempts:
+`17980_1` is queued for retry, and replacement array `18012` covers tasks 0 and 2.
+DeepSeek waits for both arrays. Later families, side studies and collection
+remain dependency-queued. No new failed step was found. Recovery completion
+still requires successful receipts; full scientific completeness is not established.
+
+The unchanged deployed protocol and all **57 frozen source identities** passed
+hash verification, including the explicitly recorded maintenance replacements.
+Shared storage has 26 TB free. Local validation passed **116 tests** using the
+existing `/tmp/morph-review-venv` environment and `PYTHONPATH=src`; the system
+Python lacks optional matplotlib/libcst dependencies. The HPC self-test also
+passed shell syntax, compilation, full/smoke graph validation and submission dry
+runs. Stale README references to the detached monitor, historical collection job
+and active deployment were corrected. No compute source or scheduler changes
+were needed in this audit. The independent half-hour tracker remains active.
+
+## October 21, 06:07 UTC — launcher warning repair
+
+The refreshed snapshot contains **2,434/99,544** study progress records, an
+increase of 108 since the previous audit. Both active primary tasks continue
+writing completed cases. No new failed step was found; previous AST-query
+retries and downstream dependencies remain queued as recorded above.
+
+Container stderr exposed `scontrol: command not found` in distributed setup.
+Applied the existing local `setup_distributed` function to the deployed
+`hpc/slurm/common.sh`: single-node jobs use hostname when scontrol is absent,
+explicit MASTER_ADDR is retained, and missing multi-node configuration fails
+clearly. This launcher file is outside the protocol's frozen scientific source
+set. The original file, original/replacement hashes and repair timestamp are
+preserved under `L/maintenance/launcher-20261021/`. Bash syntax, isolated
+single-node/explicit-address/multi-node-error checks and the HPC self-test pass.
+Running processes were preserved; future task starts load the launcher repair.
+
+A tokenizer warning about a 77,846-token candidate input was followed by case
+completion. The deployed inference adapter checks input length against the
+16,384-token context before calling generate and raises BudgetExceeded when
+there is insufficient space. No context or scientific parameter was changed.
+Shared storage still has 26 TB available. Full-study completion remains pending.
+
+## October 21, 14:45 UTC — full-run audit
+
+Refreshed the live tracker: **3,173/99,544** study progress records. All five
+model gates passed, retrieval remains receipt-verified at **1,414/1,414**, and
+10 Qwen primary cells have successful step exits. Tasks **17980_13** and
+**17980_14** are running and writing completed cases; their current stderr files
+are empty. No new failed step was found. The three historical AST-query failures
+remain pending recovery: task 17980_1 and replacement array 18012 (tasks 0 and 2).
+DeepSeek and the subsequent stages remain dependency-queued. These queued
+recoveries still require successful receipts before being called resolved.
+
+Verified all **57 deployed frozen source identities**, recorded maintenance
+replacements and the unchanged protocol hash. All **116 local unit/integration
+tests** passed in `/tmp/morph-review-venv`; the HPC self-test passed shell syntax,
+compilation, full/smoke graph validation and submission dry runs. Shared storage
+has 26 TB available and local storage has 31 GB. The half-hour tracker cron
+remains installed. No additional compute-source patch or scheduler change was
+needed. Scientific completeness and final outcomes remain pending.
+
+## October 21, 18:07 UTC — repeat live audit
+
+The refreshed snapshot reports **3,473/99,544** study progress records, up 300
+since the previous audit. **12 Qwen primary cells** now have successful step
+exits. Tasks **17980_15** and **17980_16** are actively completing cases; their
+stderr files and those of the three preceding tasks are empty. No new failed
+step is recorded. All five inference gates and complete retrieval remain valid.
+The three historical AST-query failures still await their scheduled retries;
+full-study completeness remains pending. All **57 deployed source identities**
+and the unchanged protocol passed fresh hash verification. Shared storage has
+26 TB available. No additional runtime repair or scheduler change was needed;
+the live tracker was refreshed without changing scientific settings.
+
+## October 21, 20:17 UTC — full-run health audit
+
+The refreshed tracker contains **3,663/99,544** study progress records. All
+five inference gates passed; retrieval remains receipt-verified at 1,414/1,414.
+Fourteen Qwen primary cells have completion receipts. Live scheduler inspection
+shows tasks **17980_17** and **17980_18** running, with the two-task throttle
+preserved. The latest five primary stderr files are empty; no new failed step
+appears in the tracker. Historical AST-query failures remain pending recovery:
+task 17980_1 is queued, replacement array 18012 covers tasks 0 and 2, and
+DeepSeek 17981 waits on both arrays. These failures require successful retry
+receipts before being marked resolved.
+
+Fresh hash verification passed for all **57 deployed frozen sources**, recorded
+maintenance replacements and the unchanged protocol. All **116 local tests**
+passed in `/tmp/morph-review-venv`; the HPC self-test passed shell syntax,
+compilation, full/smoke graph validation and submission dry runs. Shared storage
+has 26 TB available. No additional compute-source repair or scheduler change
+was warranted. The tracker was refreshed and half-hour monitoring continues;
+full-study completion and final scientific outcomes remain pending.
+
+## October 22, 00:52 UTC — full-run health audit
+
+The refreshed snapshot reports **4,083/99,544** study progress records, with
+**16 primary completion receipts**. All five model gates and complete retrieval
+remain valid. Scheduler inspection confirms Qwen tasks **17980_19** and
+**17980_20** are running with the original two-task throttle; the latest eight
+primary stderr files are empty. No new failed step is recorded. Historical
+AST-query failures still await the queued task 17980_1 and replacement array
+18012 (tasks 0 and 2); DeepSeek 17981 correctly waits for both arrays. Successful
+retry receipts are still required before those failures can be marked resolved.
+
+All **57 frozen source identities**, recorded maintenance replacements and the
+unchanged protocol passed verification. All **116 local tests** and the HPC
+self-test passed, including full/smoke submission dry runs. Shared storage has
+26 TB available. The half-hour tracker entry remains installed and the cron
+service is active. Slurm accounting remains disabled, so failure visibility
+continues to use step ledgers and logs. No new repair or scheduler change was
+warranted; full scientific completeness and final outcomes remain pending.
+
+## October 22, 01:25 UTC — live follow-up audit
+
+The refreshed tracker reports **4,118/99,544** study records (+35 since the
+00:52 audit), with 16 primary completion receipts. Tasks 17980_19 and 17980_20
+remain running; both investigation logs have reached 132/132 case records at
+01:22 and 01:23 UTC respectively, but their completion receipts have not yet
+been published. Record coverage alone is not treated as cell completion.
+The latest eight primary stderr files are empty and no new failed step appears.
+The three historical primary failures retain their queued retries; DeepSeek
+still depends on both original and replacement Qwen arrays.
+
+All 57 deployed frozen source identities and the unchanged protocol passed
+fresh verification; shared storage has 26 TB available. No new source repair
+or scheduler change was warranted. The successful 116-test and HPC self-test
+results from the preceding audit remain applicable because no code changed.
+The tracker was refreshed; full scientific completeness remains pending.
+
+## October 22, 02:58 UTC — live full-run audit
+
+The refreshed snapshot contains **4,260/99,544** study records (+142 since
+01:25), with **18 primary completion receipts**. The two cells previously
+awaiting receipts have completed. Qwen tasks **17980_21** and **17980_22** are
+running; their investigation logs show 74/132 and 68/132 completed conditions.
+The latest eight primary stderr files are empty and no new failed step appears.
+All five model gates and complete retrieval remain valid. Historical failed
+primary tasks retain their queued retries, and DeepSeek correctly waits for
+both Qwen arrays. Recovery is not complete until retry receipts are present.
+
+Fresh verification passed for all **57 frozen source identities**, recorded
+maintenance replacements and the unchanged protocol. Shared storage has 26 TB
+available. No runtime repair or scheduler change was warranted. No code changed,
+so the preceding successful 116-test and HPC self-test results remain applicable.
+The live tracker was refreshed; full scientific completeness remains pending.
+
+## October 23, 05:37 UTC — full-run health audit
+
+The refreshed snapshot reports **6,608/99,544** study records and **36 primary
+completion receipts**. Qwen tasks **17980_39** and **17980_40** are running;
+their investigation logs show 65/132 and 51/132 completed conditions. The latest
+eight primary stderr files are empty and no new failed step appears. The three
+historical primary failures still await task 17980_1 and replacement array 18012;
+DeepSeek 17981 correctly depends on both arrays. All five inference gates and
+complete retrieval remain valid; recovery and full-study completion still
+require their respective receipts.
+
+Fresh verification passed for all **57 frozen source identities**, recorded
+maintenance replacements and the unchanged protocol. Shared storage has 26 TB
+available. The half-hour tracker cron remains installed and its service active.
+No compute-source repair or scheduler change was warranted. Added a dated
+operational note to the static evaluation report, preserving its original
+snapshot counts and explicitly distinguishing its recorded hash from mutable
+live metadata. No manuscript or scientific outcome claims were changed.
+
+## October 23, 13:32 UTC — full-run health audit
+
+The refreshed tracker reports **7,282/99,544** study records and **41 primary
+completion receipts**. Qwen tasks **17980_44** and **17980_45** are running;
+the latest eight primary stderr files are empty. All five model inference gates
+passed and retrieval remains receipt-verified at **1,414/1,414**. No new failed
+step was found. The three historical AST-query failures still await queued task
+17980_1 and replacement array 18012 (tasks 0 and 2). DeepSeek 17981 retains its
+dependencies on both Qwen arrays; later stages remain queued. Successful retry
+receipts are required before recovery can be called complete.
+
+Fresh streaming SHA-256 verification passed for all **57 deployed frozen source
+identities**, recorded maintenance replacements and the unchanged protocol.
+The login host's older system Python lacks `hashlib.file_digest`; the read-only
+audit therefore used a streaming SHA-256 implementation, without modifying the
+Python 3.11 compute runtime or deployed scientific sources. All **116 local
+unit/integration tests** passed in `/tmp/morph-review-venv`, and the HPC self-test
+passed shell syntax, compilation, full/smoke graph validation and submission dry
+runs. UFV shared storage has 25 TB available. The half-hour tracker cron remains
+installed and its service is active. Slurm accounting is still disabled; failure
+checks use available step ledgers, receipts and logs. No new compute-source or
+scheduler repair was warranted. Full scientific completeness remains pending.
+
+## October 23, 17:04 UTC — full-run health audit
+
+The refreshed tracker reports **7,589/99,544** study records and **44 primary
+completion receipts**. Active Qwen tasks **17980_47** and **17980_48** are
+writing completed cases (30/132 and 9/132 respectively at log inspection).
+The latest eight primary stderr files are empty. No new failed step was found;
+all five model gates and receipt-verified retrieval remain valid.
+
+The three historical AST-query failures retain their queued recoveries:
+17980_1 and replacement array 18012 (tasks 0 and 2). Scheduler inspection
+confirms 18012 waits for 17980, and DeepSeek 17981 waits for both arrays.
+Successful recovery receipts remain necessary before marking these failures
+resolved. Later stages and collection remain queued through the existing graph.
+
+Fresh streaming SHA-256 verification passed for all **57 frozen deployed source
+identities**, recorded runtime replacements and the unchanged protocol. All
+**116 local unit/integration tests** passed, as did the HPC self-test (shell
+syntax, Python compilation, full/smoke graph checks and submission dry runs).
+Shared UFV storage has 25 TB available; the half-hour tracker cron is installed
+and its service is active. Slurm accounting remains disabled, so the audit uses
+step ledgers, receipts and available logs. No new source or scheduler repair was
+warranted. The evaluation report retains its separate frozen scored snapshot;
+this operational refresh does not change its measured comparisons. Full-study
+scientific completeness remains pending.
+
+## October 23, 20:08 UTC — full-run audit and verifier compatibility fix
+
+The refreshed tracker reports **7,862/99,544** study progress records. Qwen
+cells **17980_49** and **17980_50** are running and writing completed cases;
+their inspected logs reached 33/132 and 15/132 conditions respectively.
+The latest eight primary stderr files are empty. No new failed step was found.
+Historical AST-query failures still require successful receipts from queued
+17980_1 and replacement array 18012; subsequent model stages remain dependent
+on those arrays. Full scientific completeness remains pending.
+
+Read-only streaming verification passed for all **57 frozen source identities**,
+all six recorded maintenance replacements, and the unchanged protocol. Shared
+storage has 25 TB available. The live tracker was refreshed; the evaluation
+report continues to use its separate frozen scored snapshot.
+
+Fixed the local runtime-maintenance digest helper to stream SHA-256 in bounded
+chunks instead of requiring Python 3.11's `hashlib.file_digest`. This makes the
+helper usable by the older login-host Python documented in the preceding audit.
+A regression test covers multi-chunk and empty files with `file_digest`
+unavailable. All **117 unit/integration tests** passed with `PYTHONPATH=src`
+in `/tmp/morph-review-venv`; the HPC self-test passed. This compatibility fix
+has **not** been copied into the frozen active deployment; no scientific source,
+protocol or scheduler changes were needed for the running experiment.

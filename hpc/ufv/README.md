@@ -77,13 +77,14 @@ python3 -u hpc/ufv/watch_collect.py \
   --destination hpc/logs/ufv-full-v12-20261020
 ```
 
-The existing detached collector PID is in
-`hpc/logs/ufv-full-v12-20261020/monitor.pid`; do not launch a duplicate.
-It polls once/minute, publishes the study document every 30 minutes (and on final collection), saves `status.json`, and transfers terminal logs, tables,
+The active monitor is the half-hour cron described below; use
+`bash hpc/ufv/cron_tracker.sh` for a single manual refresh with the same lock.
+The continuous command above is an alternative and must not run alongside cron.
+Cron publishes the study document every 30 minutes (and on final collection), saves `status.json`, and transfers terminal logs, tables,
 figures, predictions and metadata with an SSH tar stream. Remote rsync is absent.
 Graphs/evidence archives remain remote; their paths and sizes are inventoried.
 A scheduler-terminal run may still be scientifically incomplete: consult
-`scientific_completeness`, not only `done`. Collection job 17901 always analyzes
+`scientific_completeness`, not only `done`. Active collection job 18007 analyzes
 coverage; no success or favorable-outcome claim follows from job submission.
 
 Paper export/typesetting remains disabled on UFV because docs/TSE is absent from

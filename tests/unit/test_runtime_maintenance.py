@@ -6,6 +6,19 @@ from hpc.ufv.runtime_maintenance import digest, verify_sources
 
 
 class RuntimeMaintenanceTests(unittest.TestCase):
+    def test_digest_streams_without_python311_file_digest(self):
+        import hashlib
+        from unittest.mock import patch
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'source.bin'
+            payload = b'abc' * 800_000
+            path.write_bytes(payload)
+            with patch.object(hashlib, 'file_digest', None, create=True):
+                self.assertEqual(digest(path), hashlib.sha256(payload).hexdigest())
+                path.write_bytes(b'')
+                self.assertEqual(digest(path), hashlib.sha256(b'').hexdigest())
+
     def test_exact_recorded_repair_accepted_unrecorded_change_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
