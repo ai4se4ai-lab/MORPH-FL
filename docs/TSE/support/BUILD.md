@@ -21,3 +21,6 @@ The revised paper includes inline model-family and transformation-interface tabl
 
 ## Whole-paper presentation review (21 October 2026)
 The final controller algorithm uses the standard small algorithm font. The placeins float barrier ensures Algorithm 1 appears before its walkthrough; ragged-bottom layout avoids stretching paragraph gaps around the overview figure and algorithms. Current output is 22 pages. Both running-example scripts, 40 targeted tests, cross-reference/citation-key checks, and final layout checks passed. See PRESENTATION_REVIEW_20261021.md and build_verification.json; these records supersede earlier page-count statements without changing historical experiment manifests.
+
+## Round 5 restructuring (21 October 2026)
+The manuscript now has two TikZ figures (overview and metamodel), one algorithm, and an appendix (`\appendices`). The build is unchanged (pdflatex, bibtex, pdflatex ×2) and produces 15 pages without undefined references or overfull boxes. Run `PYTHONPATH=src python docs/TSE/support/check_running_example.py` and `PYTHONPATH=src python docs/TSE/support/check_synthetic_trace.py` from the repository root to check the trace and reset tables against the implementation.
