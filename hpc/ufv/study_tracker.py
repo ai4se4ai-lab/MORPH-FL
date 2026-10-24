@@ -232,6 +232,9 @@ def render_document(state):
     observed = sum(count(t) for t in planned)
     text = [
         '# MORPH-FL study phases, progress and results', '',
+        *(['**Execution priority:** the 50-issue pilot is prioritized; pending extended-study jobs '
+           'are held. See [pilot progress and early results](pilot_progress.md).', '']
+          if (ROOT / 'docs/UFV/pilot_progress.md').exists() else []),
         f"**Active run:** `{run}`  |  **Remote snapshot:** {state.get('checked_utc', 'unknown')} (UTC)  |  **Document refreshed:** {state.get('publication', {}).get('utc', 'unknown')} (UTC)", '',
         f'**Current picture:** {observed:,}/{sum(planned.values()):,} study progress records; '
         f"{sum(bool(v.get('complete')) for v in s.get('preflights', {}).values())}/{m} model preflights passed. "

@@ -390,3 +390,125 @@ unavailable. All **117 unit/integration tests** passed with `PYTHONPATH=src`
 in `/tmp/morph-review-venv`; the HPC self-test passed. This compatibility fix
 has **not** been copied into the frozen active deployment; no scientific source,
 protocol or scheduler changes were needed for the running experiment.
+
+## October 24, 03:31 UTC — full-run health audit
+
+The refreshed tracker reports **8,503/99,544** study progress records. Qwen
+jobs **17980_53** and **17980_54** are running; their inspected investigation
+logs reached 90/132 and 72/132 completed conditions. All five model preflights
+and receipt-verified retrieval remain valid. The latest eight primary stderr
+files are empty, and the step ledger contains no new failures.
+
+A tokenizer length warning in task 17980_54 reported a 44,867-token candidate
+prompt. Inspection of the adapter confirms it counts candidate prompts before
+iteratively trimming supplied context; the inference backend separately checks
+the common context allowance before generation. The affected RGFL condition
+subsequently emitted `case_done` and execution advanced to the next case. This
+warning therefore did not establish an oversized model generation or a failed
+case, and no protocol-changing truncation repair was applied.
+
+Historical AST failures still await task 17980_1 and replacement array 18012.
+Direct scheduler inspection confirms 18012 waits for 17980 and DeepSeek 17981
+waits for both arrays. Successful recovery receipts remain required. Later
+stages remain queued in the existing dependency graph; full scientific
+completeness is pending.
+
+Read-only streaming verification passed for all **57 frozen source identities**,
+all six recorded maintenance files, and the unchanged protocol. All **117 local
+unit/integration tests** and the HPC self-test passed. Shared storage has 25 TB
+available. Slurm accounting remains disabled, so failure checks use the step
+ledger, receipts and logs. No new source or scheduler repair was warranted.
+The tracker was refreshed; the evaluation report retains its frozen snapshot.
+
+## October 24, 18:01 UTC — live experiment health audit
+
+Manual tracker refresh reports **9,755/99,544** study progress records.
+Qwen tasks **17980_63** and **17980_64** are running; their investigation
+logs reached **61/132** and **32/132** completed conditions at inspection.
+The inspected recent primary stderr files are empty. The step ledger contains
+only the five previously recorded failed attempts; no new failure was found.
+All five preflight gates and receipt-verified retrieval remain complete.
+
+Historical primary failures still await queued task **17980_1** and replacement
+array **18012** (tasks 0 and 2). Direct scheduler inspection confirms 18012
+waits for 17980, and DeepSeek 17981 waits for both arrays. Later stages and
+collection remain queued. Successful recovery receipts are still required;
+full scientific completeness has not been established.
+
+Shared UFV storage has **25 TB available**, and the half-hour tracker cron
+remains installed. The living tracker and local status snapshot were refreshed.
+No new runtime or scheduler issue requiring a repair was identified, so no
+active experiment code, scientific settings, or scheduler dependencies changed.
+
+## October 24, 18:16 UTC — prioritize a smaller exploratory pilot
+
+Following user approval, pending extended-study jobs were placed on reversible
+scheduler holds. Tasks 17980_63 and 17980_64 continue normally; no completed
+outputs were removed. The exact 59 held job/task identities, queue snapshot,
+and submission commands are preserved in
+`/home/babaei/morph-ufv/pilots/pilot-20261024/schedule.json` and adjacent records.
+
+The separate pilot freezes 50 repository-balanced, hash-selected issues,
+excluding previously inspected IDs before outcomes are opened. It runs Qwen
+and DeepSeek with seed 1, four primary workflows, and the unchanged 32k budget
+and 16 rounds. It reuses 132 validated primary records plus 100 retrieval
+records; 268 primary predictions remain. Qwen array **18105** waits for the two
+running full-study tasks, DeepSeek array **18106** follows Qwen, and CPU report
+job **18107** checks exact pilot coverage. New code only orchestrates subsets
+around the verified frozen deployment; its inference/scientific sources are
+unchanged. Pilot receipts never certify full-study shard completion.
+
+A read-only scheduled snapshot analyzed 472 complete Qwen four-workflow issue
+sets (seed 1). File Top1: MORPH 42.8%, no-forgetting 43.2%, fixed-reset 42.2%,
+stateless-summary 52.5%. These completion-selected, exploratory comparisons
+include any previously inspected cases and do not establish generalization.
+They currently show no MORPH advantage. The compact paired report and scores
+are stored locally under `experiments/pilot/results/existing-analysis/`.
+
+The dedicated local half-hour pilot tracker collects small reports/status;
+the existing full tracker remains installed and links to the pilot page.
+See [pilot progress](pilot_progress.md) and
+[pilot implementation](../../experiments/pilot/README.md). Verification:
+117 existing unit/integration tests passed; three new tests cover deterministic
+selection, preservation of original shard/settings, and paired denominators.
+All 14 pilot/tracker tests passed after the reporting change; shell syntax,
+Python compilation and whitespace checks passed.
+
+## October 24, 20:22 UTC — pilot inference active; interim comparison collected
+
+Both original full-study tasks finished, and pilot Qwen array **18105** is
+now running tasks **22** and **24** on node2. Both loaded the pinned checkpoint,
+completed their first MORPH conditions, and advanced to no-forgetting. Pilot
+progress is **134/400** records. No traceback or new execution failure was
+found; checkpoint loading messages and a dtype deprecation warning are benign.
+DeepSeek **18106** and final reporting **18107** retain their dependencies.
+The extended study remains held.
+
+Scheduled CPU snapshot **18110** completed successfully. Its read-only report
+validates completed records against frozen provenance and skips incomplete live
+JSONL tails. Across **33 complete Qwen pilot issues**, file Top1 is 42.4% for
+MORPH, no-forgetting and fixed-reset, and 48.5% for stateless-summary. The
+partial sample currently shows no MORPH advantage; remaining cases and DeepSeek
+are pending. See [interim pilot report](../../experiments/pilot/results/interim-analysis/report.md).
+This snapshot is separate from final coverage validation and does not change
+inference settings or the frozen subject selection. The half-hour tracker now
+collects interim reports as well. All **121 unit/integration tests** passed,
+including live-tail handling, and shell/whitespace checks passed.
+
+## October 24, 20:56 UTC — pilot progress and refreshed partial results
+
+The pilot advanced from 134 to **173/400** primary records. Qwen tasks
+18105_22, _24, _25 and _26 have successful subset receipts (eight records
+each). Tasks _27 and _29 are running; _31 remains queued. Inspected Qwen
+stderr logs contain checkpoint loading/deprecation messages and no traceback.
+DeepSeek 18106 still waits for Qwen, followed by final reporting 18107.
+The extended-study scheduler holds remain in place.
+
+Scheduled CPU snapshot **18115** completed successfully with 173 observed
+primary records. On **42 complete Qwen pilot issues**, file Top1 is 40.5%
+for MORPH, no-forgetting and fixed-reset, versus 47.6% for stateless-summary.
+The descriptive repository bootstrap interval for MORPH minus summary is
+[-17.1, +2.3] percentage points. This incomplete exploratory sample does not
+establish an advantage for MORPH. The interim report and live pilot page were
+refreshed; the installed half-hour monitor also refreshed successfully at
+20:30 UTC. No inference, protocol or scheduler repair was needed.
