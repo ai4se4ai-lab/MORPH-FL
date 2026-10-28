@@ -512,3 +512,68 @@ The descriptive repository bootstrap interval for MORPH minus summary is
 establish an advantage for MORPH. The interim report and live pilot page were
 refreshed; the installed half-hour monitor also refreshed successfully at
 20:30 UTC. No inference, protocol or scheduler repair was needed.
+
+## October 24, 22:46 UTC — Qwen complete; DeepSeek progressing and quality reviewed
+
+The pilot passed **307/400** records: Qwen has all **200/200**, and DeepSeek
+has **107/200** at the 22:44 status snapshot. All seven newly executed Qwen
+cells have successful subset receipts; the remaining 132 Qwen predictions
+were validated imports. DeepSeek is actively completing cases with no
+tracebacks found in inspected task logs. Final report 18107 remains queued.
+
+CPU snapshot **18133** validated 307 predictions. The full 50-issue Qwen
+comparison reports file Top1 42.0% for MORPH/no-forgetting/fixed-reset versus
+50.0% for stateless-summary. DeepSeek's first 26 matched issues report 34.6%
+versus 42.3%, respectively. Per-model issue cohorts differ; cross-model
+accuracy comparisons are premature. The tracker now displays model-specific
+record totals and the interim report's own timestamp/coverage.
+
+Scheduled diagnostic **18135** also completed. DeepSeek frequently has no
+final hypotheses, and audits contain repeated invalid-localization-JSON events.
+The [output-quality review](pilot_quality_review.md) records exact denominators,
+event counts and limitations. This matters scientifically despite successful
+job execution. No prompt, parser, inference policy or scientific setting was
+changed during this frozen pilot. Diagnostic aggregation, incomplete-tail
+handling, Python compilation and whitespace checks passed.
+
+## October 25, 01:59 UTC — fast pilot complete and independently verified
+
+All **400/400** primary predictions are complete: 200 Qwen and 200 DeepSeek.
+Final report job **18107** produced a complete zero-missing-key coverage report
+with empty stdout/stderr. Independent scheduled validation **18143** checked
+all primary prediction signatures and provenance against frozen sources,
+verified all **100/100** selected retrieval-control records, and reconciled
+**132 imported + 268 newly receipted** primary predictions across 33 successful
+new cells. It also collected final DeepSeek audit diagnostics. No inference
+settings were changed and the extended-study holds remain in place.
+
+Qwen MORPH file Top1 is **42%**, compared with **50%** for stateless-summary;
+DeepSeek has **40%** for both. No-forgetting/fixed-reset tie MORPH's file Top1
+on both models. Both retrieval controls score 40%. DeepSeek MORPH retains
+hypotheses on only **6/50** cases versus **47/50** for summary; audits record
+68 and 50 invalid-response events respectively. Empty pools, fallback rankings,
+proxy labels, one seed and low reset counts limit interpretation.
+
+See [completed pilot results](pilot_results.md) for costs, function accuracy,
+uncertainty, evidence links and the recommendation to diagnose output quality
+before extending the unchanged method. The frozen October 23 detailed evaluation
+report now links to this separate pilot interpretation without replacing its
+original measurements. Progress pages and final artifacts have been collected;
+the installed half-hour monitor remains active.
+
+## October 26, 01:35 UTC — completed pilot rechecked
+
+A fresh remote inspection still reports **400/400 primary records**, zero
+missing keys, and **100 verified retrieval controls**. There are no pilot jobs
+left in the queue and no traceback/OOM/error signatures in inspected task
+stderr files. All extended-study pending tasks remain held by the user.
+The half-hour pilot monitor refreshed successfully at 01:00 and 01:30 UTC.
+
+Read-only streaming SHA-256 verification passed for all **57 frozen source
+identities**, all **six maintenance files**, and the unchanged protocol.
+Collected summary, quality, controls and completeness artifacts match their
+remote SHA-256 identities. The scores CSV matches after normalizing CRLF to
+LF, the expected newline conversion from text-based collection; all 400
+unique prediction keys retain seed 1 and budget 32,000. Reported outcomes
+and the output-quality limitation are unchanged. The progress page was
+refreshed; no experiment or scheduler changes were made.

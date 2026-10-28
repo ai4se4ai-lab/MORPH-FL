@@ -12,11 +12,12 @@ from pathlib import Path
 base=Path('/home/babaei/morph-ufv/pilots/pilot-20261024')
 out={'base':str(base),'files':{}}
 for relative in ['schedule.json','results/pilot.json','results/pending.json',
-                 'results/analysis/completeness.json']:
+                 'results/analysis/completeness.json','results/interim-analysis/completeness.json']:
  p=base/relative
  if p.exists():out[relative]=json.loads(p.read_text())
 for directory in ['existing-analysis','interim-analysis','analysis']:
- for name in ['report.md','scores.csv','summary.json','completeness.json']:
+ for name in ['report.md','scores.csv','summary.json','completeness.json','quality.json',
+              'controls.json','final-verification.json']:
   p=base/'results'/directory/name
   if p.exists():out['files'][directory+'/'+name]=p.read_text()
 counts={}
@@ -28,6 +29,10 @@ if reuse.exists():
 for p in (base/'results/progress').glob('main*.jsonl'):
  counts[p.stem]=max(counts.get(p.stem,0),sum(bool(l.strip()) for l in p.open()))
 out['completed_primary']=sum(counts.values())
+out['completed_by_model']={str(m):sum(n for cell,n in counts.items() if '__m'+str(m)+'__' in cell)
+                           for m in [0,1]}
+out['successful_cells_by_model']={str(m):len(list((base/'results/receipts').glob('main__m'+str(m)+'__*.json')))
+                                 for m in [0,1]}
 out['queue']=subprocess.check_output(['squeue','-h','-r','-u','babaei','-o','%i|%j|%T|%R'],universal_newlines=True)
 print(json.dumps(out))
 '''
@@ -50,6 +55,8 @@ def refresh():
     if pilot:
         (destination / 'pilot.json').write_text(json.dumps(pilot, indent=2) + '\n')
     complete = state.get('results/analysis/completeness.json', {}).get('complete', False)
+    model_counts = state.get('completed_by_model', {})
+    interim = state.get('results/interim-analysis/completeness.json', {})
     lines = ['# Fast pilot progress', '', f'Updated: {state["checked_utc"]} (UTC).', '',
              '**The extended study is deferred.** Its pending jobs are held; existing full-run '
              'outputs are preserved. Pilot inference follows the two full-study tasks that '
@@ -59,18 +66,28 @@ def refresh():
              'before outcomes were read. Completed matching predictions are reused.', '',
              f'**Progress:** {state["completed_primary"]}/400 primary records '
              f'({"complete, coverage verified" if complete else "coverage not yet complete"}).', '',
+             *(['[Completed pilot results and interpretation](pilot_results.md). '
+                'The extended study remains deferred pending output-quality diagnosis.', '']
+               if complete else []),
+             f'**By model:** Qwen {model_counts.get("0", 0)}/200; '
+             f'DeepSeek {model_counts.get("1", 0)}/200. Counts show written records; '
+             'the final report validates full coverage.', '',
              '[Existing paired comparison](../../experiments/pilot/results/existing-analysis/report.md) '
              'uses complete four-workflow issue sets from a completion-selected snapshot. '
              'Its exploratory estimates do not establish generalization.', '',
              '[Interim pilot comparison](../../experiments/pilot/results/interim-analysis/report.md) '
              'reports a scheduled snapshot of the fixed 50-issue sample, with incomplete coverage '
-             'shown explicitly.', '',
-             '[Pilot report](../../experiments/pilot/results/analysis/report.md) appears after inference. '
+             f'shown explicitly. Latest snapshot: {interim.get("checked_utc", "pending")}; '
+             f'{interim.get("observed", 0)}/400 records.', '',
+             '[Output-quality review](pilot_quality_review.md) documents the DeepSeek '
+             'empty-hypothesis and invalid-response diagnostics separately from scheduler health.', '',
+             '[Pilot report](../../experiments/pilot/results/analysis/report.md) contains the final comparison. '
              'Per-case scores, descriptive repository bootstrap intervals and completeness metadata '
              'are preserved with the reports.', '',
              f'Remote pilot artifacts: `{REMOTE}`.', '',
              '## Scheduler', '', '```text']
-    lines += [line for line in state['queue'].splitlines() if 'morph-pilot' in line]
+    pilot_queue = [line for line in state['queue'].splitlines() if 'morph-pilot' in line]
+    lines += pilot_queue or ['No pilot jobs queued or running.']
     lines += ['```', '', '## Resume the extended study', '',
               'The exact held job IDs are recorded remotely in `schedule.json` and `held-jobs.json`. '
               'Release those jobs with `scontrol release <job-id>` when ready. '

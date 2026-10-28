@@ -26,6 +26,9 @@ elif [[ "$mode" == prepare ]]; then
 elif [[ "$mode" == snapshot ]]; then
     entry=snapshot.py
     args=(--results "$PILOT_RESULTS")
+elif [[ "$mode" == finalize ]]; then
+    entry=finalize.py
+    args=(--results "$PILOT_RESULTS")
 fi
 singularity exec "${nv[@]}" --bind /home,/tmp "$runtime/pytorch.sif" \
     /opt/conda/bin/python -u "$PILOT_CODE/$entry" "${args[@]}"

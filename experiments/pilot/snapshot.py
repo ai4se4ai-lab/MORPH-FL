@@ -2,7 +2,7 @@
 import argparse
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 try:
@@ -29,6 +29,8 @@ def snapshot(results):
         raise ValueError('Frozen pilot wrapper changed')
     if digest(results / 'data/cases.jsonl') != manifest['cases_sha256']:
         raise ValueError('Prepared subjects changed')
+    if digest(suite.ROOT / 'experiments/full/protocol.json') != manifest['protocol_sha256']:
+        raise ValueError('Frozen protocol changed')
     subjects = list(rows(results / 'data/cases.jsonl'))
     labels = {r['instance_id']: r for r in rows(results / 'data/labels.jsonl')}
     selected = set(manifest['selected_ids'])
@@ -40,6 +42,20 @@ def snapshot(results):
         settings = json.loads(path.with_suffix('.config.json').read_text())
         if settings['protocol_sha256'] != manifest['protocol_sha256']:
             raise ValueError('Protocol mismatch')
+        # A self-consistent signature proves agreement with the saved config,
+        # not that the config belongs to the frozen pilot.
+        model = next((m for m in manifest['models']
+                      if pins[m]['id'] == settings['model']['id']), None)
+        if (model is None or settings['model']['revision'] != pins[model]['revision']
+                or settings['track'] != 'main' or settings['seed'] != manifest['seed']
+                or settings['shards'] != manifest['shards'] or settings['smoke']
+                or settings.get('preflight', False)
+                or type(settings['shard']) is not int
+                or not 0 <= settings['shard'] < manifest['shards']):
+            raise ValueError('Prediction configuration differs from frozen pilot settings')
+        cell = f"main__m{model}__s{manifest['seed']}__p{settings['shard']}"
+        if path.stem != cell:
+            raise ValueError('Prediction filename differs from frozen shard identity')
         signature = hashlib.sha256(json.dumps(settings, sort_keys=True).encode()).hexdigest()
         shard_cases = [c for c in subjects[settings['shard']::settings['shards']]
                        if c['instance_id'] in selected]
@@ -58,7 +74,7 @@ def snapshot(results):
     report(records, destination, 'Fast pilot — partial snapshot on fixed subjects')
     write_json(destination / 'completeness.json', dict(
         expected=len(expected), observed=len(seen), missing=len(expected-seen),
-        complete=seen == expected, checked_utc=datetime.now(timezone.utc).isoformat(), inputs=inputs))
+        complete=seen == expected, checked_utc=datetime.now(UTC).isoformat(), inputs=inputs))
     with (destination / 'report.md').open('a') as out:
         out.write(f'\nSnapshot coverage: **{len(seen)}/{len(expected)} primary records**. '
                   'Only issues complete for all four workflows enter each model table; '

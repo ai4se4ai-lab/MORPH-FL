@@ -9,6 +9,7 @@ fixed-reset and stateless-summary. Retrieval outputs are reused separately.
 The extended study's pending jobs are held; running tasks finish normally.
 
 See [live progress](../../docs/UFV/pilot_progress.md),
+[completed results and interpretation](../../docs/UFV/pilot_results.md),
 [initial paired report](results/existing-analysis/report.md), and
 [frozen subject selection](results/pilot.json).
 The initial report uses completed four-workflow Qwen issue sets from the full
@@ -39,6 +40,9 @@ record, validates completed prediction provenance using the frozen runner, and
 reports exact observed/missing pilot keys. Its `interim-analysis` output stays
 separate from final analysis and is collected by the tracker. It represents
 the snapshot time, rather than a continuously recomputed accuracy estimate.
+The local checker also binds saved configurations to the frozen protocol digest,
+pinned model revision, seed and original shard identity. A matching prediction
+signature alone cannot certify that these settings belong to the planned pilot.
 
 Reports compare workflows on the same completed eligible issues, include
 file/function accuracy, completed-case costs, reset counts and descriptive
@@ -46,3 +50,11 @@ repository-cluster bootstrap intervals. These intervals are exploratory and
 unadjusted for multiple comparisons. Interrupted-attempt costs are excluded.
 If pilot outcomes motivate method changes, retain untouched cases for later
 confirmation rather than treating a favorable rerun as independent evidence.
+
+`finalize.py` independently validates all primary prediction signatures using
+the frozen runner, checks imported-plus-receipted coverage, verifies all 100
+retrieval-control records, and collects final DeepSeek audit diagnostics.
+Receipt validation checks each cell against its prediction keys and counts
+imported predictions once, including when a resumed cell mixes imported and
+new records. It rejects missing, mismatched or incomplete receipts for new
+predictions. Run as a script or with `python -m experiments.pilot.finalize`.

@@ -1,3 +1,4 @@
+import hashlib
 import json
 import tempfile
 import unittest
@@ -6,10 +7,106 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from experiments.pilot import manage
-from experiments.pilot.snapshot import completed_rows
+from experiments.pilot.finalize import verify_receipts
+from experiments.pilot.snapshot import completed_rows, snapshot
 
 
 class PilotTests(unittest.TestCase):
+    def test_snapshot_rejects_self_consistent_but_unfrozen_settings(self):
+        from experiments.full import suite
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative in ['data', 'predictions', 'experiments/full']:
+                (root / relative).mkdir(parents=True)
+            protocol = root / 'experiments/full/protocol.json'
+            protocol.write_text('{}')
+            spec = dict(id='unit-model', revision='pinned-commit')
+            manage.write_json(root / 'experiments/full/pins.json', dict(models=[spec]))
+            case = dict(instance_id='case', repo='unit/repo', revision='source-commit',
+                        report='public report', archive_sha256='archive-hash')
+            (root / 'data/cases.jsonl').write_text(json.dumps(case) + '\n')
+            (root / 'data/labels.jsonl').write_text(json.dumps(dict(
+                instance_id='case', revision=case['revision'], files=['a.py'], functions=[])) + '\n')
+            manage.write_json(root / 'pilot.json', dict(
+                selected_ids=['case'], models=[0], seed=1, shards=32, budget=32000,
+                variants=manage.VARIANTS, protocol_sha256=manage.digest(protocol),
+                wrapper_sha256=manage.digest(manage.__file__),
+                cases_sha256=manage.digest(root / 'data/cases.jsonl')))
+            path = root / 'predictions/main__m0__s1__p0.jsonl'
+            settings = dict(track='main', model=spec, seed=1, shard=0, shards=32,
+                            smoke=0, protocol_sha256=manage.digest(protocol))
+
+            def write_predictions(config):
+                signature = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
+                manage.write_json(path.with_suffix('.config.json'), config)
+                records = [dict(
+                    instance_id='case', repo=case['repo'], revision=case['revision'],
+                    report_digest=hashlib.sha256(case['report'].encode()).hexdigest(),
+                    source_archive_sha256=case['archive_sha256'], run_signature=signature,
+                    track='main', seed=1, model_id=spec['id'],
+                    model_revision=config['model']['revision'], budget=32000,
+                    variant=v, ranking=['a.py']) for v in manage.VARIANTS]
+                path.write_text(''.join(json.dumps(r) + '\n' for r in records))
+
+            with patch.object(suite, 'ROOT', root), patch.object(suite, 'locked'):
+                write_predictions(settings)
+                snapshot(root)
+                self.assertTrue(json.loads((root / 'interim-analysis/completeness.json')
+                                           .read_text())['complete'])
+                for changed in [dict(settings, model=dict(spec, revision='different-commit')),
+                                dict(settings, shards=16), dict(settings, shard=-1),
+                                dict(settings, shard=32), dict(settings, shard=True),
+                                dict(settings, preflight=True)]:
+                    write_predictions(changed)
+                    with self.subTest(settings=changed), self.assertRaises(ValueError):
+                        snapshot(root)
+                write_predictions(settings)
+                other = path.with_name('main__m0__s1__p1.jsonl')
+                path.rename(other)
+                path.with_suffix('.config.json').rename(other.with_suffix('.config.json'))
+                with self.assertRaisesRegex(ValueError, 'filename'):
+                    snapshot(root)
+                other.rename(path)
+                other.with_suffix('.config.json').rename(path.with_suffix('.config.json'))
+                protocol.write_text('{"changed": true}')
+                with self.assertRaisesRegex(ValueError, 'protocol'):
+                    snapshot(root)
+
+    def test_receipts_cover_partial_reuse_without_double_counting(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'predictions').mkdir()
+            (root / 'receipts').mkdir()
+            cell = 'main__m0__s1__p0'
+            records = [dict(instance_id='case', variant=v) for v in manage.VARIANTS]
+            (root / 'predictions' / (cell + '.jsonl')).write_text(
+                ''.join(json.dumps(r) + '\n' for r in records))
+            manage.write_json(root / 'reuse.json', dict(records=[
+                dict(file=cell + '.jsonl', **records[0])]))
+            receipt = root / 'receipts' / (cell + '.json')
+            manage.write_json(receipt, dict(cell=cell, records=4, complete=True))
+            self.assertEqual(verify_receipts(root), dict(
+                imported_primary_records=1, successful_new_cells=1, new_receipt_records=3))
+            for bad in [dict(cell=cell, records=3, complete=True),
+                        dict(cell='another-cell', records=4, complete=True),
+                        dict(cell=cell, records=4, complete=False)]:
+                manage.write_json(receipt, bad)
+                with self.subTest(receipt=bad), self.assertRaises(ValueError):
+                    verify_receipts(root)
+            receipt.unlink()
+            with self.assertRaisesRegex(ValueError, 'lack import provenance'):
+                verify_receipts(root)
+            manage.write_json(root / 'reuse.json', dict(records=[
+                dict(file=cell + '.jsonl', **r) for r in records]))
+            self.assertEqual(verify_receipts(root)['new_receipt_records'], 0)
+            for invalid in [records + [records[0]],
+                            records + [dict(instance_id='missing', variant='morph')]]:
+                manage.write_json(root / 'reuse.json', dict(records=[
+                    dict(file=cell + '.jsonl', **r) for r in invalid]))
+                with self.assertRaisesRegex(ValueError, 'Duplicate or missing imported'):
+                    verify_receipts(root)
+
     def test_live_snapshot_ignores_incomplete_tail_and_later_appends(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'predictions.jsonl'
