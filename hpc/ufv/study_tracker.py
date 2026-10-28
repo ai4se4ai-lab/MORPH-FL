@@ -230,13 +230,42 @@ def render_document(state):
     row('13', 'Scientific interpretation', 'Review outcomes, effect sizes, limitations and manuscript claims',
         'Completion is not evidence of a positive effect; conclusions must follow observed results and remaining validity gaps.', 'REQUIRES HUMAN REVIEW', 'Not automatically marked complete. Manuscript export/typesetting is not scheduled on UFV because docs/TSE is absent.', '[Study evidence](../../experiments/full/models.md); final `R/analysis/report.md`; manuscript review notes (to be written)')
     observed = sum(count(t) for t in planned)
+    pilot_verification = ROOT / 'experiments/pilot/results/analysis/final-verification.json'
+    pilot_results = ROOT / 'docs/UFV/pilot_results.md'
+    pilot_complete = (pilot_verification.exists() and pilot_results.exists()
+                      and json.loads(pilot_verification.read_text()).get('complete') is True)
+    pilot_section = []
+    if pilot_complete:
+        # Keep the completed pilot's measured results and caveats in one source.
+        body = pilot_results.read_text().split('\n', 1)[1].strip()
+        body = '\n'.join('#' + line if line.startswith('## ') else line
+                         for line in body.splitlines())
+        pilot_section = ['## Completed exploratory pilot', '', body, '',
+                         '### Local corrections and validation', '',
+                         'The ambiguity-deduplication and finalization corrections are local '
+                         'development changes. The October 27 check passed 123 tests and the HPC '
+                         'self-tests; it supplies no new model accuracy evidence. Frozen inference '
+                         'sources and saved predictions remain preserved. See the '
+                         '[output-quality review](pilot_quality_review.md) and '
+                         '[evaluation report](../TSE/EVALUATION_RESULTS_REPORT.md).', '',
+                         'The phase tables below describe the extended study. Pilot-only predictions '
+                         'are separate and are not added to its progress total. Pending extended-study '
+                         'jobs remain held; ATTENTION rows retain historical failed attempts and do '
+                         'not by themselves indicate a new scheduler failure.', '']
     text = [
         '# MORPH-FL study phases, progress and results', '',
+        *(['**Execution status:** the 50-issue pilot is complete (400/400 primary and 100/100 '
+           'retrieval-control predictions). The extended study remains deferred pending '
+           'output-quality diagnosis; pending jobs remain held. See [pilot progress](pilot_progress.md).', '']
+          if pilot_complete else ['**Execution priority:** the 50-issue pilot is prioritized; pending extended-study jobs '
+           'are held. See [pilot progress and early results](pilot_progress.md).', '']
+          if (ROOT / 'docs/UFV/pilot_progress.md').exists() else []),
         f"**Active run:** `{run}`  |  **Remote snapshot:** {state.get('checked_utc', 'unknown')} (UTC)  |  **Document refreshed:** {state.get('publication', {}).get('utc', 'unknown')} (UTC)", '',
         f'**Current picture:** {observed:,}/{sum(planned.values()):,} study progress records; '
         f"{sum(bool(v.get('complete')) for v in s.get('preflights', {}).values())}/{m} model preflights passed. "
         f"Scientific completeness: **{completeness_label}**. "
         'The 30 separate preflight records and historical smoke are excluded from the study total.', '',
+        *pilot_section,
         ('This is the living execution plan. Cron on comp370 checks and refreshes it every 30 minutes, independently of an interactive login. ' if state.get('monitor_mode') == 'cron' else 'This is the living execution plan. It refreshes every 30 minutes while the continuous monitor is running; remote checks continue once per minute. A final collection triggers an additional refresh. ') +
         'Read the UTC timestamp to detect stale information. Completed experiment rows require receipts; record counts alone do not establish success. '
         'RECOVERY RUNNING means a replacement job is active after a failed attempt; it does not establish completion. Historical failures stay in the failure log. Outcome statistics appear when analysis generates them; no missing scores are filled in.', '',

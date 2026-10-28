@@ -60,6 +60,17 @@ class MethodTests(unittest.TestCase):
         self.assertEqual(model.status, "conjectured")
         self.assertTrue(complaint_to_contract("unclear").ambiguities)
 
+    def test_t1_repeated_empty_responses_do_not_grow_ambiguities(self):
+        model = complaint_to_contract("unclear")
+        unresolved = model.ambiguities[0]
+        for _ in range(16):
+            model = complaint_to_contract("unclear", {
+                "ambiguities": model.ambiguities + ["Needs a runtime trace"] * 2,
+                "hypotheses": [],
+            })
+            self.assertEqual(model.ambiguities, [unresolved, "Needs a runtime trace"])
+            self.assertEqual(model.status, "conjectured")
+
     def test_t2_records_calls_data_flow_and_source_versions(self):
         kinds = {r.kind for r in self.system.relations}
         self.assertTrue({"calls", "imports", "reads", "writes", "data_flows_to"} <= kinds)
