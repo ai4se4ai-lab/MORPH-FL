@@ -282,11 +282,13 @@ class LocalizationController:
                 budget.charge(
                     self.backend.input_tokens - before_in, self.backend.output_tokens - before_out
                 )
-            if not isinstance(response, dict) or not isinstance(
-                response.get("hypotheses"), list
-            ) or any(
-                key in response and not isinstance(response[key], list)
-                for key in ("invariants", "ambiguities")
+            if (
+                not isinstance(response, dict)
+                or not isinstance(response.get("hypotheses"), list)
+                or any(
+                    key in response and not isinstance(response[key], list)
+                    for key in ("invariants", "ambiguities")
+                )
             ):
                 invalid += 1
                 artifact, digest = store.put(raw.encode())

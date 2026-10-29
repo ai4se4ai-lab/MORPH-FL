@@ -27,9 +27,9 @@ def complaint_to_contract(report: str, extraction: dict | None = None) -> Behavi
         if isinstance(data.get(key), str):
             setattr(model, key, data[key])
     model.invariants = [s for s in data.get("invariants", []) if isinstance(s, str)]
-    model.ambiguities = list(dict.fromkeys(
-        s for s in data.get("ambiguities", []) if isinstance(s, str)
-    ))
+    model.ambiguities = list(
+        dict.fromkeys(s for s in data.get("ambiguities", []) if isinstance(s, str))
+    )
     if not model.expected or not model.observed:
         unresolved = "Expected/observed behavior has not been independently established"
         if unresolved not in model.ambiguities:

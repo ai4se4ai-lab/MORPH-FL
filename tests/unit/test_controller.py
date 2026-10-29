@@ -51,6 +51,7 @@ class ControllerTests(unittest.TestCase):
 
     def test_null_or_nontext_predictions_are_not_valid_hypotheses(self):
         for prediction in [None, 42, [], {"description": None}, {"description": 42}, " "]:
+
             class InvalidPrediction(RecordingBackend):
                 def ask(self, messages, remaining):
                     response, _ = super().ask(messages, remaining)
@@ -114,8 +115,9 @@ class ControllerTests(unittest.TestCase):
                 self.output_tokens += 25
                 raise InvalidModelResponse("Invalid JSON", "Here is prose instead of JSON.")
 
-        result = localize(self.root, "total", "v", MalformedBackend(), rounds=1,
-                          artifacts=self.root / "evidence")
+        result = localize(
+            self.root, "total", "v", MalformedBackend(), rounds=1, artifacts=self.root / "evidence"
+        )
         failure = next(e for e in result["audit"] if e["type"] == "invalid_response")
         raw = Path(failure["artifact"]).read_bytes()
         self.assertEqual(raw, b"Here is prose instead of JSON.")
@@ -131,11 +133,14 @@ class ControllerTests(unittest.TestCase):
                 response = dict(report="echoed report", expected=None)
                 return response, json.dumps(response)
 
-        result = localize(self.root, "total", "v", EchoBackend(), rounds=1,
-                          artifacts=self.root / "evidence")
+        result = localize(
+            self.root, "total", "v", EchoBackend(), rounds=1, artifacts=self.root / "evidence"
+        )
         failure = next(e for e in result["audit"] if e["type"] == "invalid_response")
-        self.assertEqual(json.loads(Path(failure["artifact"]).read_text()),
-                         dict(report="echoed report", expected=None))
+        self.assertEqual(
+            json.loads(Path(failure["artifact"]).read_text()),
+            dict(report="echoed report", expected=None),
+        )
         self.assertFalse(any(e["type"] == "agent_response" for e in result["audit"]))
         self.assertEqual(result["invalid_probes"], 1)
 

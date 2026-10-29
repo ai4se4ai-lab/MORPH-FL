@@ -47,8 +47,14 @@ class InvestigatorSessions:
         return (
             [{"role": "system", "content": SYSTEM + "\n" + GUIDANCE[role]}]
             + ([] if stateless else self.dialogues.get(role, []))
-            + [{"role": "user", "content": TASK + "\n\nINPUT DATA (JSON):\n"
-                + json.dumps(payload, sort_keys=True)}]
+            + [
+                {
+                    "role": "user",
+                    "content": TASK
+                    + "\n\nINPUT DATA (JSON):\n"
+                    + json.dumps(payload, sort_keys=True),
+                }
+            ]
         )
 
     def record(self, role: str, messages: list[dict], response: str) -> None:

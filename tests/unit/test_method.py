@@ -64,10 +64,13 @@ class MethodTests(unittest.TestCase):
         model = complaint_to_contract("unclear")
         unresolved = model.ambiguities[0]
         for _ in range(16):
-            model = complaint_to_contract("unclear", {
-                "ambiguities": model.ambiguities + ["Needs a runtime trace"] * 2,
-                "hypotheses": [],
-            })
+            model = complaint_to_contract(
+                "unclear",
+                {
+                    "ambiguities": model.ambiguities + ["Needs a runtime trace"] * 2,
+                    "hypotheses": [],
+                },
+            )
             self.assertEqual(model.ambiguities, [unresolved, "Needs a runtime trace"])
             self.assertEqual(model.status, "conjectured")
 

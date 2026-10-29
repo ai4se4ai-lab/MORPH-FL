@@ -16,18 +16,32 @@ class FullStudyTests(unittest.TestCase):
         from experiments.full.suite import BUDGET_CORE, CORE, validate_preflight
 
         spec = dict(id="unit-model", revision="unit-commit")
-        rows = [dict(variant=v, instance_id="unit", model_id=spec["id"],
-                     model_revision=spec["revision"], seed=1, budget=32000, track="main",
-                     input_tokens=100, output_tokens=50,
-                     hypotheses=[{"id": "unit-hypothesis"}] if v in BUDGET_CORE else [])
-                for v in CORE]
+        rows = [
+            dict(
+                variant=v,
+                instance_id="unit",
+                model_id=spec["id"],
+                model_revision=spec["revision"],
+                seed=1,
+                budget=32000,
+                track="main",
+                input_tokens=100,
+                output_tokens=50,
+                hypotheses=[{"id": "unit-hypothesis"}] if v in BUDGET_CORE else [],
+            )
+            for v in CORE
+        ]
         self.assertEqual(set(validate_preflight(rows, spec)), set(CORE))
-        for variant, field, value in [("fixed_reset", "hypotheses", []),
-                                      ("agentless_adapted", "output_tokens", 0),
-                                      ("morph", "model_revision", "different"),
-                                      ("morph", "budget", 6000)]:
-            broken = [dict(row, **{field: value}) if row["variant"] == variant else dict(row)
-                      for row in rows]
+        for variant, field, value in [
+            ("fixed_reset", "hypotheses", []),
+            ("agentless_adapted", "output_tokens", 0),
+            ("morph", "model_revision", "different"),
+            ("morph", "budget", 6000),
+        ]:
+            broken = [
+                dict(row, **{field: value}) if row["variant"] == variant else dict(row)
+                for row in rows
+            ]
             with self.subTest(variant=variant, field=field), self.assertRaises(ValueError):
                 validate_preflight(broken, spec)
         with self.assertRaises(ValueError):
@@ -36,20 +50,39 @@ class FullStudyTests(unittest.TestCase):
     def test_preflight_uses_primary_budget_without_changing_ordinary_smoke(self):
         from experiments.full.suite import CORE, resume_keys
 
-        self.assertEqual(jobs_for("main", True, preflight=True),
-                         [(v, 32000, None) for v in CORE])
+        self.assertEqual(jobs_for("main", True, preflight=True), [(v, 32000, None) for v in CORE])
         self.assertEqual(jobs_for("main", True), [(v, 6000, None) for v in CORE])
-        case = dict(instance_id="unit", repo="unit/repo", revision="v",
-                    report="public report", archive_sha256="archive-hash")
+        case = dict(
+            instance_id="unit",
+            repo="unit/repo",
+            revision="v",
+            report="public report",
+            archive_sha256="archive-hash",
+        )
         import hashlib
 
-        settings = dict(track="main", seed=1, smoke=True, preflight=True,
-                        model=dict(id="model", revision="commit"))
-        row = dict(instance_id="unit", repo=case["repo"], revision="v",
-                   report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
-                   source_archive_sha256="archive-hash", run_signature="signature",
-                   track="main", seed=1, model_id="model", model_revision="commit",
-                   variant="morph", budget=32000, window=None)
+        settings = dict(
+            track="main",
+            seed=1,
+            smoke=True,
+            preflight=True,
+            model=dict(id="model", revision="commit"),
+        )
+        row = dict(
+            instance_id="unit",
+            repo=case["repo"],
+            revision="v",
+            report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
+            source_archive_sha256="archive-hash",
+            run_signature="signature",
+            track="main",
+            seed=1,
+            model_id="model",
+            model_revision="commit",
+            variant="morph",
+            budget=32000,
+            window=None,
+        )
         self.assertEqual(len(resume_keys([row], [case], settings, "signature")), 1)
         with self.assertRaisesRegex(ValueError, "Unplanned"):
             resume_keys([dict(row, budget=6000)], [case], settings, "signature")
@@ -59,21 +92,44 @@ class FullStudyTests(unittest.TestCase):
 
         from experiments.full.suite import resume_keys
 
-        case = dict(instance_id="unit", repo="unit/repo", revision="v",
-                    report="public report", archive_sha256="archive-hash")
-        settings = dict(track="main", seed=1, smoke=False,
-                        model=dict(id="model", revision="model-commit"))
-        row = dict(instance_id="unit", repo=case["repo"], revision="v",
-                   report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
-                   source_archive_sha256="archive-hash", run_signature="signature",
-                   track="main", seed=1, model_id="model", model_revision="model-commit",
-                   variant="morph", budget=32000, window=None)
-        self.assertEqual(resume_keys([row], [case], settings, "signature"),
-                         {("unit", "morph", 32000, None)})
-        for field, value in [("revision", "changed"), ("report_digest", "changed"),
-                             ("source_archive_sha256", "changed"), ("seed", 2),
-                             ("model_revision", "changed"), ("run_signature", "changed"),
-                             ("budget", 16000), ("instance_id", "another-shard")]:
+        case = dict(
+            instance_id="unit",
+            repo="unit/repo",
+            revision="v",
+            report="public report",
+            archive_sha256="archive-hash",
+        )
+        settings = dict(
+            track="main", seed=1, smoke=False, model=dict(id="model", revision="model-commit")
+        )
+        row = dict(
+            instance_id="unit",
+            repo=case["repo"],
+            revision="v",
+            report_digest=hashlib.sha256(case["report"].encode()).hexdigest(),
+            source_archive_sha256="archive-hash",
+            run_signature="signature",
+            track="main",
+            seed=1,
+            model_id="model",
+            model_revision="model-commit",
+            variant="morph",
+            budget=32000,
+            window=None,
+        )
+        self.assertEqual(
+            resume_keys([row], [case], settings, "signature"), {("unit", "morph", 32000, None)}
+        )
+        for field, value in [
+            ("revision", "changed"),
+            ("report_digest", "changed"),
+            ("source_archive_sha256", "changed"),
+            ("seed", 2),
+            ("model_revision", "changed"),
+            ("run_signature", "changed"),
+            ("budget", 16000),
+            ("instance_id", "another-shard"),
+        ]:
             with self.subTest(field=field), self.assertRaises(ValueError):
                 resume_keys([dict(row, **{field: value})], [case], settings, "signature")
         with self.assertRaisesRegex(ValueError, "Duplicate"):
@@ -103,8 +159,9 @@ class FullStudyTests(unittest.TestCase):
             with self.subTest(text=text), self.assertRaises(InvalidModelResponse) as failure:
                 decode_object(text)
             self.assertEqual(failure.exception.raw, text)
-        self.assertEqual(decode_object('{"metadata":{}} then {"hypotheses":[]}'),
-                         {"hypotheses": []})
+        self.assertEqual(
+            decode_object('{"metadata":{}} then {"hypotheses":[]}'), {"hypotheses": []}
+        )
 
     def test_snapshot_extract_rejects_escape_links_and_non_python(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -154,20 +211,44 @@ class PaperPromotionTests(unittest.TestCase):
         from experiments.full.paper_update import update
         from experiments.full.suite import CORE
 
-        pins = json.loads((Path(__file__).resolve().parents[2] /
-                           "experiments/full/pins.json").read_text())
+        pins = json.loads(
+            (Path(__file__).resolve().parents[2] / "experiments/full/pins.json").read_text()
+        )
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "analysis").mkdir()
             sizes = {"SWE-bench_Lite": 300, "SWE-bench_Verified": 500}
-            (root / "analysis/completeness.json").write_text(json.dumps(dict(
-                complete=True, smoke=False, planned={"main": 63630},
-                observed={"main": 63630}, benchmark_sizes=sizes)))
-            rows = [dict(track="main", benchmark=b, model=m["id"], variant=v,
-                         observed_seeds=3, unique_cases=n, case_seed_records=3*n, budget=32000)
-                    for b, n in sizes.items() for m in pins["models"] for v in CORE]
-            for field, value in [("variant", "no_forgetting"), ("case_seed_records", 899),
-                                 ("budget", 16000)]:
+            (root / "analysis/completeness.json").write_text(
+                json.dumps(
+                    dict(
+                        complete=True,
+                        smoke=False,
+                        planned={"main": 63630},
+                        observed={"main": 63630},
+                        benchmark_sizes=sizes,
+                    )
+                )
+            )
+            rows = [
+                dict(
+                    track="main",
+                    benchmark=b,
+                    model=m["id"],
+                    variant=v,
+                    observed_seeds=3,
+                    unique_cases=n,
+                    case_seed_records=3 * n,
+                    budget=32000,
+                )
+                for b, n in sizes.items()
+                for m in pins["models"]
+                for v in CORE
+            ]
+            for field, value in [
+                ("variant", "no_forgetting"),
+                ("case_seed_records", 899),
+                ("budget", 16000),
+            ]:
                 broken = [dict(row) for row in rows]
                 broken[0][field] = value
                 with (root / "analysis/summary.csv").open("w") as stream:
@@ -244,8 +325,9 @@ class FullAnalysisTests(unittest.TestCase):
                 variant="morph",
                 seed=1,
                 model_id="Qwen/Qwen2.5-Coder-7B-Instruct",
-                model_revision=json.loads((Path(__file__).resolve().parents[2] /
-                                           "experiments/full/pins.json").read_text())["models"][0]["revision"],
+                model_revision=json.loads(
+                    (Path(__file__).resolve().parents[2] / "experiments/full/pins.json").read_text()
+                )["models"][0]["revision"],
                 budget=6000,
                 window=None,
                 ranking=["right.py"],
@@ -300,8 +382,9 @@ class FullAnalysisTests(unittest.TestCase):
             analyze(root, smoke=True)
             with (root / "analysis/summary.csv").open() as stream:
                 self.assertEqual(list(csv.DictReader(stream)), [])
-            self.assertFalse(json.loads(
-                (root / "analysis/completeness.json").read_text())["complete"])
+            self.assertFalse(
+                json.loads((root / "analysis/completeness.json").read_text())["complete"]
+            )
 
 
 class ProgressDenominatorTests(unittest.TestCase):

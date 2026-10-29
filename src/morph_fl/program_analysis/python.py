@@ -21,7 +21,9 @@ class _IterativeVisitor(ast.NodeVisitor):
 
     def visit(self, node):
         def dispatch(current):
-            result = getattr(self, 'visit_' + current.__class__.__name__, self.generic_visit)(current)
+            result = getattr(self, "visit_" + current.__class__.__name__, self.generic_visit)(
+                current
+            )
             return iter(()) if result is None else iter(result)
 
         stack = [dispatch(node)]
@@ -133,8 +135,7 @@ def analyze_python(root: Path, revision: str) -> SystemModel:
 
             def visit_Assign(self, node):
                 yield node.value
-                for target in node.targets:
-                    yield target
+                yield from node.targets
 
             def visit_Name(self, node):
                 if isinstance(node.ctx, ast.Store):
@@ -170,7 +171,7 @@ def analyze_python(root: Path, revision: str) -> SystemModel:
                         unresolved = ast.unparse(func)
                     except RecursionError:
                         # Preserve the exact source rather than discard a deep call expression.
-                        unresolved = ast.get_source_segment(text, func) or '<unresolved call>'
+                        unresolved = ast.get_source_segment(text, func) or "<unresolved call>"
                 relations.append(
                     Relation(
                         self.scope,
