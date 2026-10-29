@@ -15,7 +15,6 @@ hpc/logs/*
 artifacts/
 
 # Generated experiment results, frozen source archives, and run status
-/experiments/**/results/
 /experiments/**/source-versions/
 /experiments/**/status.json
 /experiments/full/previous_hpc_config.json

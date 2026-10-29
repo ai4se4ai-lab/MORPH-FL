@@ -1,0 +1,95 @@
+{
+  "checked_utc": "2026-10-24T22:45:47.287755+00:00",
+  "note": "Live partial records; per-workflow counts may differ.",
+  "variants": {
+    "morph": {
+      "records": 29,
+      "with_hypotheses": 4,
+      "events": {
+        "start": 29,
+        "agent_request": 194,
+        "agent_response": 128,
+        "round": 128,
+        "reset_decision": 128,
+        "reset": 17,
+        "stop": 29,
+        "invalid_response": 37,
+        "hypothesis": 14,
+        "assessment": 4
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 37
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 29
+      }
+    },
+    "no_forgetting": {
+      "records": 27,
+      "with_hypotheses": 4,
+      "events": {
+        "start": 27,
+        "agent_request": 165,
+        "agent_response": 103,
+        "round": 103,
+        "stop": 27,
+        "invalid_response": 35,
+        "hypothesis": 12,
+        "assessment": 4
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 35
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 27
+      }
+    },
+    "fixed_reset": {
+      "records": 27,
+      "with_hypotheses": 4,
+      "events": {
+        "start": 27,
+        "agent_request": 185,
+        "agent_response": 122,
+        "round": 122,
+        "reset": 40,
+        "stop": 27,
+        "invalid_response": 37,
+        "hypothesis": 15,
+        "assessment": 4
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 37
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 26,
+        "budget_exhausted": 1
+      }
+    },
+    "stateless_summary": {
+      "records": 27,
+      "with_hypotheses": 24,
+      "events": {
+        "start": 27,
+        "agent_request": 218,
+        "agent_response": 161,
+        "hypothesis": 135,
+        "assessment": 116,
+        "round": 161,
+        "stop": 27,
+        "invalid_response": 31,
+        "invalid_hypothesis": 7
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 31,
+        "Source line is out of range": 4,
+        "Invalid hypothesis source or mechanism": 2,
+        "Hypothesis is outside the visible source window": 1
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 26,
+        "budget_exhausted": 1
+      }
+    }
+  }
+}

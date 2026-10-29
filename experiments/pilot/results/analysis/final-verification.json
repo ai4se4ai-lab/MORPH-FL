@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-10-25T01:58:04.037388+00:00",
+  "complete": true,
+  "verified_primary_records": 400,
+  "verified_control_records": 100,
+  "imported_primary_records": 132,
+  "successful_new_cells": 33,
+  "new_receipt_records": 268,
+  "protocol_sha256": "3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740f076"
+}

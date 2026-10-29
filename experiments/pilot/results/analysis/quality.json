@@ -1,0 +1,107 @@
+{
+  "checked_utc": "2026-10-25T01:58:03.869442+00:00",
+  "note": "Complete DeepSeek pilot: same 50 issues per workflow.",
+  "variants": {
+    "morph": {
+      "records": 50,
+      "with_hypotheses": 6,
+      "events": {
+        "start": 50,
+        "agent_request": 334,
+        "agent_response": 218,
+        "round": 218,
+        "reset_decision": 218,
+        "reset": 30,
+        "stop": 50,
+        "invalid_response": 68,
+        "hypothesis": 22,
+        "assessment": 6,
+        "invalid_hypothesis": 2
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 68,
+        "Hypothesis is outside the visible source window": 1,
+        "Invalid hypothesis source or mechanism": 1
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 48,
+        "budget_exhausted": 2
+      }
+    },
+    "no_forgetting": {
+      "records": 50,
+      "with_hypotheses": 6,
+      "events": {
+        "start": 50,
+        "agent_request": 306,
+        "agent_response": 193,
+        "round": 193,
+        "stop": 50,
+        "invalid_response": 63,
+        "hypothesis": 19,
+        "assessment": 6,
+        "invalid_hypothesis": 2
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 63,
+        "Hypothesis is outside the visible source window": 1,
+        "Invalid hypothesis source or mechanism": 1
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 50
+      }
+    },
+    "fixed_reset": {
+      "records": 50,
+      "with_hypotheses": 7,
+      "events": {
+        "start": 50,
+        "agent_request": 341,
+        "agent_response": 226,
+        "round": 226,
+        "reset": 72,
+        "stop": 50,
+        "invalid_response": 69,
+        "hypothesis": 25,
+        "assessment": 7,
+        "invalid_hypothesis": 2
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 69,
+        "Hypothesis is outside the visible source window": 1,
+        "Invalid hypothesis source or mechanism": 1
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 46,
+        "budget_exhausted": 4
+      }
+    },
+    "stateless_summary": {
+      "records": 50,
+      "with_hypotheses": 47,
+      "events": {
+        "start": 50,
+        "agent_request": 390,
+        "agent_response": 293,
+        "hypothesis": 259,
+        "assessment": 229,
+        "round": 293,
+        "stop": 50,
+        "invalid_response": 50,
+        "invalid_hypothesis": 11
+      },
+      "errors": {
+        "No valid localization JSON object with a hypothesis list": 50,
+        "Source line is out of range": 4,
+        "Invalid hypothesis source or mechanism": 2,
+        "'probe'": 1,
+        "Probe must map to the hypothesis source": 1,
+        "Hypothesis is outside the visible source window": 3
+      },
+      "stop_reasons": {
+        "context_or_token_budget": 47,
+        "budget_exhausted": 3
+      }
+    }
+  }
+}

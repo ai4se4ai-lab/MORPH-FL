@@ -1,0 +1,21 @@
+{
+  "datasets": [
+    {
+      "id": "princeton-nlp/SWE-bench_Lite",
+      "revision": "6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2"
+    },
+    {
+      "id": "princeton-nlp/SWE-bench_Verified",
+      "revision": "c104f840cc67f8b6eec6f759ebc8b2693d585d4a"
+    }
+  ],
+  "benchmark_sizes": {
+    "SWE-bench_Lite": 300,
+    "SWE-bench_Verified": 500
+  },
+  "unique_cases": 707,
+  "overlap": 93,
+  "source_scope": "pre-fix regular Python files; no git history",
+  "labels": "unreviewed patch-change proxy",
+  "smoke": false
+}
