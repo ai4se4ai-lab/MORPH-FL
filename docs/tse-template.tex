@@ -1,0 +1,106 @@
+\documentclass[letterpaper,journal]{IEEEtran}
+\usepackage{amsmath,amsfonts}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage[justification=centering]{caption}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{tikz}
+\usepackage{flushend}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tikz}
+\newcommand{\circledstep}[1]{\hspace{-0.2em}\tikz[baseline=(char.base)]{
+  \node[shape=circle,fill=blue!80,inner sep=0.8pt,text=white,font=\bfseries\small] (char) {#1};}\hspace{0.1em}}
+
+\hyphenation{op-tical net-works semi-conduc-tor IEEE-Xplore}
+% Yuki's notes:
+
+% Uncomment the next line to show comments, comment it to hide all comments
+%\newcommand{\drawcomments}{}
+
+% Define comment commands. These will either format or ignore comments based on \drawcomments
+\ifdefined\drawcomments
+  \newcommand{\yuki}[1]{\textcolor{purple}{[Yuki: #1]}}
+  \newcommand{\lili}[1]{\textcolor{cyan}{[Lili: #1]}}
+  \newcommand{\rufeng}[1]{\textcolor{orange}{[Rufeng: #1]}}
+  \newcommand{\zixu}[1]{\textcolor{blue}{[Zixu: #1]}}
+  \newcommand{\nara}[1]{\textcolor{yellow}{[Nara: #1]}}
+  \newcommand{\majid}[1]{\textcolor{red}{[Majid: #1]}}
+\else
+  \newcommand{\yuki}[1]{\ignorespaces}
+  \newcommand{\lili}[1]{\ignorespaces}
+  \newcommand{\rufeng}[1]{\ignorespaces}
+  \newcommand{\zixu}[1]{\ignorespaces}
+  \newcommand{\nara}[1]{\ignorespaces}
+  \newcommand{\majid}[1]{\ignorespaces}
+\fi
+
+
+\newcommand{\blacknumber}[1]{%
+  \tikz[baseline=(char.base)]{
+    \node[shape=rectangle,fill=black, text=white, font=\sffamily\bfseries, inner sep=2pt] (char) {#1};
+  }
+}
+
+%% Tool name - change this to update the tool name throughout the paper
+%% LIFT: Login Interface Flow Tester
+%% SLIDE: Static-guided Login Issue DEtector
+%% Or any other names 
+\newcommand{\toolname}{LIFTDroid}\xspace  % Replace TOOLNAME with your actual tool name
+\newcommand{\toolnamelow}{\textsc{LIFTDroid}}\xspace  % Small caps version for citations
+
+
+%% lstlisting style here:
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{style_java_1}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=ltb,
+    framerule=0pt,
+}
+\lstset{style=style_java_1}
+
+
+
+\begin{document}
+
+\title{}
+
+\author{}
+
+% The paper headers
+\markboth{IEEE Transactions on Software Engineering,~Vol.~XX, No.~X, XXXX~2024}%
+{}
+
+\maketitle

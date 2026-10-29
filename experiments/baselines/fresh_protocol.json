@@ -1,0 +1,31 @@
+{
+  "created_utc": "2026-10-19T13:32:40.251198+00:00",
+  "selection": "first six lexically sorted previously unused repositories; minimum SHA256(morph-upstream-fresh-v1:instance_id) per repo",
+  "cases": [
+    "astropy__astropy-14995",
+    "django__django-17051",
+    "matplotlib__matplotlib-23476",
+    "mwaskom__seaborn-3190",
+    "pydata__xarray-4094",
+    "pylint-dev__pylint-7993"
+  ],
+  "models": [
+    "qwen2.5-coder:7b",
+    "qwen3-coder:30b"
+  ],
+  "variants": [
+    "agentless_adapted",
+    "rgfl_adapted",
+    "morph",
+    "stateless_summary",
+    "bm25",
+    "graph"
+  ],
+  "budget": 16000,
+  "rounds": 2,
+  "seeds": [
+    1
+  ],
+  "source_sha256": "29ec0345852ccf7bbc82acaa6dbb2f8224375460a2e5cb29d5af80aa279683d9",
+  "notes": "Exploratory fresh replication, same frozen implementations as pilot; no result-driven tuning. Six independent repositories, one case each. Unreviewed patch proxies."
+}

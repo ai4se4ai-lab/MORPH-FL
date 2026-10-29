@@ -1,0 +1,44 @@
+# Python environments, caches, and packaging outputs
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# Local artifacts and HPC run logs
+hpc/logs/*
+!hpc/logs/.gitkeep
+artifacts/
+
+# Generated experiment results, frozen source archives, and run status
+/experiments/**/source-versions/
+/experiments/**/status.json
+/experiments/full/previous_hpc_config.json
+
+/docs/paper/*
+# Generated TSE evidence (retain manuscript sources, scripts, and fonts)
+/docs/TSE/*
+/docs/TSE/figures/
+/docs/TSE/tables/
+/docs/TSE/evidence_manifest.json
+/docs/TSE/build_verification.json
+/docs/TSE/*-source.zip
+/docs/TSE/*.pdf
+
+# LaTeX build intermediates
+/docs/TSE/*.aux
+/docs/TSE/*.bbl
+/docs/TSE/*.blg
+/docs/TSE/*.log
+/docs/TSE/*.out
+/docs/TSE/*.toc
+/docs/TSE/*.lof
+/docs/TSE/*.lot
+/docs/TSE/*.fls
+/docs/TSE/*.fdb_latexmk
+/docs/TSE/*.synctex.gz
+/docs/TSE/*.xdv

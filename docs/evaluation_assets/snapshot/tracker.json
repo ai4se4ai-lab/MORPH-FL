@@ -1,0 +1,2816 @@
+{
+  "run": "ufv-full-v12-20261020-01",
+  "done": false,
+  "scientific_completeness": null,
+  "active": "17980|PENDING\n18012|PENDING\n18007|PENDING\n18006|PENDING\n18005|PENDING\n18004|PENDING\n18003|PENDING\n18002|PENDING\n18001|PENDING\n18000|PENDING\n17999|PENDING\n17998|PENDING\n17997|PENDING\n17996|PENDING\n17995|PENDING\n17994|PENDING\n17993|PENDING\n17990|PENDING\n17989|PENDING\n17988|PENDING\n17987|PENDING\n17986|PENDING\n17985|PENDING\n17984|PENDING\n17983|PENDING\n17982|PENDING\n17981|PENDING\n17980|RUNNING\n17980|RUNNING",
+  "jobs": [
+    "17928",
+    "17929",
+    "17930",
+    "17931",
+    "17932",
+    "17933",
+    "17934",
+    "17935",
+    "17937",
+    "17938",
+    "17939",
+    "17940",
+    "17941",
+    "17942",
+    "17943",
+    "17944",
+    "17945",
+    "17946",
+    "17947",
+    "17948",
+    "17949",
+    "17950",
+    "17951",
+    "17952",
+    "17953",
+    "17954",
+    "17955",
+    "17956",
+    "17957",
+    "17958",
+    "17959",
+    "17960",
+    "17961",
+    "17962",
+    "17973",
+    "17974",
+    "17975",
+    "17976",
+    "17977",
+    "17978",
+    "17979",
+    "17980",
+    "17981",
+    "17982",
+    "17983",
+    "17984",
+    "17985",
+    "17986",
+    "17987",
+    "17988",
+    "17989",
+    "17990",
+    "17993",
+    "17994",
+    "17995",
+    "17996",
+    "17997",
+    "17998",
+    "17999",
+    "18000",
+    "18001",
+    "18002",
+    "18003",
+    "18004",
+    "18005",
+    "18006",
+    "18007",
+    "18012"
+  ],
+  "remote_results": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/results",
+  "artifacts": {},
+  "tracker": {
+    "run": "ufv-full-v12-20261020-01",
+    "deployment": "/home/babaei/projects/MORPH-FL-full-v12-20261020",
+    "results": "/home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results",
+    "log_root": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01",
+    "models": [
+      {
+        "id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+        "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+        "family": "Qwen",
+        "ufv_gpus": 1
+      },
+      {
+        "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
+        "revision": "e5d64addd26a6a1db0f9b863abf6ee3141936807",
+        "family": "DeepSeek",
+        "ufv_gpus": 1
+      },
+      {
+        "id": "codellama/CodeLlama-7b-Instruct-hf",
+        "revision": "22cb240e0292b0b5ab4c17ccd97aa3a2f799cbed",
+        "family": "CodeLlama",
+        "ufv_gpus": 2
+      },
+      {
+        "id": "mistralai/Mistral-Nemo-Instruct-2407",
+        "revision": "04d8a90549d23fc6bd7f642064003592df51e9b3",
+        "family": "Mistral",
+        "ufv_gpus": 2,
+        "tokenizer_kwargs": {
+          "fix_mistral_regex": true
+        }
+      },
+      {
+        "id": "ibm-granite/granite-3.1-8b-instruct",
+        "revision": "4009206d5fc95d2e65a7b7633e159d6e97e25d35",
+        "family": "Granite",
+        "ufv_gpus": 1
+      }
+    ],
+    "protocol": {
+      "study": "morph-full-five-families-v12",
+      "phase": "prospective protocol, no full results yet",
+      "models": 5,
+      "seeds": [
+        1,
+        2,
+        3
+      ],
+      "primary_budget": 32000,
+      "round_limit": 16,
+      "context_limit": 16384,
+      "temperature": 0.2,
+      "side_sample": "100 report-blind repository-balanced hash-selected union cases",
+      "primary_workflows": [
+        "morph",
+        "no_forgetting",
+        "fixed_reset",
+        "stateless_summary",
+        "agentless_adapted",
+        "rgfl_adapted"
+      ],
+      "source_files": {
+        "experiments/full/analyze.py": "ccf9520a6170eddaea6be01812f52c0d0e2b6fd047a130aca1d4cf21ed8493c3",
+        "experiments/full/export_bundle.py": "c82448aa41ee9937ab10afb09ca607ee26ca0271430b8210a1480e70a92fb792",
+        "experiments/full/extended_analysis.py": "9daa224766006c054249d85075fe959fc04a9bef34e8b89b8c9649233ce33530",
+        "experiments/full/inference.py": "ed3e38209841cd211b3766ceb4d707f1d498a24dc68f249c57e798bc66e36826",
+        "experiments/full/paper_update.py": "e23a3b4515fbe1414106213ea9558eeff416ece2f4160a1b6b51120dccd58f78",
+        "experiments/full/pins.json": "587604c9b91bee2e1863693d4e56d6e06386ac757fbf4185b0b07e0d478badc0",
+        "experiments/full/prepare.py": "2357c517d44a31147ff594576c1787782e8cfcdc082964966313364a7b2e57e1",
+        "experiments/full/suite.py": "2c01e3dec2afd1746abae48007f94ea9953b09fe035fc061b78321e773c327ef",
+        "experiments/full/typeset.py": "1feb1bd449374b2a5656225e3dd165a7c571ba6f207a42bd6ea022f27bd0c85a",
+        "src/morph_fl/__init__.py": "5df9b9c1bc5e3e7b8e43d5686715a1499dcd4d081792208a8e63aec753d377a3",
+        "src/morph_fl/__main__.py": "c88c3b891af5cb31911df6df19138d0b512b088877a30c15d31063fb9c8f86bf",
+        "src/morph_fl/agents/__init__.py": "dcad7a01bbe8c57721d1e4460aca37dd9358bf1fe55b52a437be4826b76a537f",
+        "src/morph_fl/agents/sessions.py": "0d6268050bc064e346e824e2d509c7a671b6e586f059eddc52664c5c52998d5c",
+        "src/morph_fl/analysis.py": "31f68fe9ca8cbb30f25247bc9df6a0d4cf98d5b18c1824f788a701abed9fdea5",
+        "src/morph_fl/application.py": "a2dd870912ae55a4c6f65d421bd31efa51326d9987f5094db3ef76e08c8c747d",
+        "src/morph_fl/backend.py": "299b5a2257c1b5a00f693e7870e7802fb42a9a6a74a6b6ba7d5b267da231f1cc",
+        "src/morph_fl/baselines/__init__.py": "75feb1a592d790eddabec1efa6e9dfac61d48fafd553371cdd6598ea51f54083",
+        "src/morph_fl/baselines/local.py": "4ba222f66d4e16d6b57dc6d1be4c269529717426a60ef7c7394af4388f256e5f",
+        "src/morph_fl/baselines/vendor/__init__.py": "fc5e7dadd2350e9dc6c167e90cef8490523ecf018480ea5c4b7c24df358a6981",
+        "src/morph_fl/baselines/vendor/compress_file.py": "7f4c52df8cc6fc42654da16ebee97d8c3776e5ef4f1f0a78a7e47b3af33da696",
+        "src/morph_fl/baselines/vendor/prompts.py": "fdb2a9a7a0d03034360f21c1a18bed53efb40b16716d694550aa8e12a306ab36",
+        "src/morph_fl/benchmark.py": "979c151cdcedf47fd4d36f1ec250ce212f269df06ba44f10c4ed14c5ae92fed5",
+        "src/morph_fl/cli.py": "ddb675cf9e8e82478b61fc7be5c1b43c66907b8dcb370e6901d4de1f60878f5c",
+        "src/morph_fl/datasets/__init__.py": "763e66c742b11b69f4ef15e7939c505b0f0d16ab6449264b3327d88c48f9265a",
+        "src/morph_fl/datasets/contracts.py": "4015f5a6c73bb7a4378271355ae2826066a131bbd4648e02cb1eb284a60b487c",
+        "src/morph_fl/datasets/defects4j.py": "f942813017da767ce83b1ef17e5d697beb2dda1844db6a0adb26d40c424f3898",
+        "src/morph_fl/datasets/labels.py": "46e6db66f863998c0e58e9ba7d796d6b0c6920d1c9d6a2733a70f24d7cd0e93c",
+        "src/morph_fl/datasets/swebench.py": "87f6231757a7270eab6230979c3a1723a9288dbda6db2e57f448e7606ab99222",
+        "src/morph_fl/domain/__init__.py": "1c432da14bd509aade18e9594ead783c6c9507e0cc4a064ec3b8042408e9d7f4",
+        "src/morph_fl/domain/legacy.py": "03275e538c5f793862cf1d5e4a111fe4b19eded46716bd1c082766cbdd7dc403",
+        "src/morph_fl/domain/models.py": "dab398eb48e80c24e9a8944c2daf1ba3e7911fef1600e509c9054ef67ce431f8",
+        "src/morph_fl/engine.py": "d84867f9bf340e09ac53b0e7efcfc2a03781b0fe655f2149a21864dd5c0985be",
+        "src/morph_fl/evaluation/__init__.py": "c38260ce5a4e32d6c9b6aad5268804b21f3aeb43bba2bc2a55ba62a45065859a",
+        "src/morph_fl/evaluation/external.py": "955ec30260eba0069afd080d52c7886c68c0e54caf28d6781d8787938648121c",
+        "src/morph_fl/evaluation/metrics.py": "a113e36f0d4a753c48bd93aadee89fc3a275e88f08c3fee582d0ed4465bb1635",
+        "src/morph_fl/evaluation/statistics.py": "a7d0340adbed830c3ac3ef5d94d3572003f4aec6b7c8c2148484527a13593655",
+        "src/morph_fl/external.py": "d3bf9519ead483474619a65a007240526fd82b886de38aa2783d2d145c4cb95a",
+        "src/morph_fl/inference/__init__.py": "0c56b7bb655df7443efc472293d4ce8fadd65b7c49fe0bf3584929106775fb59",
+        "src/morph_fl/inference/local.py": "f21da35a88c154e66c8dc72243a85876b8362186635cb0077b8e5e4ea43c05ee",
+        "src/morph_fl/inference/ollama.py": "c596181e60d7907ef13963f6d4f205a4b887e5d92c65f1eb2531ac94979a65ec",
+        "src/morph_fl/inference/protocol.py": "ca3c30e5250865405e182cd4008b067d8623f916364bde77b95b0e4902e4631b",
+        "src/morph_fl/infrastructure/__init__.py": "8c564641af3e554135b3678526386b99f486519227340d8d320844d7b1310c3a",
+        "src/morph_fl/infrastructure/artifacts.py": "d9e77217ae692816d3138bca0e3582447978458e733e18211406c19856b9f88a",
+        "src/morph_fl/investigation/__init__.py": "044f0978fcde8254c31e1b44fdb693782da9bf8c465b67b1288f67bdff8e8474",
+        "src/morph_fl/investigation/executor.py": "58875ede788e1a16f9a150392a722b3d4ae25bc4ff8149757792e702237c017d",
+        "src/morph_fl/investigation/ledger.py": "3691cbfab1074fd4abe25fcf3c373cacca8deff1db77f6af7dfc15ac510c9af4",
+        "src/morph_fl/models.py": "a0d1bad8d74c690ef6d4dac1a501cd6df60d4fdd9d35b3ace60a267d8ed23d8e",
+        "src/morph_fl/program_analysis/__init__.py": "feedfa754088b3bf4361f8a5aac5fa32d4964fab68b02237d242b2e792778c5c",
+        "src/morph_fl/program_analysis/python.py": "7ff3f7cd1ab7559789c2b3c3e964274f03847df1b844c34bec6398f40690b444",
+        "src/morph_fl/program_analysis/retrieval.py": "f76bdcc42c0d0d4dce72a83a3d16c9d2ffaf79d8d1ed0a4fe0cf4deb944cefd5",
+        "src/morph_fl/retrieval.py": "62e4e89d0b37032b194ea3969a87f0e3e879b5e5b3d80566068d1b50364f1e48",
+        "src/morph_fl/search/__init__.py": "54873e1139545c98f572a3e90bf32eb9628729a991eb0b7125dd37acdcb1e1c8",
+        "src/morph_fl/search/config.py": "7534956d31f102a3f3d7aaed2385de975e4a6abed6511b4298d74d86472ebc5d",
+        "src/morph_fl/search/controller.py": "2cc5474a5f9d5145d1aa62531a553b109c14b720eb9af681e5b0a0e846fd1e8e",
+        "src/morph_fl/search/policies.py": "dae82a302782f3a41fd3c32c3dae10b91ca9d1f696b8958e3519ac5858ad396d",
+        "src/morph_fl/transformations/__init__.py": "ea8483ffc368d720d05a2aee24af24811ef81087faa41a49de1488fbc23e4ed8",
+        "src/morph_fl/transformations/pipeline.py": "93d74967ad17b8c38a17f87c45cec187f760897e7f569ac6b407871f680f1dfb"
+      },
+      "note": "Patches remain evaluator-only. Benchmarks overlap. Static observations and unreviewed patch proxies; no human/calibration/causal claims.",
+      "top_p": 0.95,
+      "top_k": 50,
+      "runtime_libcst": "1.8.6",
+      "primary_family": "File Top1: five comparators x five model families x two benchmarks, repository sign flips, Holm family adjustment; functions/costs secondary descriptive",
+      "attempt_cost_note": "Completed-case token metrics exclude interrupted attempts; attempt time/cost must also be audited from Slurm and preserved per-case audit archives. Resets within a completed case preserve cumulative budgets.",
+      "model_selection": "Five separately trained families: Qwen, DeepSeek, CodeLlama, Mistral, IBM Granite; study evidence and checkpoint caveats in models.md",
+      "tokenizer_note": "Mistral NeMo uses the Transformers fix_mistral_regex=True correction, validated before any five-family inference.",
+      "deployment_hardware": "UFV A30 24GB; model-specific one/two GPU BF16 placement from pins.json",
+      "local_review_revision": {
+        "date": "2026-10-20",
+        "base_commit": "7710a0b097e04092773464592f3b7e26d3b1d77b",
+        "changes": "Partial scoring tolerates empty prediction cells and removes orphaned score tables; paper export validates exact model/workflow cells, primary budgets and case-seed counts. No model, dataset, sampling or workflow changes. Local revision only; active UFV deployment remains on its frozen protocol. Resume now verifies each completed record against current case provenance, model/seed/signature, shard and planned conditions before skipping work. Zero-record analysis now emits a header-only summary.csv so failed runs remain collectable without invented measurements.",
+        "diagnostic_revision": {
+          "base_commit": "e2142bf",
+          "changes": "Preserve raw malformed generations as hashed evidence artifacts and wait explicitly for model preflights before final collection. No sampling, prompt, budget, or model changes. Not deployed to UFV. Reject responses missing the required hypothesis list instead of accepting report echoes as valid empty responses."
+        },
+        "preflight_budget_revision": {
+          "reason": "All archived MORPH preflights exhausted the 6000-token smoke envelope before a second generation. Match the primary budget for the gate only; primary experiments, prompts and sampling are unchanged. Requires fresh GPU validation."
+        },
+        "gate_coverage_revision": {
+          "reason": "Validate all six workflow interfaces and all four structured outputs, rather than checking MORPH alone. New local guard checked against recovered real v5 records: Qwen passes, DeepSeek fails. Active v5 GPU jobs remain frozen and unchanged."
+        },
+        "parser_revision": {
+          "reason": "Real Mistral output contained invalid outer JSON; previous scanning returned a valid nested behavior object. Decode complete outer candidates, require the hypothesis list, and reject malformed/truncated containers without rescuing their nested fragments. Active v5 GPU jobs remain frozen."
+        },
+        "semantic_validation_revision": {
+          "reason": "Reject non-list invariants/ambiguities before extraction to avoid crashing on null. Reject null/numeric/list predictions and nontext descriptions instead of converting them to apparently valid strings. Active v8 deployment remains frozen."
+        },
+        "analysis_revision_guard": {
+          "reason": "Coverage keys include model IDs but not checkpoint revisions; analysis now rejects missing or mismatched revisions for LLM records before counting scientific completeness. Regression coverage preserves the genuine pinned-revision path."
+        }
+      },
+      "preflight": {
+        "subjects": 1,
+        "round_limit": 2,
+        "budget": 32000,
+        "workflows": "all six primary workflows",
+        "note": "Use primary cumulative budget; ordinary smoke remains 6000. Require exactly six workflows on one issue, pinned model/revision, seed 1, actual input/output tokens for every workflow and valid hypotheses in all four structured workflows. Separate namespace and resume signature."
+      },
+      "structured_output_revision": {
+        "scope": "Same explicit user-task instruction for all structured workflows and all five model families; prior runs preserved. External adaptation prompts remain their own interfaces.",
+        "change": "Require direct localization JSON with a root hypothesis list, string paths, real source quotes and no prose, schema explanation, input echo, comments or ellipsis placeholders. No decoder constraint or generated-output repair.",
+        "evidence": "v5 DeepSeek/CodeLlama produced prose, Mistral echoed input/malformed JSON; revised prompt requires genuine per-model validation before full execution.",
+        "instruction_boundary": "Explicit natural-language task precedes a labeled JSON input-data block in every structured user request. It is no longer a key embedded inside input state. Same task text, models and workflow policies; all five families must be revalidated.",
+        "field_types": "Only expected/observed/trigger may be unknown null. Invariants/ambiguities are arrays of strings, empty [] when unknown; causal_chain is an array. Clarifies ambiguous v11 null instruction; same types/instruction for every model and structured workflow."
+      }
+    },
+    "data": {
+      "datasets": [
+        {
+          "id": "princeton-nlp/SWE-bench_Lite",
+          "revision": "6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2"
+        },
+        {
+          "id": "princeton-nlp/SWE-bench_Verified",
+          "revision": "c104f840cc67f8b6eec6f759ebc8b2693d585d4a"
+        }
+      ],
+      "benchmark_sizes": {
+        "SWE-bench_Lite": 300,
+        "SWE-bench_Verified": 500
+      },
+      "unique_cases": 707,
+      "overlap": 93,
+      "source_scope": "pre-fix regular Python files; no git history",
+      "labels": "unreviewed patch-change proxy",
+      "smoke": false
+    },
+    "stages": [
+      {
+        "name": "data",
+        "jobs": [
+          "17928"
+        ],
+        "cells": 1,
+        "expected_steps": 2,
+        "successful_steps": 2,
+        "failures": []
+      },
+      {
+        "name": "model_assets",
+        "jobs": [
+          "17929"
+        ],
+        "cells": 5,
+        "expected_steps": 5,
+        "successful_steps": 5,
+        "failures": []
+      },
+      {
+        "name": "model_preflight_m0",
+        "jobs": [
+          "17930"
+        ],
+        "cells": 1,
+        "expected_steps": 1,
+        "successful_steps": 1,
+        "failures": []
+      },
+      {
+        "name": "model_preflight_m1",
+        "jobs": [
+          "17931"
+        ],
+        "cells": 1,
+        "expected_steps": 1,
+        "successful_steps": 1,
+        "failures": []
+      },
+      {
+        "name": "model_preflight_m2",
+        "jobs": [
+          "17932"
+        ],
+        "cells": 1,
+        "expected_steps": 1,
+        "successful_steps": 1,
+        "failures": []
+      },
+      {
+        "name": "model_preflight_m3",
+        "jobs": [
+          "17933"
+        ],
+        "cells": 1,
+        "expected_steps": 1,
+        "successful_steps": 1,
+        "failures": []
+      },
+      {
+        "name": "model_preflight_m4",
+        "jobs": [
+          "17934"
+        ],
+        "cells": 1,
+        "expected_steps": 1,
+        "successful_steps": 1,
+        "failures": []
+      },
+      {
+        "name": "retrieval",
+        "jobs": [
+          "17935",
+          "17973",
+          "17979"
+        ],
+        "cells": 1,
+        "expected_steps": 1,
+        "successful_steps": 1,
+        "failures": []
+      },
+      {
+        "name": "main_m0",
+        "jobs": [
+          "17937",
+          "17974",
+          "17980",
+          "18012"
+        ],
+        "cells": 96,
+        "expected_steps": 96,
+        "successful_steps": 41,
+        "failures": [
+          {
+            "cell": "0__2__0",
+            "step": "investigate",
+            "rc": "1",
+            "note": "",
+            "job": "17992",
+            "time": "2026-10-20 14:02:23"
+          },
+          {
+            "cell": "0__1__0",
+            "step": "investigate",
+            "rc": "1",
+            "note": "",
+            "job": "17991",
+            "time": "2026-10-20 14:42:29"
+          },
+          {
+            "cell": "0__3__0",
+            "step": "investigate",
+            "rc": "1",
+            "note": "",
+            "job": "18008",
+            "time": "2026-10-20 15:00:26"
+          }
+        ]
+      },
+      {
+        "name": "main_m1",
+        "jobs": [
+          "17938",
+          "17975",
+          "17981"
+        ],
+        "cells": 96,
+        "expected_steps": 96,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "main_m2",
+        "jobs": [
+          "17939",
+          "17976",
+          "17982"
+        ],
+        "cells": 96,
+        "expected_steps": 96,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "main_m3",
+        "jobs": [
+          "17940",
+          "17977",
+          "17983"
+        ],
+        "cells": 96,
+        "expected_steps": 96,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "main_m4",
+        "jobs": [
+          "17941",
+          "17978",
+          "17984"
+        ],
+        "cells": 96,
+        "expected_steps": 96,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "ablations_m0",
+        "jobs": [
+          "17942",
+          "17985"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "ablations_m1",
+        "jobs": [
+          "17943",
+          "17986"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "ablations_m2",
+        "jobs": [
+          "17944",
+          "17987"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "ablations_m3",
+        "jobs": [
+          "17945",
+          "17988"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "ablations_m4",
+        "jobs": [
+          "17946",
+          "17989"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "budgets_m0",
+        "jobs": [
+          "17947",
+          "17990"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "budgets_m1",
+        "jobs": [
+          "17948",
+          "17993"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "budgets_m2",
+        "jobs": [
+          "17949",
+          "17994"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "budgets_m3",
+        "jobs": [
+          "17950",
+          "17995"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "budgets_m4",
+        "jobs": [
+          "17951",
+          "17996"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "misdirection_m0",
+        "jobs": [
+          "17952",
+          "17997"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "misdirection_m1",
+        "jobs": [
+          "17953",
+          "17998"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "misdirection_m2",
+        "jobs": [
+          "17954",
+          "17999"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "misdirection_m3",
+        "jobs": [
+          "17955",
+          "18000"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "misdirection_m4",
+        "jobs": [
+          "17956",
+          "18001"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "policy_m0",
+        "jobs": [
+          "17957",
+          "18002"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "policy_m1",
+        "jobs": [
+          "17958",
+          "18003"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "policy_m2",
+        "jobs": [
+          "17959",
+          "18004"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "policy_m3",
+        "jobs": [
+          "17960",
+          "18005"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "policy_m4",
+        "jobs": [
+          "17961",
+          "18006"
+        ],
+        "cells": 12,
+        "expected_steps": 12,
+        "successful_steps": 0,
+        "failures": []
+      },
+      {
+        "name": "collect",
+        "jobs": [
+          "17962",
+          "18007"
+        ],
+        "cells": 1,
+        "expected_steps": 2,
+        "successful_steps": 0,
+        "failures": []
+      }
+    ],
+    "progress": {
+      "ablations__m0__s1__p0.jsonl": {
+        "inode": 14111801373507385651,
+        "offset": 2082,
+        "completed": 33,
+        "conditions": {
+          "context_only@32000@None": 5,
+          "single_hypothesis@32000@None": 4,
+          "no_mde@32000@None": 4,
+          "no_probes@32000@None": 4,
+          "no_skeptic@32000@None": 4,
+          "independent_agents@32000@None": 4,
+          "one_agent@32000@None": 4,
+          "rerank@32000@None": 4
+        },
+        "expected": 200
+      },
+      "ablations__m0__s1__p1.jsonl": {
+        "inode": 11215352372405209453,
+        "offset": 0,
+        "completed": 0,
+        "conditions": {},
+        "expected": 200
+      },
+      "ablations__m0__s2__p0.jsonl": {
+        "inode": 7993082011917372032,
+        "offset": 2149,
+        "completed": 34,
+        "conditions": {
+          "context_only@32000@None": 5,
+          "single_hypothesis@32000@None": 5,
+          "no_mde@32000@None": 4,
+          "no_probes@32000@None": 4,
+          "no_skeptic@32000@None": 4,
+          "independent_agents@32000@None": 4,
+          "one_agent@32000@None": 4,
+          "rerank@32000@None": 4
+        },
+        "expected": 200
+      },
+      "ablations__m0__s3__p0.jsonl": {
+        "inode": 14102876664646301595,
+        "offset": 0,
+        "completed": 0,
+        "conditions": {},
+        "expected": 200
+      },
+      "main__m0__s1__p0.jsonl": {
+        "inode": 18287094366390098560,
+        "offset": 7277,
+        "completed": 111,
+        "conditions": {
+          "morph@32000@None": 19,
+          "no_forgetting@32000@None": 19,
+          "fixed_reset@32000@None": 19,
+          "stateless_summary@32000@None": 18,
+          "agentless_adapted@32000@None": 18,
+          "rgfl_adapted@32000@None": 18
+        },
+        "expected": 138
+      },
+      "main__m0__s1__p1.jsonl": {
+        "inode": 15850526958590818686,
+        "offset": 8931,
+        "completed": 138,
+        "conditions": {
+          "morph@32000@None": 23,
+          "no_forgetting@32000@None": 23,
+          "fixed_reset@32000@None": 23,
+          "stateless_summary@32000@None": 23,
+          "agentless_adapted@32000@None": 23,
+          "rgfl_adapted@32000@None": 23
+        },
+        "expected": 138
+      },
+      "main__m0__s1__p10.jsonl": {
+        "inode": 17013996597316908659,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p11.jsonl": {
+        "inode": 16637597805731488690,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p12.jsonl": {
+        "inode": 10305814913395915991,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p13.jsonl": {
+        "inode": 12626052479517670302,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p14.jsonl": {
+        "inode": 3654054990885824881,
+        "offset": 8574,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p15.jsonl": {
+        "inode": 13139290971918243349,
+        "offset": 188,
+        "completed": 3,
+        "conditions": {
+          "morph@32000@None": 1,
+          "no_forgetting@32000@None": 1,
+          "fixed_reset@32000@None": 1
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p2.jsonl": {
+        "inode": 14914036205626358965,
+        "offset": 8925,
+        "completed": 138,
+        "conditions": {
+          "morph@32000@None": 23,
+          "no_forgetting@32000@None": 23,
+          "fixed_reset@32000@None": 23,
+          "stateless_summary@32000@None": 23,
+          "agentless_adapted@32000@None": 23,
+          "rgfl_adapted@32000@None": 23
+        },
+        "expected": 138
+      },
+      "main__m0__s1__p3.jsonl": {
+        "inode": 5213914783692624077,
+        "offset": 8556,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p4.jsonl": {
+        "inode": 6496294554916698185,
+        "offset": 8550,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p5.jsonl": {
+        "inode": 2269224957153025447,
+        "offset": 8550,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p6.jsonl": {
+        "inode": 3276824915294177898,
+        "offset": 8604,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p7.jsonl": {
+        "inode": 8171056403965974744,
+        "offset": 8598,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p8.jsonl": {
+        "inode": 15671416179165904670,
+        "offset": 8556,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s1__p9.jsonl": {
+        "inode": 15541211063136298744,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p0.jsonl": {
+        "inode": 2468621134131247117,
+        "offset": 4811,
+        "completed": 75,
+        "conditions": {
+          "morph@32000@None": 13,
+          "no_forgetting@32000@None": 13,
+          "fixed_reset@32000@None": 13,
+          "stateless_summary@32000@None": 12,
+          "agentless_adapted@32000@None": 12,
+          "rgfl_adapted@32000@None": 12
+        },
+        "expected": 138
+      },
+      "main__m0__s2__p1.jsonl": {
+        "inode": 11759194216907044231,
+        "offset": 8931,
+        "completed": 138,
+        "conditions": {
+          "morph@32000@None": 23,
+          "no_forgetting@32000@None": 23,
+          "fixed_reset@32000@None": 23,
+          "stateless_summary@32000@None": 23,
+          "agentless_adapted@32000@None": 23,
+          "rgfl_adapted@32000@None": 23
+        },
+        "expected": 138
+      },
+      "main__m0__s2__p10.jsonl": {
+        "inode": 12379079201072087139,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p11.jsonl": {
+        "inode": 14343172061481370171,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p12.jsonl": {
+        "inode": 17935997345310480458,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p13.jsonl": {
+        "inode": 13241277769426898397,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p14.jsonl": {
+        "inode": 15241438301693808724,
+        "offset": 8574,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p2.jsonl": {
+        "inode": 880270443239222551,
+        "offset": 8925,
+        "completed": 138,
+        "conditions": {
+          "morph@32000@None": 23,
+          "no_forgetting@32000@None": 23,
+          "fixed_reset@32000@None": 23,
+          "stateless_summary@32000@None": 23,
+          "agentless_adapted@32000@None": 23,
+          "rgfl_adapted@32000@None": 23
+        },
+        "expected": 138
+      },
+      "main__m0__s2__p3.jsonl": {
+        "inode": 1964330706194332614,
+        "offset": 8556,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p4.jsonl": {
+        "inode": 272089962098634031,
+        "offset": 8550,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p5.jsonl": {
+        "inode": 2889605618931086920,
+        "offset": 8550,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p6.jsonl": {
+        "inode": 937107944103755018,
+        "offset": 8604,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p7.jsonl": {
+        "inode": 3847296139860441787,
+        "offset": 8598,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p8.jsonl": {
+        "inode": 12739700357980343029,
+        "offset": 8556,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s2__p9.jsonl": {
+        "inode": 5448752642830395422,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p0.jsonl": {
+        "inode": 3886221244282032041,
+        "offset": 2480,
+        "completed": 39,
+        "conditions": {
+          "morph@32000@None": 7,
+          "no_forgetting@32000@None": 7,
+          "fixed_reset@32000@None": 7,
+          "stateless_summary@32000@None": 6,
+          "agentless_adapted@32000@None": 6,
+          "rgfl_adapted@32000@None": 6
+        },
+        "expected": 138
+      },
+      "main__m0__s3__p1.jsonl": {
+        "inode": 12566879990237039289,
+        "offset": 8931,
+        "completed": 138,
+        "conditions": {
+          "morph@32000@None": 23,
+          "no_forgetting@32000@None": 23,
+          "fixed_reset@32000@None": 23,
+          "stateless_summary@32000@None": 23,
+          "agentless_adapted@32000@None": 23,
+          "rgfl_adapted@32000@None": 23
+        },
+        "expected": 138
+      },
+      "main__m0__s3__p10.jsonl": {
+        "inode": 15750113847291398021,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p11.jsonl": {
+        "inode": 4643734476146791523,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p12.jsonl": {
+        "inode": 11062373241348887395,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p13.jsonl": {
+        "inode": 10790123773880234901,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p14.jsonl": {
+        "inode": 16763681880244170854,
+        "offset": 8144,
+        "completed": 125,
+        "conditions": {
+          "morph@32000@None": 21,
+          "no_forgetting@32000@None": 21,
+          "fixed_reset@32000@None": 21,
+          "stateless_summary@32000@None": 21,
+          "agentless_adapted@32000@None": 21,
+          "rgfl_adapted@32000@None": 20
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p2.jsonl": {
+        "inode": 6075558872269270662,
+        "offset": 8925,
+        "completed": 138,
+        "conditions": {
+          "morph@32000@None": 23,
+          "no_forgetting@32000@None": 23,
+          "fixed_reset@32000@None": 23,
+          "stateless_summary@32000@None": 23,
+          "agentless_adapted@32000@None": 23,
+          "rgfl_adapted@32000@None": 23
+        },
+        "expected": 138
+      },
+      "main__m0__s3__p3.jsonl": {
+        "inode": 13709955588242159834,
+        "offset": 8556,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p4.jsonl": {
+        "inode": 18341941162777413827,
+        "offset": 8550,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p5.jsonl": {
+        "inode": 9951386186263666503,
+        "offset": 8550,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p6.jsonl": {
+        "inode": 2003010696820196235,
+        "offset": 8604,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p7.jsonl": {
+        "inode": 6623635744699272107,
+        "offset": 8598,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p8.jsonl": {
+        "inode": 4977510388707613578,
+        "offset": 8556,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "main__m0__s3__p9.jsonl": {
+        "inode": 10519815874286133384,
+        "offset": 8580,
+        "completed": 132,
+        "conditions": {
+          "morph@32000@None": 22,
+          "no_forgetting@32000@None": 22,
+          "fixed_reset@32000@None": 22,
+          "stateless_summary@32000@None": 22,
+          "agentless_adapted@32000@None": 22,
+          "rgfl_adapted@32000@None": 22
+        },
+        "expected": 132
+      },
+      "preflight__main__m0__s1__p0.jsonl": {
+        "inode": 3254816918104559827,
+        "offset": 393,
+        "completed": 6,
+        "conditions": {
+          "morph@32000@None": 1,
+          "no_forgetting@32000@None": 1,
+          "fixed_reset@32000@None": 1,
+          "stateless_summary@32000@None": 1,
+          "agentless_adapted@32000@None": 1,
+          "rgfl_adapted@32000@None": 1
+        },
+        "expected": 6
+      },
+      "preflight__main__m1__s1__p0.jsonl": {
+        "inode": 16655392952205313249,
+        "offset": 393,
+        "completed": 6,
+        "conditions": {
+          "morph@32000@None": 1,
+          "no_forgetting@32000@None": 1,
+          "fixed_reset@32000@None": 1,
+          "stateless_summary@32000@None": 1,
+          "agentless_adapted@32000@None": 1,
+          "rgfl_adapted@32000@None": 1
+        },
+        "expected": 6
+      },
+      "preflight__main__m2__s1__p0.jsonl": {
+        "inode": 13864878234961655796,
+        "offset": 393,
+        "completed": 6,
+        "conditions": {
+          "morph@32000@None": 1,
+          "no_forgetting@32000@None": 1,
+          "fixed_reset@32000@None": 1,
+          "stateless_summary@32000@None": 1,
+          "agentless_adapted@32000@None": 1,
+          "rgfl_adapted@32000@None": 1
+        },
+        "expected": 6
+      },
+      "preflight__main__m3__s1__p0.jsonl": {
+        "inode": 7544351245814366140,
+        "offset": 393,
+        "completed": 6,
+        "conditions": {
+          "morph@32000@None": 1,
+          "no_forgetting@32000@None": 1,
+          "fixed_reset@32000@None": 1,
+          "stateless_summary@32000@None": 1,
+          "agentless_adapted@32000@None": 1,
+          "rgfl_adapted@32000@None": 1
+        },
+        "expected": 6
+      },
+      "preflight__main__m4__s1__p0.jsonl": {
+        "inode": 16030722894479698342,
+        "offset": 393,
+        "completed": 6,
+        "conditions": {
+          "morph@32000@None": 1,
+          "no_forgetting@32000@None": 1,
+          "fixed_reset@32000@None": 1,
+          "stateless_summary@32000@None": 1,
+          "agentless_adapted@32000@None": 1,
+          "rgfl_adapted@32000@None": 1
+        },
+        "expected": 6
+      },
+      "retrieval__m0__s1__p0.jsonl": {
+        "inode": 15119690658787282462,
+        "offset": 80499,
+        "completed": 1414,
+        "conditions": {
+          "bm25@32000@None": 707,
+          "graph@32000@None": 707
+        },
+        "expected": 1414
+      }
+    },
+    "receipts": {
+      "main__m0__s1__p1": {
+        "cell": "main__m0__s1__p1",
+        "records": 138,
+        "complete": true
+      },
+      "main__m0__s1__p10": {
+        "cell": "main__m0__s1__p10",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p11": {
+        "cell": "main__m0__s1__p11",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p12": {
+        "cell": "main__m0__s1__p12",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p13": {
+        "cell": "main__m0__s1__p13",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p14": {
+        "cell": "main__m0__s1__p14",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p2": {
+        "cell": "main__m0__s1__p2",
+        "records": 138,
+        "complete": true
+      },
+      "main__m0__s1__p3": {
+        "cell": "main__m0__s1__p3",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p4": {
+        "cell": "main__m0__s1__p4",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p5": {
+        "cell": "main__m0__s1__p5",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p6": {
+        "cell": "main__m0__s1__p6",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p7": {
+        "cell": "main__m0__s1__p7",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p8": {
+        "cell": "main__m0__s1__p8",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s1__p9": {
+        "cell": "main__m0__s1__p9",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p1": {
+        "cell": "main__m0__s2__p1",
+        "records": 138,
+        "complete": true
+      },
+      "main__m0__s2__p10": {
+        "cell": "main__m0__s2__p10",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p11": {
+        "cell": "main__m0__s2__p11",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p12": {
+        "cell": "main__m0__s2__p12",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p13": {
+        "cell": "main__m0__s2__p13",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p14": {
+        "cell": "main__m0__s2__p14",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p2": {
+        "cell": "main__m0__s2__p2",
+        "records": 138,
+        "complete": true
+      },
+      "main__m0__s2__p3": {
+        "cell": "main__m0__s2__p3",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p4": {
+        "cell": "main__m0__s2__p4",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p5": {
+        "cell": "main__m0__s2__p5",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p6": {
+        "cell": "main__m0__s2__p6",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p7": {
+        "cell": "main__m0__s2__p7",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p8": {
+        "cell": "main__m0__s2__p8",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s2__p9": {
+        "cell": "main__m0__s2__p9",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p1": {
+        "cell": "main__m0__s3__p1",
+        "records": 138,
+        "complete": true
+      },
+      "main__m0__s3__p10": {
+        "cell": "main__m0__s3__p10",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p11": {
+        "cell": "main__m0__s3__p11",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p12": {
+        "cell": "main__m0__s3__p12",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p13": {
+        "cell": "main__m0__s3__p13",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p2": {
+        "cell": "main__m0__s3__p2",
+        "records": 138,
+        "complete": true
+      },
+      "main__m0__s3__p3": {
+        "cell": "main__m0__s3__p3",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p4": {
+        "cell": "main__m0__s3__p4",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p5": {
+        "cell": "main__m0__s3__p5",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p6": {
+        "cell": "main__m0__s3__p6",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p7": {
+        "cell": "main__m0__s3__p7",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p8": {
+        "cell": "main__m0__s3__p8",
+        "records": 132,
+        "complete": true
+      },
+      "main__m0__s3__p9": {
+        "cell": "main__m0__s3__p9",
+        "records": 132,
+        "complete": true
+      },
+      "preflight__main__m0__s1__p0": {
+        "cell": "preflight__main__m0__s1__p0",
+        "records": 6,
+        "complete": true
+      },
+      "preflight__main__m1__s1__p0": {
+        "cell": "preflight__main__m1__s1__p0",
+        "records": 6,
+        "complete": true
+      },
+      "preflight__main__m2__s1__p0": {
+        "cell": "preflight__main__m2__s1__p0",
+        "records": 6,
+        "complete": true
+      },
+      "preflight__main__m3__s1__p0": {
+        "cell": "preflight__main__m3__s1__p0",
+        "records": 6,
+        "complete": true
+      },
+      "preflight__main__m4__s1__p0": {
+        "cell": "preflight__main__m4__s1__p0",
+        "records": 6,
+        "complete": true
+      },
+      "retrieval__m0__s1__p0": {
+        "cell": "retrieval__m0__s1__p0",
+        "records": 1414,
+        "complete": true
+      }
+    },
+    "preflights": {
+      "0": {
+        "valid_hypotheses": 7,
+        "output_tokens": 1324,
+        "budget": 32000,
+        "protocol_sha256": "3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740f076",
+        "workflows": {
+          "morph": {
+            "input_tokens": 10843,
+            "output_tokens": 1324,
+            "valid_hypotheses": 7
+          },
+          "no_forgetting": {
+            "input_tokens": 10855,
+            "output_tokens": 1321,
+            "valid_hypotheses": 7
+          },
+          "fixed_reset": {
+            "input_tokens": 10855,
+            "output_tokens": 1321,
+            "valid_hypotheses": 7
+          },
+          "stateless_summary": {
+            "input_tokens": 6252,
+            "output_tokens": 1665,
+            "valid_hypotheses": 6
+          },
+          "agentless_adapted": {
+            "input_tokens": 6065,
+            "output_tokens": 95,
+            "valid_hypotheses": 0
+          },
+          "rgfl_adapted": {
+            "input_tokens": 15375,
+            "output_tokens": 2016,
+            "valid_hypotheses": 0
+          }
+        },
+        "complete": true
+      },
+      "1": {
+        "valid_hypotheses": 2,
+        "output_tokens": 816,
+        "budget": 32000,
+        "protocol_sha256": "3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740f076",
+        "workflows": {
+          "morph": {
+            "input_tokens": 9558,
+            "output_tokens": 816,
+            "valid_hypotheses": 2
+          },
+          "no_forgetting": {
+            "input_tokens": 9560,
+            "output_tokens": 818,
+            "valid_hypotheses": 2
+          },
+          "fixed_reset": {
+            "input_tokens": 9560,
+            "output_tokens": 816,
+            "valid_hypotheses": 2
+          },
+          "stateless_summary": {
+            "input_tokens": 7055,
+            "output_tokens": 507,
+            "valid_hypotheses": 1
+          },
+          "agentless_adapted": {
+            "input_tokens": 7038,
+            "output_tokens": 189,
+            "valid_hypotheses": 0
+          },
+          "rgfl_adapted": {
+            "input_tokens": 16959,
+            "output_tokens": 2377,
+            "valid_hypotheses": 0
+          }
+        },
+        "complete": true
+      },
+      "2": {
+        "valid_hypotheses": 1,
+        "output_tokens": 1830,
+        "budget": 32000,
+        "protocol_sha256": "3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740f076",
+        "workflows": {
+          "morph": {
+            "input_tokens": 8748,
+            "output_tokens": 1830,
+            "valid_hypotheses": 1
+          },
+          "no_forgetting": {
+            "input_tokens": 8748,
+            "output_tokens": 1830,
+            "valid_hypotheses": 1
+          },
+          "fixed_reset": {
+            "input_tokens": 8748,
+            "output_tokens": 1830,
+            "valid_hypotheses": 1
+          },
+          "stateless_summary": {
+            "input_tokens": 7210,
+            "output_tokens": 845,
+            "valid_hypotheses": 2
+          },
+          "agentless_adapted": {
+            "input_tokens": 6867,
+            "output_tokens": 95,
+            "valid_hypotheses": 0
+          },
+          "rgfl_adapted": {
+            "input_tokens": 12585,
+            "output_tokens": 1159,
+            "valid_hypotheses": 0
+          }
+        },
+        "complete": true
+      },
+      "3": {
+        "valid_hypotheses": 2,
+        "output_tokens": 922,
+        "budget": 32000,
+        "protocol_sha256": "3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740f076",
+        "workflows": {
+          "morph": {
+            "input_tokens": 9411,
+            "output_tokens": 922,
+            "valid_hypotheses": 2
+          },
+          "no_forgetting": {
+            "input_tokens": 9417,
+            "output_tokens": 897,
+            "valid_hypotheses": 2
+          },
+          "fixed_reset": {
+            "input_tokens": 9417,
+            "output_tokens": 900,
+            "valid_hypotheses": 2
+          },
+          "stateless_summary": {
+            "input_tokens": 6265,
+            "output_tokens": 793,
+            "valid_hypotheses": 4
+          },
+          "agentless_adapted": {
+            "input_tokens": 6221,
+            "output_tokens": 82,
+            "valid_hypotheses": 0
+          },
+          "rgfl_adapted": {
+            "input_tokens": 11709,
+            "output_tokens": 1531,
+            "valid_hypotheses": 0
+          }
+        },
+        "complete": true
+      },
+      "4": {
+        "valid_hypotheses": 1,
+        "output_tokens": 657,
+        "budget": 32000,
+        "protocol_sha256": "3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740f076",
+        "workflows": {
+          "morph": {
+            "input_tokens": 9738,
+            "output_tokens": 657,
+            "valid_hypotheses": 1
+          },
+          "no_forgetting": {
+            "input_tokens": 9741,
+            "output_tokens": 657,
+            "valid_hypotheses": 1
+          },
+          "fixed_reset": {
+            "input_tokens": 9741,
+            "output_tokens": 685,
+            "valid_hypotheses": 1
+          },
+          "stateless_summary": {
+            "input_tokens": 6858,
+            "output_tokens": 1284,
+            "valid_hypotheses": 1
+          },
+          "agentless_adapted": {
+            "input_tokens": 3379,
+            "output_tokens": 116,
+            "valid_hypotheses": 0
+          },
+          "rgfl_adapted": {
+            "input_tokens": 3379,
+            "output_tokens": 116,
+            "valid_hypotheses": 0
+          }
+        },
+        "complete": true
+      }
+    },
+    "downloaded": {
+      "0": {
+        "id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+        "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+        "family": "Qwen",
+        "ufv_gpus": 1
+      },
+      "1": {
+        "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
+        "revision": "e5d64addd26a6a1db0f9b863abf6ee3141936807",
+        "family": "DeepSeek",
+        "ufv_gpus": 1
+      },
+      "2": {
+        "id": "codellama/CodeLlama-7b-Instruct-hf",
+        "revision": "22cb240e0292b0b5ab4c17ccd97aa3a2f799cbed",
+        "family": "CodeLlama",
+        "ufv_gpus": 2
+      },
+      "3": {
+        "id": "mistralai/Mistral-Nemo-Instruct-2407",
+        "revision": "04d8a90549d23fc6bd7f642064003592df51e9b3",
+        "family": "Mistral",
+        "ufv_gpus": 2,
+        "tokenizer_kwargs": {
+          "fix_mistral_regex": true
+        }
+      },
+      "4": {
+        "id": "ibm-granite/granite-3.1-8b-instruct",
+        "revision": "4009206d5fc95d2e65a7b7633e159d6e97e25d35",
+        "family": "Granite",
+        "ufv_gpus": 1
+      }
+    },
+    "completeness": null,
+    "summary_rows": [],
+    "analysis_overviews": {},
+    "analysis_files": [],
+    "errors": [
+      "sacct: Slurm accounting storage is disabled\n"
+    ],
+    "failure_events": [
+      {
+        "time": "2026-10-20 07:27:09",
+        "job": "17935",
+        "task": "",
+        "restart": "1",
+        "stage": "retrieval",
+        "cell": "all",
+        "step": "controls",
+        "start": "2026-10-20 02:44:28",
+        "end": "2026-10-20 07:27:09",
+        "seconds": "16960",
+        "rc": "1",
+        "note": "",
+        "command": "python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track retrieval --shards 1 --smoke 0",
+        "kind": "step",
+        "resolved": true,
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps/retrieval/all/controls.log",
+        "ledger": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps.tsv",
+        "tail": "\"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 422, in generic_visit\n    for field, value in iter_fields(node):\n                        ^^^^^^^^^^^^^^^^^\nRecursionError: maximum recursion depth exceeded\n\n===== 2026-10-20 08:11:05 job 17973 task - restart 0 host node3.slurm.sc.ufv.ca =====\n$ python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track retrieval --shards 1 --smoke 0\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 463, in <module>\n    {\"assets\": model_assets, \"preflight\": preflight, \"run\": run, \"score\": score}[a.command](a)\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 166, in run\n    repair_interrupted_tail(out)\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/application.py\", line 26, in repair_interrupted_tail\n    lines = path.read_bytes().splitlines(keepends=True)\n            ^^^^^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/pathlib.py\", line 1051, in read_bytes\n    return f.read()\n           ^^^^^^^^\nMemoryError\n\n===== 2026-10-20 08:12:53 job 17979 task - restart 0 host node3.slurm.sc.ufv.ca =====\n$ python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track retrieval --shards 1 --smoke 0\n{\"event\": \"case_start\", \"cell\": \"retrieval__m0__s1__p0\", \"case\": \"sympy__sympy-24909\", \"variant\": \"bm25\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"retrieval__m0__s1__p0\", \"completed\": 1413, \"expected\": 1414}\n{\"event\": \"case_start\", \"cell\": \"retrieval__m0__s1__p0\", \"case\": \"sympy__sympy-24909\", \"variant\": \"graph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"retrieval__m0__s1__p0\", \"completed\": 1414, \"expected\": 1414}\n"
+      },
+      {
+        "time": "2026-10-20 08:11:06",
+        "job": "17973",
+        "task": "",
+        "restart": "0",
+        "stage": "retrieval",
+        "cell": "all",
+        "step": "controls",
+        "start": "2026-10-20 08:11:05",
+        "end": "2026-10-20 08:11:06",
+        "seconds": "1",
+        "rc": "1",
+        "note": "",
+        "command": "python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track retrieval --shards 1 --smoke 0",
+        "kind": "step",
+        "resolved": true,
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps/retrieval/all/controls.log",
+        "ledger": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps.tsv",
+        "tail": "\"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 428, in generic_visit\n    self.visit(value)\n  File \"/opt/conda/lib/python3.11/ast.py\", line 418, in visit\n    return visitor(node)\n           ^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/ast.py\", line 422, in generic_visit\n    for field, value in iter_fields(node):\n                        ^^^^^^^^^^^^^^^^^\nRecursionError: maximum recursion depth exceeded\n\n===== 2026-10-20 08:11:05 job 17973 task - restart 0 host node3.slurm.sc.ufv.ca =====\n$ python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track retrieval --shards 1 --smoke 0\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 463, in <module>\n    {\"assets\": model_assets, \"preflight\": preflight, \"run\": run, \"score\": score}[a.command](a)\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 166, in run\n    repair_interrupted_tail(out)\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/application.py\", line 26, in repair_interrupted_tail\n    lines = path.read_bytes().splitlines(keepends=True)\n            ^^^^^^^^^^^^^^^^^\n  File \"/opt/conda/lib/python3.11/pathlib.py\", line 1051, in read_bytes\n    return f.read()\n           ^^^^^^^^\nMemoryError\n\n===== 2026-10-20 08:12:53 job 17979 task - restart 0 host node3.slurm.sc.ufv.ca =====\n$ python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track retrieval --shards 1 --smoke 0\n{\"event\": \"case_start\", \"cell\": \"retrieval__m0__s1__p0\", \"case\": \"sympy__sympy-24909\", \"variant\": \"bm25\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"retrieval__m0__s1__p0\", \"completed\": 1413, \"expected\": 1414}\n{\"event\": \"case_start\", \"cell\": \"retrieval__m0__s1__p0\", \"case\": \"sympy__sympy-24909\", \"variant\": \"graph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"retrieval__m0__s1__p0\", \"completed\": 1414, \"expected\": 1414}\n"
+      },
+      {
+        "time": "2026-10-20 14:02:23",
+        "job": "17992",
+        "task": "1",
+        "restart": "0",
+        "stage": "main_m0",
+        "cell": "0__2__0",
+        "step": "investigate",
+        "start": "2026-10-20 12:17:29",
+        "end": "2026-10-20 14:02:23",
+        "seconds": "6294",
+        "rc": "1",
+        "note": "",
+        "command": "python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track main --model 0 --seed 2 --shard 0 --shards 32 --smoke 0",
+        "kind": "step",
+        "resolved": false,
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps/main_m0/0__2__0/investigate.log",
+        "ledger": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps.tsv",
+        "tail": "\"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"django__django-17029\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 64, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"django__django-17029\", \"variant\": \"agentless_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 65, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"django__django-17029\", \"variant\": \"rgfl_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 66, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"matplotlib__matplotlib-24334\", \"variant\": \"morph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 67, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"matplotlib__matplotlib-24334\", \"variant\": \"no_forgetting\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 68, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"matplotlib__matplotlib-24334\", \"variant\": \"fixed_reset\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 69, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"matplotlib__matplotlib-24334\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 70, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"matplotlib__matplotlib-24334\", \"variant\": \"agentless_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 71, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"matplotlib__matplotlib-24334\", \"variant\": \"rgfl_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 72, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"pallets__flask-5014\", \"variant\": \"morph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 73, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"pallets__flask-5014\", \"variant\": \"no_forgetting\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 74, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"pallets__flask-5014\", \"variant\": \"fixed_reset\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s2__p0\", \"completed\": 75, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s2__p0\", \"case\": \"pallets__flask-5014\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 463, in <module>\n    {\"assets\": model_assets, \"preflight\": preflight, \"run\": run, \"score\": score}[a.command](a)\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 254, in run\n    row = localize(\n          ^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/engine.py\", line 36, in localize\n    return LocalizationController(config, backend, sandbox).run(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/search/controller.py\", line 387, in run\n    observation = executor.execute(\n                  ^^^^^^^^^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/investigation/executor.py\", line 85, in execute\n    if query.get(\"node_type\") not in allowed:\n       ^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n"
+      },
+      {
+        "time": "2026-10-20 14:42:29",
+        "job": "17991",
+        "task": "0",
+        "restart": "0",
+        "stage": "main_m0",
+        "cell": "0__1__0",
+        "step": "investigate",
+        "start": "2026-10-20 12:17:28",
+        "end": "2026-10-20 14:42:28",
+        "seconds": "8700",
+        "rc": "1",
+        "note": "",
+        "command": "python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track main --model 0 --seed 1 --shard 0 --shards 32 --smoke 0",
+        "kind": "step",
+        "resolved": false,
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps/main_m0/0__1__0/investigate.log",
+        "ledger": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps.tsv",
+        "tail": "rt\", \"cell\": \"main__m0__s1__p0\", \"case\": \"scikit-learn__scikit-learn-25570\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 100, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"scikit-learn__scikit-learn-25570\", \"variant\": \"agentless_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 101, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"scikit-learn__scikit-learn-25570\", \"variant\": \"rgfl_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 102, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-8120\", \"variant\": \"morph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 103, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-8120\", \"variant\": \"no_forgetting\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 104, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-8120\", \"variant\": \"fixed_reset\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 105, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-8120\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 106, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-8120\", \"variant\": \"agentless_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 107, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-8120\", \"variant\": \"rgfl_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 108, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-9711\", \"variant\": \"morph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 109, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-9711\", \"variant\": \"no_forgetting\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 110, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-9711\", \"variant\": \"fixed_reset\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s1__p0\", \"completed\": 111, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s1__p0\", \"case\": \"sphinx-doc__sphinx-9711\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 463, in <module>\n    {\"assets\": model_assets, \"preflight\": preflight, \"run\": run, \"score\": score}[a.command](a)\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 254, in run\n    row = localize(\n          ^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/engine.py\", line 36, in localize\n    return LocalizationController(config, backend, sandbox).run(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/search/controller.py\", line 387, in run\n    observation = executor.execute(\n                  ^^^^^^^^^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/investigation/executor.py\", line 85, in execute\n    raise ValueError(\"AST query must be an object\")\n   ^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n"
+      },
+      {
+        "time": "2026-10-20 15:00:26",
+        "job": "18008",
+        "task": "2",
+        "restart": "0",
+        "stage": "main_m0",
+        "cell": "0__3__0",
+        "step": "investigate",
+        "start": "2026-10-20 14:02:42",
+        "end": "2026-10-20 15:00:26",
+        "seconds": "3464",
+        "rc": "1",
+        "note": "",
+        "command": "python -m experiments.full.suite run --results /home/babaei/morph-ufv/runs/ufv-full-v12-20261020-01/results --track main --model 0 --seed 3 --shard 0 --shards 32 --smoke 0",
+        "kind": "step",
+        "resolved": false,
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps/main_m0/0__3__0/investigate.log",
+        "ledger": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps.tsv",
+        "tail": "ll\": \"main__m0__s3__p0\", \"completed\": 27, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13109\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 28, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13109\", \"variant\": \"agentless_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 29, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13109\", \"variant\": \"rgfl_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 30, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13658\", \"variant\": \"morph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 31, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13658\", \"variant\": \"no_forgetting\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 32, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13658\", \"variant\": \"fixed_reset\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 33, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13658\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 34, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13658\", \"variant\": \"agentless_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 35, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-13658\", \"variant\": \"rgfl_adapted\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 36, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-14349\", \"variant\": \"morph\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 37, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-14349\", \"variant\": \"no_forgetting\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 38, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-14349\", \"variant\": \"fixed_reset\", \"budget\": 32000, \"window\": null}\n{\"event\": \"case_done\", \"cell\": \"main__m0__s3__p0\", \"completed\": 39, \"expected\": 138}\n{\"event\": \"case_start\", \"cell\": \"main__m0__s3__p0\", \"case\": \"django__django-14349\", \"variant\": \"stateless_summary\", \"budget\": 32000, \"window\": null}\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 463, in <module>\n    {\"assets\": model_assets, \"preflight\": preflight, \"run\": run, \"score\": score}[a.command](a)\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/experiments/full/suite.py\", line 254, in run\n    row = localize(\n          ^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/engine.py\", line 36, in localize\n    return LocalizationController(config, backend, sandbox).run(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/search/controller.py\", line 387, in run\n    observation = executor.execute(\n                  ^^^^^^^^^^^^^^^^^\n  File \"/home/babaei/projects/MORPH-FL-full-v12-20261020/src/morph_fl/investigation/executor.py\", line 85, in execute\n    raise ValueError(\"AST query must be an object\")\n   ^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n"
+      },
+      {
+        "kind": "maintenance",
+        "stage": "ast_validation",
+        "job": "17969",
+        "rc": "1",
+        "detail": "Validation harness could not import the original analyzer backup with .original suffix; fixed using SourceFileLoader.",
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/maintenance/ast-recovery-20261020/validation-17969.err",
+        "resolved": true
+      },
+      {
+        "kind": "step",
+        "stage": "retrieval",
+        "job": "17973",
+        "rc": "1",
+        "detail": "First recovery attempt exposed a second whole-file allocation in repair_interrupted_tail: MemoryError on 209 GB checkpoint. Replaced with streaming scan and preserved invalid-tail backup.",
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/steps/retrieval/all/controls.log",
+        "resolved": true
+      },
+      {
+        "kind": "maintenance",
+        "stage": "main_dependency_recovery",
+        "job": "17937-17941,17974-17978",
+        "rc": "DEPENDENCY_CANCELLED",
+        "detail": "Superseded primary arrays canceled following retrieval failures; complete replacement graph submitted after verified retrieval. {\"ablations_m0\": \"17985\", \"ablations_m1\": \"17986\", \"ablations_m2\": \"17987\", \"ablations_m3\": \"17988\", \"ablations_m4\": \"17989\", \"budgets_m0\": \"17990\", \"budgets_m1\": \"17993\", \"budgets_m2\": \"17994\", \"budgets_m3\": \"17995\", \"budgets_m4\": \"17996\", \"collect\": \"18007\", \"main_m0\": \"17980\", \"main_m1\": \"17981\", \"main_m2\": \"17982\", \"main_m3\": \"17983\", \"main_m4\": \"17984\", \"misdirection_m0\": \"17997\", \"misdirection_m1\": \"17998\", \"misdirection_m2\": \"17999\", \"misdirection_m3\": \"18000\", \"misdirection_m4\": \"18001\", \"policy_m0\": \"18002\", \"policy_m1\": \"18003\", \"policy_m2\": \"18004\", \"policy_m3\": \"18005\", \"policy_m4\": \"18006\"}",
+        "log": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/jobs.tsv",
+        "ledger": "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/maintenance/ast-recovery-20261020/restored_graph.json",
+        "resolved": true
+      }
+    ],
+    "runtime_maintenance": {
+      "id": "ast-recovery-20261020",
+      "created_utc": "2026-10-20T15:07:17Z",
+      "protocol_sha256": "3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740f076",
+      "reason": "Fix depth-safe AST traversal and memory-bounded checkpoint resume; preserve protocol identity and existing predictions.",
+      "files": {
+        "src/morph_fl/program_analysis/python.py": {
+          "original_sha256": "7ff3f7cd1ab7559789c2b3c3e964274f03847df1b844c34bec6398f40690b444",
+          "sha256": "20d06584295e48b8f97cc0ae03f9da3b617fb583ccee7fc1f927918ebb3c350f"
+        },
+        "experiments/full/suite.py": {
+          "original_sha256": "2c01e3dec2afd1746abae48007f94ea9953b09fe035fc061b78321e773c327ef",
+          "sha256": "08966bb5124e40d1c673fbbb1af051c40828a151fb3ac421c10829bccf3e7124"
+        },
+        "hpc/ufv/runtime_maintenance.py": {
+          "original_sha256": null,
+          "sha256": "8a46566f9f9830af328007bcfb05054f677dc93ace498848183d19b2982c66b7"
+        },
+        "hpc/ufv/validate_ast_repair.py": {
+          "original_sha256": null,
+          "sha256": "590aa4b1964459b44076c9644fc15d3cf1b6221f0e0aa7015d2c1c0b9da0a073"
+        },
+        "src/morph_fl/application.py": {
+          "original_sha256": "a2dd870912ae55a4c6f65d421bd31efa51326d9987f5094db3ef76e08c8c747d",
+          "sha256": "9f3242e177540d8dd212b974dbc54da393fbe8ec6d888293a523c46d813d1fd8"
+        },
+        "src/morph_fl/investigation/executor.py": {
+          "original_sha256": "58875ede788e1a16f9a150392a722b3d4ae25bc4ff8149757792e702237c017d",
+          "sha256": "875026021409e9b5462b588d7424ead63dee8cd7dc16b30426e8d7c7801dabe5"
+        }
+      },
+      "repairs": [
+        {
+          "id": "probe-query-20261020",
+          "utc": "2026-10-20T21:05:52.520785+00:00",
+          "reason": "Reject non-object AST queries as ValueError, handled by existing probe_error path; failed task 17980_1 retains 75 completed records."
+        }
+      ]
+    },
+    "maintenance_validation": {
+      "complete": true,
+      "original_crash_reproduced": true,
+      "ordinary_source_exact_equivalence": true,
+      "case": "sympy__sympy-24909",
+      "sources": 873,
+      "symbols": 22347,
+      "relations": 788852,
+      "diagnostics": [],
+      "archive_sha256": "7a6417d0b31b683cf8017dce2ded12811b0ace6f7fb445429366d01800ca61d3"
+    },
+    "maintenance_recovery": {
+      "jobs": {
+        "main_m0": "17980",
+        "main_m1": "17981",
+        "main_m2": "17982",
+        "main_m3": "17983",
+        "main_m4": "17984",
+        "ablations_m0": "17985",
+        "ablations_m1": "17986",
+        "ablations_m2": "17987",
+        "ablations_m3": "17988",
+        "ablations_m4": "17989",
+        "budgets_m0": "17990",
+        "budgets_m1": "17993",
+        "budgets_m2": "17994",
+        "budgets_m3": "17995",
+        "budgets_m4": "17996",
+        "misdirection_m0": "17997",
+        "misdirection_m1": "17998",
+        "misdirection_m2": "17999",
+        "misdirection_m3": "18000",
+        "misdirection_m4": "18001",
+        "policy_m0": "18002",
+        "policy_m1": "18003",
+        "policy_m2": "18004",
+        "policy_m3": "18005",
+        "policy_m4": "18006",
+        "collect": "18007"
+      },
+      "commands": [
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_main_m0",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=main_m0",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-95%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17980\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_main_m1",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=main_m1",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-95%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17980",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17981\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_main_m2",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=main_m2",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-95%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17981",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17982\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_main_m3",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=main_m3",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-95%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17982",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17983\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_main_m4",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=main_m4",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-95%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17983",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17984\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_ablations_m0",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=ablations_m0",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17980,afterany:17981,afterany:17982,afterany:17983,afterany:17984",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17985\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_ablations_m1",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=ablations_m1",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17980,afterany:17981,afterany:17982,afterany:17983,afterany:17984,afterany:17985",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17986\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_ablations_m2",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=ablations_m2",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17980,afterany:17981,afterany:17982,afterany:17983,afterany:17984,afterany:17986",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17987\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_ablations_m3",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=ablations_m3",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17980,afterany:17981,afterany:17982,afterany:17983,afterany:17984,afterany:17987",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17988\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_ablations_m4",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=ablations_m4",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17980,afterany:17981,afterany:17982,afterany:17983,afterany:17984,afterany:17988",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17989\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_budgets_m0",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=budgets_m0",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17985,afterany:17986,afterany:17987,afterany:17988,afterany:17989",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17990\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_budgets_m1",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=budgets_m1",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17985,afterany:17986,afterany:17987,afterany:17988,afterany:17989,afterany:17990",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17993\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_budgets_m2",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=budgets_m2",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17985,afterany:17986,afterany:17987,afterany:17988,afterany:17989,afterany:17993",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17994\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_budgets_m3",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=budgets_m3",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17985,afterany:17986,afterany:17987,afterany:17988,afterany:17989,afterany:17994",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17995\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_budgets_m4",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=budgets_m4",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17985,afterany:17986,afterany:17987,afterany:17988,afterany:17989,afterany:17995",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17996\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_misdirection_m0",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=misdirection_m0",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17990,afterany:17993,afterany:17994,afterany:17995,afterany:17996",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17997\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_misdirection_m1",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=misdirection_m1",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17990,afterany:17993,afterany:17994,afterany:17995,afterany:17996,afterany:17997",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17998\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_misdirection_m2",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=misdirection_m2",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17990,afterany:17993,afterany:17994,afterany:17995,afterany:17996,afterany:17998",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "17999\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_misdirection_m3",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=misdirection_m3",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17990,afterany:17993,afterany:17994,afterany:17995,afterany:17996,afterany:17999",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18000\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_misdirection_m4",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=misdirection_m4",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17990,afterany:17993,afterany:17994,afterany:17995,afterany:17996,afterany:18000",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18001\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_policy_m0",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=policy_m0",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17997,afterany:17998,afterany:17999,afterany:18000,afterany:18001",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18002\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_policy_m1",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=policy_m1",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17997,afterany:17998,afterany:17999,afterany:18000,afterany:18001,afterany:18002",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18003\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_policy_m2",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=policy_m2",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17997,afterany:17998,afterany:17999,afterany:18000,afterany:18001,afterany:18003",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18004\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_policy_m3",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=64G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=policy_m3",
+            "--gres=gpu:nvidia_a30:2",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%1",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17997,afterany:17998,afterany:17999,afterany:18000,afterany:18001,afterany:18004",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18005\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_policy_m4",
+            "--time=12:00:00",
+            "--cpus-per-task=8",
+            "--mem=40G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=policy_m4",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--array=0-11%2",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%A_%a.err",
+            "--dependency=afterany:17997,afterany:17998,afterany:17999,afterany:18000,afterany:18001,afterany:18005",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18006\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "sbatch",
+            "--parsable",
+            "--account=babaei",
+            "--job-name=morph-ufv_collect",
+            "--time=02:00:00",
+            "--cpus-per-task=2",
+            "--mem=16G",
+            "--open-mode=append",
+            "--export=ALL,HPC_DIR=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc,RUN_ID=ufv-full-v12-20261020-01,STAGE=collect",
+            "--gres=gpu:nvidia_a30:1",
+            "--partition=main",
+            "--requeue",
+            "--signal=B:USR1@60",
+            "--output=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%j.out",
+            "--error=/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/logs/ufv-full-v12-20261020-01/slurm/%x_%j.err",
+            "--dependency=afterany:17980,afterany:17981,afterany:17982,afterany:17983,afterany:17984,afterany:17985,afterany:17986,afterany:17987,afterany:17988,afterany:17989,afterany:17990,afterany:17993,afterany:17994,afterany:17995,afterany:17996,afterany:17997,afterany:17998,afterany:17999,afterany:18000,afterany:18001,afterany:18002,afterany:18003,afterany:18004,afterany:18005,afterany:18006",
+            "--kill-on-invalid-dep=yes",
+            "/home/babaei/projects/MORPH-FL-full-v12-20261020/hpc/slurm/stage.sh"
+          ],
+          "rc": 0,
+          "stdout": "18007\n",
+          "stderr": ""
+        }
+      ],
+      "complete": true,
+      "retrieval_records": 1414,
+      "restored_utc": "2026-10-20T19:17:06Z"
+    }
+  },
+  "recovery_io": {
+    "pid": 107371,
+    "phase": "COMPACTING",
+    "memory_rss": "3494200 kB",
+    "processed_bytes": 221836533760,
+    "source_bytes": 224839885933,
+    "fraction": 0.9866422625125554,
+    "compact_output_bytes": 41919043,
+    "observed_utc": "2026-10-20T19:15:02Z",
+    "node": "node3"
+  },
+  "monitor_mode": "cron",
+  "checked_utc": "2026-10-23T13:32:39Z"
+}

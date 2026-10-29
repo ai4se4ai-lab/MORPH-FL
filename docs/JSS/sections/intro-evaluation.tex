@@ -1,0 +1,24 @@
+We evaluate four context workflows on a fixed sample of 50 issues from twelve repositories using two open code LLMs. Every model--workflow--issue key is present: 400 investigations and 100 deterministic retrieval-control records. This paper reports that bounded study; it does not estimate performance on all SWE-bench issues. The comparisons use one seed and preserve the frozen runtime and unfavorable outcomes.
+
+We ask four research questions:
+\begin{itemize}
+\item \textbf{RQ1 (Ranking):} How do context workflows compare on patch-file and function rankings with each model and against retrieval?
+\item \textbf{RQ2 (Reset exposure):} How often do adaptive and fixed resets occur, and do reset workflows gain file Top-1 hits over continuous context?
+\item \textbf{RQ3 (Resources):} What token and elapsed-time tradeoffs accompany the observed outcomes?
+\item \textbf{RQ4 (Investigation output):} What do final hypothesis pools and response diagnostics reveal beyond file accuracy?
+\end{itemize}
+
+With Qwen, adaptive, continuous and fixed reset each reach 42\% file Top-1; observation-only reaches 50\%. With DeepSeek, all four reach 40\%, equal to retrieval, yet final hypothesis availability ranges from 6--7/50 under richer views to 47/50 under observation-only. Adaptive resetting occurs on 16\% of Qwen and 58\% of DeepSeek cases, without additional rank-one target hits. Observation-only takes longer on both models. These results make the contribution an empirical account of context-policy behavior and measurement, including a negative result for the original adaptive design.
+
+Observation-only omits several fields and dialogue and disables pruning. A duplicated-ambiguity defect can also grow the richer prompts. These facts prevent attributing its outcomes to forgetting alone. The 132 reused Qwen predictions retain their original protocol identities; this study is not independent confirmation of earlier observations. Section~\ref{sec:study} explains selection and provenance.
+
+The contributions are:
+\begin{itemize}
+\item An executable investigation-state design separating observations, conjectures and dialogue, with source provenance, scoped assessments and an explicit observation-preservation obligation at reset.
+\item A fully collected, paired comparison of four context workflows and two retrieval controls on 50 issues, with model-specific rankings, exact discordant counts and descriptive uncertainty.
+\item A process analysis connecting reset exposure, final-pool availability, response events and completed-case resources, showing how retrieval fallback can conceal investigation failure.
+\item A reproducible score-table analysis that checks exact coverage and binds generated result tables to their inputs while preserving experiment provenance.
+\end{itemize}
+
+Section~\ref{sec:background} defines the task and example; Section~\ref{sec:approach} presents the architecture. Sections~\ref{sec:study} and~\ref{sec:results} describe the study and findings. Sections~\ref{sec:discussion}--\ref{sec:related} discuss implications, validity and related work. Section~\ref{sec:conclusion} concludes; the appendix records implementation and reproduction details.
+

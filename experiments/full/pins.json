@@ -1,0 +1,47 @@
+{
+  "models": [
+    {
+      "id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+      "family": "Qwen",
+      "ufv_gpus": 1
+    },
+    {
+      "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "revision": "e5d64addd26a6a1db0f9b863abf6ee3141936807",
+      "family": "DeepSeek",
+      "ufv_gpus": 1
+    },
+    {
+      "id": "codellama/CodeLlama-7b-Instruct-hf",
+      "revision": "22cb240e0292b0b5ab4c17ccd97aa3a2f799cbed",
+      "family": "CodeLlama",
+      "ufv_gpus": 2
+    },
+    {
+      "id": "mistralai/Mistral-Nemo-Instruct-2407",
+      "revision": "04d8a90549d23fc6bd7f642064003592df51e9b3",
+      "family": "Mistral",
+      "ufv_gpus": 2,
+      "tokenizer_kwargs": {
+        "fix_mistral_regex": true
+      }
+    },
+    {
+      "id": "ibm-granite/granite-3.1-8b-instruct",
+      "revision": "4009206d5fc95d2e65a7b7633e159d6e97e25d35",
+      "family": "Granite",
+      "ufv_gpus": 1
+    }
+  ],
+  "datasets": [
+    {
+      "id": "princeton-nlp/SWE-bench_Lite",
+      "revision": "6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2"
+    },
+    {
+      "id": "princeton-nlp/SWE-bench_Verified",
+      "revision": "c104f840cc67f8b6eec6f759ebc8b2693d585d4a"
+    }
+  ]
+}

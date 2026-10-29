@@ -1,0 +1,46 @@
+[
+  {
+    "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "variant": "morph",
+    "paired_issues": 472,
+    "top1": 0.4279661016949153,
+    "top5": 0.7097457627118644,
+    "function_top1": 0.2026726057906459,
+    "tokens": 27287.20127118644,
+    "end_to_end_seconds": 94.69329377810196,
+    "resets": 0.298728813559322
+  },
+  {
+    "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "variant": "no_forgetting",
+    "paired_issues": 472,
+    "top1": 0.4322033898305085,
+    "top5": 0.7161016949152542,
+    "function_top1": 0.19821826280623608,
+    "tokens": 26602.10805084746,
+    "end_to_end_seconds": 91.78938884446367,
+    "resets": 0.0
+  },
+  {
+    "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "variant": "fixed_reset",
+    "paired_issues": 472,
+    "top1": 0.4216101694915254,
+    "top5": 0.711864406779661,
+    "function_top1": 0.19376391982182628,
+    "tokens": 28140.56779661017,
+    "end_to_end_seconds": 97.55395884631287,
+    "resets": 1.0635593220338984
+  },
+  {
+    "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "variant": "stateless_summary",
+    "paired_issues": 472,
+    "top1": 0.5254237288135594,
+    "top5": 0.7351694915254238,
+    "function_top1": 0.24721603563474387,
+    "tokens": 28916.22245762712,
+    "end_to_end_seconds": 144.50335872299,
+    "resets": 0.0
+  }
+]

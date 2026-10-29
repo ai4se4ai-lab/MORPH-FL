@@ -1,0 +1,21 @@
+{
+  "Agentless": {
+    "url": "https://github.com/OpenAutoCoder/Agentless",
+    "commit": "5ce5888b9f149beaace393957a55ea8ee46c9f71",
+    "files": {
+      "agentless/fl/FL.py": "5e105482389fef03689e3af42b2f6969525d56460c65c5722a84c39196f6f5fa",
+      "agentless/util/compress_file.py": "7f4c52df8cc6fc42654da16ebee97d8c3776e5ef4f1f0a78a7e47b3af33da696",
+      "agentless/util/preprocess_data.py": "2dc278cde8773c81a417deed842af677559f58238f7355cb862f0e1e86498bbb"
+    }
+  },
+  "RGFL": {
+    "url": "https://github.com/MelikaSepidband/RGFL",
+    "commit": "62195e66579c5c99add5a715d36a57e2b202419f",
+    "files": {
+      "rgfl/fl/file_reasoning.py": "2fd4c657e5222b017c012357b26a870ae6be1cc2ed47427ea2953c87428079cb",
+      "rgfl/fl/file_ranking.py": "c175b0b3f9692ebbe5721139f910ff72e8252e701a8efb9ce30bc382c7ee42d8",
+      "rgfl/fl/element_reasoning.py": "332e3957ec225bb3c374ea4e33a81a0276a0c260e1e5fbe7af08ea7418f583ef",
+      "rgfl/fl/element_ranking.py": "7c3b72e00f960149e78bb0aa8d8972a70ee3289908a0c6fb0a968fbe36e91604"
+    }
+  }
+}

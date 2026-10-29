@@ -1,0 +1,5 @@
+- MORPH-FL separates source observations, hypotheses and dialogue.
+- Adaptive resets add no file Top-1 hits over continuous context.
+- Observation-only views have higher observed Qwen file Top-1.
+- Retrieval fallback can hide empty hypothesis-based investigations.
+- A prompt-growth defect limits causal interpretation of the results.

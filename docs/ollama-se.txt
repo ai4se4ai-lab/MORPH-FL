@@ -1,0 +1,232 @@
+# Categorized Ollama models for Software Engineering, with BibTeX references
+
+I would organize the models along two independent dimensions: architecture/model family and software engineering capability. This avoids treating every coding model as interchangeable and makes it easier to select baselines for experiments.
+
+The bibliography below distinguishes original model papers from software engineering evaluation papers. One correction to my previous response: the earlier broad paper titles should be treated as search leads, not verified citations. I will not attribute a paper to ICSE, IEEE TSE, or EMSE without sufficient bibliographic confidence.
+
+## 1. Model taxonomy by architecture and specialization
+
+Model families and suggested Ollama tags; exact tag availability should be checked against your installed Ollama registry.
+
+| Category                             | Models                        | Main specialization                    | Best SE applications                                |
+| ------------------------------------ | ----------------------------- | -------------------------------------- | --------------------------------------------------- |
+| General-purpose code LLMs            | Qwen2.5-Coder, DeepSeek-Coder | Code generation and reasoning          | Code comprehension, repair, refactoring             |
+| Mixture-of-Experts (MoE) code models | DeepSeek-Coder-V2             | Sparse expert-based computation        | Complex code tasks, large-scale code reasoning      |
+| Agent-oriented coding models         | Devstral                      | Repository work and tool-driven coding | Multi-file changes, issue resolution                |
+| Code completion / infilling models   | StarCoder2, Code Llama        | Code continuation and infilling        | IDE assistance, code completion                     |
+| Enterprise-oriented code models      | Granite Code                  | Code generation and understanding      | Maintenance, code explanation, controlled baselines |
+
+These categories are not mutually exclusive. For example, DeepSeek-Coder-V2 is both code-specialized and MoE-based, while Devstral is best distinguished by its agentic coding focus rather than treated as a separate architectural family.
+
+## 2. Categorization by SE expertise
+
+### A. Code understanding, generation and refactoring
+
+Primary candidates: Qwen2.5-Coder, DeepSeek-Coder, Granite Code
+
+Typical tasks
+
+* Explain functions and classes
+
+* Identify design problems and code smells
+
+* Generate implementations and refactor code
+
+* Analyze dependencies and changes
+
+Suggested evaluation: compilation success, functional correctness, design-constraint satisfaction and behavior preservation.
+
+### B. Automated program repair
+
+Primary candidates: Qwen2.5-Coder, DeepSeek-Coder-V2, Devstral
+
+Typical tasks
+
+* Repair bugs from issue descriptions
+
+* Localize faulty code
+
+* Generate and validate patches
+
+* Resolve repository-level issues
+
+Suggested evaluation: plausible patches, independently validated correctness, regression tests and resolved issues.
+
+### C. Testing and test generation
+
+Primary candidates: Qwen2.5-Coder, DeepSeek-Coder, StarCoder2
+
+Typical tasks
+
+* Generate unit tests
+
+* Generate boundary and negative test cases
+
+* Repair failing tests
+
+* Improve mutation coverage
+
+Suggested evaluation: compilability, branch coverage, mutation score and fault-detection effectiveness.
+
+### D. Agentic and repository-level software engineering
+
+Primary candidates: Devstral, Qwen2.5-Coder, DeepSeek-Coder-V2
+
+Typical tasks
+
+* Execute issue-to-patch workflows
+
+* Navigate repositories and use development tools
+
+* Coordinate planning, implementation and testing
+
+* Recover from failed tool calls
+
+Suggested evaluation: task resolution rate, tool-use accuracy, execution cost, latency and reproducibility.
+
+### E. Code completion and historical baselines
+
+Primary candidates: StarCoder2, Code Llama, Qwen2.5-Coder
+
+Typical tasks
+
+* Fill in missing code
+
+* Complete functions from context
+
+* Predict code tokens
+
+* Compare newer models with established baselines
+
+Suggested evaluation: pass@k, exact match where appropriate, compilation rate and latency.
+
+## 3. Model-paper bibliography in BibTeX
+
+The following references describe the underlying model families. They are useful for documenting architecture, training and intended capabilities; they are not all SE journal or conference papers.
+
+bibtex
+
+```
+@misc{hui2024qwen25coder,
+  title         = {{Qwen2.5-Coder Technical Report}},
+  author        = {Hui, Binyuan and others},
+  year          = {2024},
+  eprint        = {2409.12186},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL}
+}
+
+@misc{guo2024deepseekcoder,
+  title         = {{DeepSeek-Coder: When the Large Language Model
+                   Meets Programming---The Rise of Code Intelligence}},
+  author        = {Guo, Daya and others},
+  year          = {2024},
+  eprint        = {2401.14196},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE}
+}
+
+@misc{zhu2024deepseekcoderv2,
+  title         = {{DeepSeek-Coder-V2: Breaking the Barrier of
+                   Closed-Source Models in Code Intelligence}},
+  author        = {Zhu, Qwen and others},
+  year          = {2024},
+  eprint        = {2406.11931},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE}
+}
+
+@misc{lozhkov2024starcoder2,
+  title         = {{StarCoder 2 and The Stack v2:
+                   The Next Generation}},
+  author        = {Lozhkov, Anton and others},
+  year          = {2024},
+  eprint        = {2402.19173},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE}
+}
+
+@misc{roziere2023codellama,
+  title         = {{Code Llama: Open Foundation Models for Code}},
+  author        = {Roziere, Baptiste and others},
+  year          = {2023},
+  eprint        = {2308.12950},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL}
+}
+
+@misc{mishra2024granitecode,
+  title         = {{Granite Code Models: A Family of Open
+                   Foundation Models for Code Intelligence}},
+  author        = {Mishra, Mayank and others},
+  year          = {2024},
+  eprint        = {2405.04324},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL}
+}
+```
+
+The entries above use `and others` as a compact author placeholder. For a final bibliography, replace it with the full author list from each paper's official record if your bibliography style or venue requires it.
+
+## 4. Software engineering evaluation papers
+
+These papers provide the research context for evaluating the models against real SE tasks. They should be cited alongside model-specific papers, rather than as evidence that a model family necessarily wins.
+
+bibtex
+
+```
+@inproceedings{jimenez2024swebench,
+  title     = {{SWE-bench: Can Language Models Resolve
+               Real-World GitHub Issues?}},
+  author    = {Jimenez, Carlos E. and others},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2024},
+  eprint    = {2310.06770},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{schafer2024unittestgeneration,
+  title     = {{An Empirical Evaluation of Using Large Language
+               Models for Automated Unit Test Generation}},
+  author    = {Schäfer, Moritz and others},
+  booktitle = {Proceedings of the IEEE/ACM International Conference
+               on Software Engineering},
+  year      = {2024}
+}
+
+@misc{hou2023llmsoftwareengineering,
+  title         = {{Large Language Models for Software Engineering:
+                   A Systematic Literature Review}},
+  author        = {Hou, Xinyi and others},
+  year          = {2023},
+  eprint        = {2308.10620},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE}
+}
+```
+
+Important verification note: Before submission, verify each record against the publisher or arXiv metadata. In particular, confirm the unit-test paper's author list and final proceedings metadata, and confirm the title and author metadata for the systematic review. The SWE-bench paper is an evaluation-benchmark reference, not an ICSE, TSE or EMSE publication.
+
+## 5. How to build a venue-specific bibliography for ICSE, TSE and EMSE
+
+For a defensible related-work section, I recommend separating the literature into three evidence groups:
+
+| Evidence group          | What to cite                                                        | What it supports                                               |
+| ----------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Model architecture      | Qwen, DeepSeek, StarCoder2, Code Llama and Granite technical papers | Architecture, training and model capabilities                  |
+| SE task evaluation      | ICSE studies on testing and repair; TSE and EMSE empirical studies  | Task-specific evaluation methods and findings                  |
+| Repository-level agents | SWE-bench and studies of tool-using coding agents                   | Issue resolution, tool use and realistic repository evaluation |
+
+Use these targeted searches to identify the exact peer-reviewed venue records before generating the final `.bib` file:
+
+* [ICSE: code LLMs, automated repair and testing](https://scholar.google.com/scholar?q=ICSE+large+language+models+code+repair+test+generation)
+
+* [IEEE TSE: empirical studies of LLMs for software engineering](https://scholar.google.com/scholar?q=IEEE+Transactions+on+Software+Engineering+LLM+code+generation+repair)
+
+* [EMSE: empirical evaluation of LLM-based software development](https://scholar.google.com/scholar?q=Empirical+Software+Engineering+LLM+software+engineering+empirical+study)
+
+
+
+## Verified selection for the prospective MORPH-FL Nibi evaluation (2026-10-19)
+
+The executable four-checkpoint selection and primary study links are recorded in `experiments/full/models.md`; pinned HF revisions are in `experiments/full/pins.json`. Nibi uses BF16 instruction checkpoints, not these Ollama quantization tags. Qwen2.5-Coder 7B/32B and Qwen3-Coder 30B-A3B provide current/pilot-continuity configurations; DeepSeek-Coder 6.7B-Instruct is an ICSE-used historical cross-family control. Venue evidence supports prior use, not universal superiority or comparable measured performance. No unverified TSE citation is claimed.

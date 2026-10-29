@@ -1,0 +1,5 @@
+\section{Conclusion}\label{sec:conclusion}
+We studied context forgetting with an implementation that separates observations, hypotheses and dialogue. The fixed fifty-issue, twelve-repository evaluation contains 400 investigations with two models and four workflows, plus 100 retrieval controls. Adaptive and fixed resets yield no extra file Top-1 hits over continuous context. Observation-only increases observed Qwen Top-1 from 42\% to 50\%, while DeepSeek stays at 40\% but increases final-pool availability from 6/50 to 47/50 versus adaptive. Mean elapsed time is greater with both models.
+
+File rankings alone can conceal failed investigations behind retrieval fallback. Reset exposure, grounded output, function hits and resources must accompany accuracy. The tested adaptive policy has no demonstrated benefit at this budget; observation-only is a configuration-level result limited by bundled changes and a known prompt-growth defect. Corrected, factor-isolating tests on independent subjects are needed for broader causal or deployment recommendations.
+

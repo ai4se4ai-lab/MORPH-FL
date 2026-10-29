@@ -1,0 +1,1691 @@
+Does Forgetting Help? Studying Context Reset Policies in LLM
+Fault Localization
+Majid Babaeia,∗
+a School of Computing, University of the Fraser Valley,
+
+
+
+ARTICLE INFO                                       ABSTRACT
+Keywords:                                          Context resets can remove stale reasoning from large language model (LLM) agents, but can
+Fault localization                                 also discard useful investigation state. We present MORPH-FL, a Python fault-localization
+Large language models                              framework that separates observations, hypotheses and dialogue in four linked runtime models
+Context management                                 and supports evidence-preserving resets. We compare adaptive reset, continuous context, fixed-
+Models at runtime                                  interval reset and an observation-only view on 50 issues from 12 Python repositories, using
+Empirical software engineering                     Qwen2.5-Coder-7B and DeepSeek-Coder-6.7B. The study contains all 400 model–workflow
+Reproducibility                                    investigations and 100 retrieval-control records under a 32,000-token ceiling and one seed.
+                                                   Adaptive, continuous and fixed-reset workflows have identical per-issue file Top-1 hit indicators:
+                                                   42% with Qwen and 40% with DeepSeek. Observation-only reaches 50% and 40%, respectively.
+                                                   Equal file accuracy conceals different investigation output: DeepSeek retains grounded hypothe-
+                                                   ses in 6/50 adaptive runs versus 47/50 observation-only runs. Adaptive resets occur in 8/50
+                                                   Qwen and 29/50 DeepSeek runs without additional Top-1 hits. Observation-only takes 140.3
+                                                   versus 93.6 seconds with Qwen and 111.5 versus 55.0 seconds with DeepSeek. These results
+                                                   show why context-policy evaluation needs output availability, reset exposure and resource use
+                                                   alongside rankings. Patch-derived targets, bundled configuration changes and a known prompt-
+                                                   growth defect constrain causal interpretation; the study does not establish that adaptive resetting
+                                                   improves localization.
+
+
+
+
+1. Introduction
+    A bug report describes a failure at the point where a user encounters it. The code responsible may lie elsewhere in a
+repository. A developer connects the symptom to candidate locations, proposes explanations and checks them against
+source or execution evidence. Large language model (LLM) agents automate parts of this investigation: AutoFL uses
+repository tools to explain localization predictions, SoapFL organizes comprehension, navigation and confirmation,
+and Agentless narrows candidates before repair (Kang et al., 2024; Qin et al., 2025; Xia et al., 2025). Their practical
+usefulness depends on what they establish within an inference and inspection budget.
+    Context management becomes an engineering concern as calls accumulate. Dialogue mixes observed source facts,
+proposed mechanisms and the reasoning connecting them. Retaining it preserves useful facts and earlier mistakes;
+resetting it removes both. Long-context and multi-turn studies show that additional context can be difficult to use
+reliably (Liu et al., 2024; Shi et al., 2023; Laban et al., 2026). Those findings motivate explicit state management but
+do not determine which localization state an agent should see.
+    We distinguish three lifetimes. An observation records a check on a fixed source revision. A hypothesis remains
+conjectural even when a static check supports one of its predictions. Dialogue is the working medium in which
+investigators propose and interpret them. Externalizing observations and hypotheses allows requests to expose different
+views of the same state. It also makes a limitation visible that ranking accuracy alone can conceal: a workflow that
+produces no usable hypotheses may still return a plausible retrieval ranking.
+    We present MORPH-FL, an implementation of this separation for Python repositories. Four linked runtime models
+describe reported behavior, source structure, competing hypotheses and evidence. Each request projects these models
+and adds bounded source excerpts. A stagnation monitor can clear role dialogues and prune hypotheses to a score-and-
+diversity portfolio while retaining every recorded observation and the cumulative budget. The design draws on models
+at runtime and hypothesis-driven debugging (Blair et al., 2009; Zeller, 2009). External state is established practice; the
+    ∗ Corresponding author.
+
+        majid.babaei@ufv.ca (M. Babaei)
+     ORCID (s): 0000-0002-1394-4030 (M. Babaei)
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                                               Page 1 of 29
+                                         Does forgetting help in LLM fault localization?
+
+contribution is a concrete retention specification and an inspectable implementation for comparing context policies,
+rather than an assertion that dataclasses alone improve localization.
+    The empirical findings qualify the original design. The full adaptive workflow demonstrates no file-Top-1 or token
+advantage over continuous context. Its strongest observed comparator is a control that shows the report and accessible
+observations, with the common instructions and source excerpts, while omitting hypotheses and dialogue. This
+observation-only view still uses hypotheses internally for grounding, assessment and ranking. It does not summarize
+observations with another LLM. Interpreting it as a preferable projection is post hoc and requires confirmation.
+    We evaluate four context workflows on a fixed sample of 50 issues from twelve repositories using two open code
+LLMs. Every model–workflow–issue key is present: 400 investigations and 100 deterministic retrieval-control records.
+This paper reports that bounded study; it does not estimate performance on all SWE-bench issues. The comparisons
+use one seed and preserve the frozen runtime and unfavorable outcomes.
+    We ask four research questions:
+   • RQ1 (Ranking): How do context workflows compare on patch-file and function rankings with each model and
+     against retrieval?
+   • RQ2 (Reset exposure): How often do adaptive and fixed resets occur, and do reset workflows gain file Top-1
+     hits over continuous context?
+   • RQ3 (Resources): What token and elapsed-time tradeoffs accompany the observed outcomes?
+   • RQ4 (Investigation output): What do final hypothesis pools and response diagnostics reveal beyond file
+     accuracy?
+    With Qwen, adaptive, continuous and fixed reset each reach 42% file Top-1; observation-only reaches 50%. With
+DeepSeek, all four reach 40%, equal to retrieval, yet final hypothesis availability ranges from 6–7/50 under richer views
+to 47/50 under observation-only. Adaptive resetting occurs on 16% of Qwen and 58% of DeepSeek cases, without
+additional rank-one target hits. Observation-only takes longer on both models. These results make the contribution an
+empirical account of context-policy behavior and measurement, including a negative result for the original adaptive
+design.
+    Observation-only omits several fields and dialogue and disables pruning. A duplicated-ambiguity defect can also
+grow the richer prompts. These facts prevent attributing its outcomes to forgetting alone. The 132 reused Qwen
+predictions retain their original protocol identities; this study is not independent confirmation of earlier observations.
+Section 4 explains selection and provenance.
+    The contributions are:
+   • An executable investigation-state design separating observations, conjectures and dialogue, with source prove-
+     nance, scoped assessments and an explicit observation-preservation obligation at reset.
+   • A fully collected, paired comparison of four context workflows and two retrieval controls on 50 issues, with
+     model-specific rankings, exact discordant counts and descriptive uncertainty.
+   • A process analysis connecting reset exposure, final-pool availability, response events and completed-case
+     resources, showing how retrieval fallback can conceal investigation failure.
+   • A reproducible score-table analysis that checks exact coverage and binds generated result tables to their inputs
+     while preserving experiment provenance.
+   Section 2 defines the task and example; Section 3 presents the architecture. Sections 4 and 5 describe the study
+and findings. Sections 6–8 discuss implications, validity and related work. Section 9 concludes; the appendix records
+implementation and reproduction details.
+
+
+2. Background and Motivating Example
+2.1. Report-Based Fault Localization
+   The input to report-based fault localization is a bug report and a snapshot of the repository before the fix. The
+output is a ranked list of source locations for a developer to inspect. We consider two granularities: files, identified by
+
+Babaei: Preprint submitted to Elsevier                                                                        Page 2 of 29
+                                         Does forgetting help in LLM fault localization?
+                                 Listing 1. Constructed configuration fault in two Python files.
+
+
+   # config.py
+   def normalize(options):
+       return {"enabled": options.get("enabled") or True}
+
+   # handler.py
+   from config import normalize
+   def handle(options):
+       config = normalize(options)
+       return render(config["enabled"])
+
+
+
+
+Table 1
+Two AST checks on Listing 1.
+
+   Hypothesis            AST query (expected result)                                    Result     Assessment
+   Bypass                A return in handler.py contains options (true)                 False      Contradicts
+   Defaulting            A return in config.py contains or True (true)                  True       Supports
+
+
+repository-relative paths, and functions, identified by qualified names within those files. A ranking says where to look.
+An explanation additionally says how an operation could cause the reported failure.
+    Evidence about an explanation comes from checks of different strength. A source check establishes that a line
+contains some text. An abstract syntax tree (AST) query establishes that a file contains a syntactic structure. An
+execution procedure establishes what the program does for chosen inputs. We follow one convention throughout: a
+check supports a hypothesis when the observed value equals the value its prediction expects, for example when a
+predicted expression is present in the inspected artifact. Support from a source or AST check is therefore a static fact;
+it does not show that the reported execution reached the code in question. The investigator sees the report, the pre-fix
+source, and the procedures it is allowed to run. It never sees the reference patch, which the evaluation uses only to
+derive target locations.
+
+2.2. Motivating Example
+    Listing 1 shows a constructed example that we use throughout the paper. A report states that setting enabled
+to false still displays a feature. The handler passes the normalized option to a rendering function, which is omitted.
+The fault is in normalize: the expression options.get("enabled") or True evaluates to true when the option is
+false. Line numbers are counted within each file, so the defaulting return is config.py:2 and the handler’s return is
+handler.py:4.
+    The report describes what is displayed, so an investigator may plausibly suspect the handler first, since it passes
+the option to the renderer. Two explanations then compete. The bypass hypothesis claims that the handler renders the
+raw option instead of the normalized value; it predicts that the handler’s return expression mentions options. The
+defaulting hypothesis claims that normalize replaces an explicit false with a default; it predicts a return expression
+containing or True. Table 1 shows one AST check for each prediction. The first contradicts the bypass prediction,
+and the second supports the defaulting prediction. Neither check executes the program, so the defaulting explanation
+remains a hypothesis, now with structural support.
+    Now suppose the investigation stalls: later rounds re-propose the same checks and learn nothing new. Restarting
+with an empty context would force the investigator to rediscover both results. If only the leading explanation survived
+and observations were not stored separately, the refutation could disappear from the next context. The original design
+therefore preserves observations and a portfolio of competing explanations while clearing dialogue. Whether these
+explanations should also appear in the next request is an empirical question. Section 3 specifies the original retention
+choice.
+
+2.3. Models at Runtime
+   In MDE, a model represents selected aspects of a system in an explicit structure. A metamodel defines the
+admissible element types, attributes, and relationships, and transformations derive models or views from other
+models (Schmidt, 2006). Models need not be design-time artifacts. The models@run.time paradigm keeps a model of
+
+Babaei: Preprint submitted to Elsevier                                                                           Page 3 of 29
+                                               Does forgetting help in LLM fault localization?
+
+     Bug report and
+    pre-fix repository
+                                                                          continue
+
+
+        Prepare               Project            Query role                                                                                          Rank
+                                                                        Ground, plan           Run, assess              Monitor         end
+       behavior,             portfolio,         LLM proposes                                                                                       files and
+                                                                       validate against      execute or reuse;      gain, repetition,
+       structure,          observations,         hypotheses,                                                                                      functions
+                                                                       structure model        update scores         diversity, budget
+     candidate pool       source excerpts          probes                                                                                     with observations
+
+
+
+             build               read all               append                 add                    record
+                                                                                                                             stagnation
+                                                                                                                                                        next round
+
+  Investigation state
+
+                                                                                             Evidence model                Context reset
+    Behavior model        Structure model       Role dialogues       Hypothesis model                                    prune hypotheses,
+                                                                                               observations,
+  report interpretation   source snapshot       request history        hypothesis pool                                     clear dialogues
+                                                                                            assessments, probes
+          kept                  kept                cleared          pruned to portfolio
+                                                                                                   kept
+
+
+
+                                   State borders: solid = kept at reset; dashed = pruned to the portfolio; dotted = cleared.
+                             Solid arrows carry information; dashed arrows carry control. The budget is cumulative across resets.
+
+Figure 1: Overview of MORPH-FL. The top row shows one round of the investigation; the bottom panel shows the
+investigation state and what a context reset does to each part. A reset prunes the hypothesis pool to the portfolio and
+clears all role dialogues and the progress window; every other part of the state, including budget use, is kept, and the next
+round projects its request from what remains.
+
+
+
+a running system and uses it to drive the system’s adaptation (Blair et al., 2009), much as the monitor–analyze–plan–
+execute loop of autonomic computing does (Kephart and Chess, 2003). MORPH-FL applies this idea to an investigation
+instead of a deployed system: its models describe what the investigator has proposed and observed, and its control loop
+monitors their evolution and adapts the investigator’s context.
+
+
+3. The MORPH-FL Approach
+    The original design addresses the motivating example with three capabilities: a record of checked facts that no reset
+can erase, a set of competing explanations that survives a reset without the dialogue that produced it, and a rule for
+when to reset. This section builds them in that order. It first gives an overview and a shared vocabulary (Section 3.1),
+then defines the models and their invariants (Section 3.2) and the operations over them (Section 3.3). Sections 3.4–3.7
+assemble the operations into the investigation loop, the portfolio, the reset policy, and the final ranking, and Section 3.8
+replays the running example end to end.
+
+3.1. Overview
+     Figure 1 gives an overview of MORPH-FL. From a report and a pre-fix repository, MORPH-FL builds a behavior
+model, a structure model, and a fixed pool of candidate files. It then runs a sequence of rounds. Each round projects the
+current models into a request for one investigator role, asks the LLM for hypotheses and probes, grounds the proposals
+in the structure model, runs or reuses the probes, and assesses the results. The controller then resets the context if
+the progress monitor detects stagnation, and it stops when the budget or the attempt limit is exhausted. At the end,
+MORPH-FL ranks files and functions by the scores of the surviving hypotheses.
+     Because the argument of this paper turns on the difference between a fact and a conjecture, the terms below are
+used in exactly one sense throughout. A hypothesis is a candidate location together with a proposed fault mechanism
+and at least one prediction, a condition that can be checked. A probe is a planned check of a prediction, an observation
+is the recorded result of running a probe, and an assessment states whether an observation supports, contradicts, or is
+inconclusive for a hypothesis. An investigator role is an LLM instruction persona with its own dialogue, the history
+of its requests and responses. A context reset clears all dialogues and prunes the hypotheses to a portfolio. Probes,
+observations, and assessments together form the evidence. Each iteration of the investigation is an attempt, and an
+attempt whose LLM response is accepted is a round. The epistemic status of a model element records whether it was
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                                                              Page 4 of 29
+                                         Does forgetting help in LLM fault localization?
+
+observed, derived by analysis, or conjectured. We write “LLM” for the language model and reserve “model” for the
+models of the investigation.
+    Why models. An LLM dialogue is one undifferentiated artifact. Every fact in it is entangled with the conjecture
+that prompted it and the reasoning that interpreted it, and shortening it by truncation or summarization can drop facts
+or blur their status. MORPH-FL instead keeps facts and conjectures as separate elements of models that conform to
+a metamodel. Their declared status is kept separate by controller operations (invariant I1 below), every observation
+survives a reset (I4), and every request is built from the models, so the request after a reset is rebuilt from what was
+kept rather than reconstructed from what was said. Between resets, a role’s earlier turns are prepended to its projected
+request; that dialogue is exactly what a reset clears.
+
+3.2. The Investigation Metamodel
+     A reset can keep facts and drop conjectures only if the investigation state says which is which. The metamodel
+therefore separates the state by the kind of knowledge it holds: what the report claims, what the code contains, what
+the investigator conjectures, and what checks have established. Each part becomes a model with its own element types
+and lifetime, so that the retention decision of Section 2.2 can be stated per model rather than per message. Figure 2
+shows the metamodel, and Table 2 summarizes its four models and what a reset does to each.
+     Behavior model. This model holds the report together with the latest LLM interpretation of it: a trigger, the expected
+and the observed behavior, candidate invariants, and ambiguities. Each accepted LLM response replaces the trigger
+and the expected and observed behavior; in the evaluated version, ambiguities were appended rather than replaced, a
+defect discussed in Section 7. When the expected or observed behavior is missing, the model records that gap as an
+ambiguity. The fields are conjectures, but they give every role the same statement of the discrepancy to explain.
+     Structure model. This model is a snapshot of the production Python files at the fixed revision. It stores each file’s
+text, class and function symbols with their line ranges, and relations: imports, calls, reads, writes, and intraprocedural
+data flow. Every symbol and relation location carries the file’s content digest. A call to a top-level definition or an
+explicitly imported name is marked as syntactically resolved; other calls are marked unresolved. The structure model
+is built once per run. It expands the candidate pool and grounds the locations that investigators propose.
+     Hypothesis model. This model is the pool of live hypotheses. A hypothesis names one file and one or more locations
+in it, a mechanism in natural language, one or more predictions, optional causal edges (conjectured links along which
+the fault propagates between locations), links to supporting and contradicting observations, and a score. A prediction
+consists of a description, a predicate, an expected value, and assumptions. A hypothesis is identified by its file, its
+case-folded mechanism, and the kind of probe that accompanies it; when an investigator proposes the same hypothesis
+again, new locations and predictions are merged into the existing element.
+     Evidence model. This model holds probes, observations, and assessments. A probe names its hypothesis, the
+prediction it checks, a probe kind, and parameters. An observation records the probe’s result, the procedure that
+produced it, the source location with revision and file digest, and the digest of a stored artifact. An assessment links
+an observation to a hypothesis with a verdict and the scope of what was observed (source presence, static structure,
+or execution). Observations are identified by their content; controller operations do not modify or delete them, and
+probes that perform the same check reuse one observation. Probe objects themselves are transient; what persists is
+each observation with the identifier of its probe, a cache of executed checks, and the set of probes already handled.
+     Separating the models is not enough on its own: an operation that turned a conjecture into an observation, lost the
+revision of a checked file, or dropped an observation at a reset would silently undo the separation. We therefore state
+four invariants that every operation of Section 3.3 must maintain. I1 keeps facts and conjectures apart, I2 ties every
+fact to the inspected source, I3 keeps the links between them consistent, and I4 is the preservation obligation of a reset.
+
+I1 Epistemic separation. The status of an element is set by the operation that creates it, and no operation changes it.
+     Observations are created only by running probes; relations only by structure extraction; behavior fields only from
+     the report and LLM proposals; hypotheses and causal edges only from LLM proposals. Grounding marks every
+     proposed causal edge as conjectured, whatever certainty the LLM claims, and assessment changes a hypothesis’s
+     score and links but not its status.
+
+I2 Source traceability. Every hypothesis location and every observation carries the revision and the content digest
+     of its file. The evidence model rejects an observation from another revision, one without procedure and digest
+     provenance, or one whose artifact fails an integrity check, and the controller rejects an observation whose file
+     digest differs from the structure model’s.
+
+Babaei: Preprint submitted to Elsevier                                                                        Page 5 of 29
+                                              Does forgetting help in LLM fault localization?
+                                                                                                                            support, contradictions *
+
+
+ Behavior model                                                                  Hypothesis model
+                                 Structure model
+  Behavior                                                                                                     Evidence model
+                                                                                  Hypothesis
+  «conjectured»                   Structure
+                                  revision                                        «conjectured»                         hypothesis                 Probe
+  report
+                                                                                  mechanism                                                        kind, parameters
+  trigger                         sources (path ↦
+                                                                                  assumptions [*]              hypothesis                          prediction
+  expected, observed              text)
+                                                                                  causal edges [*]                                                 cost, reliability
+  invariants [*]                  diagnostics [*]
+  ambiguities [*]                                                                 score
+                                                               locations 1..*
+                                                                                                                                                             probe
+                                              relations *                                   predictions 1..*
+
+
+                                  Relation                                        Prediction                                                       Observation
+                                  «derived»                                       description                    Assessment                        «observed»
+                                                                                  predicate                      verdict                    obs.   result
+                                  kind
+                                  source, target                                  expected value                 scope                             procedure
+                                  resolution                                      assumptions [*]                                                  artifact digest
+
+
+
+
+                                              location
+                                                         SourceLocation
+                                                         path, line range
+                                    symbols *            revision, digest
+                                                         symbol
+
+                                                                                                        location
+
+Figure 2: The investigation metamodel. A stereotype abbreviates a status attribute set at creation and never changed:
+LLM-derived elements are conjectured, extracted relations are derived, and probe results are observed. Diamonds denote
+containment. The associations from Probe, Assessment, and Observation to hypotheses, observations, and probes, and the
+dashed support and contradiction links, are references by identifier; the others hold the referenced objects. Role dialogues
+are not part of the metamodel.
+
+
+Table 2
+The four models of an investigation and their lifetime at a context reset.
+
+ Model                 Content                                              Used for                                            Status                  At a reset
+ Behavior              Report; trigger; expected and                        Shared statement of the                             Conjectured             Kept (latest
+                       observed behavior; invariants;                       discrepancy in every request                        (except the             interpretation)
+                       ambiguities                                                                                              report)
+ Structure             File texts; symbols; import, call,                   Candidate expansion; grounding                      Derived                 Kept (built
+                       and data-flow relations; digests                     of proposed locations                                                       once)
+ Hypothesis            Hypotheses with locations,                           Portfolio shown in each request; Conjectured                                Pruned to the
+                       mechanism, predictions, links to                     final ranking                                                               portfolio
+                       observations, score
+ Evidence              Observations with provenance;                        Assessment, progress                                Observed                Kept,
+                       assessments; probe cache and                         monitoring, projection                                                      append-only
+                       handled probes                                                                                                                   (probes are
+                                                                                                                                                        transient)
+ Role dialogues        Requests and responses of each                       Conversational continuity within –                                          Cleared
+                       role (not a model)                                   a role
+
+
+
+I3 Referential integrity. Every support or contradiction link of a live hypothesis resolves to a recorded observation.
+     The links are checked against the evidence model after each assessment, and against the observations the role
+     may access whenever the hypothesis is projected into a request.
+
+I4 Observation preservation. Controller operations neither modify nor delete observations. Insertion checks reject
+     changed records under an existing identifier except for the originating probe identifier; nested result dictionaries
+     are not deeply immutable (Appendix A.1). A context reset leaves the set of observation identifiers unchanged,
+     which the controller asserts at runtime, and it neither refunds nor resets the budget.
+
+Babaei: Preprint submitted to Elsevier                                                                                                                       Page 6 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 3
+Model operations of MORPH-FL.
+
+ Operation         Kind                  Signature                Responsibility
+ Extract           Text to model         (𝑟, 𝑧) ↦ 𝑏               Copy the LLM’s interpretation of the report; record
+ behavior                                                         missing expected or observed behavior as an ambiguity
+ Extract           Code to model         (𝑅, 𝑣) ↦ 𝑠               Parse production files; record symbols, relations, and
+ structure                                                        digests; keep syntax errors as diagnostics
+ Expand            Model query           (𝑠, seeds) ↦ files       Two-hop, bidirectional neighborhood of the seed files
+                                                                  over relations not marked unresolved
+ Ground            Proposal to           (𝑧𝑗 , 𝑠) ↦ ℎ             Validate file, line, mechanism, and prediction; attach
+                   model                                          revision, digest, and enclosing symbol; mark causal edges
+                                                                  conjectured
+ Plan              Model to model        (ℎ, 𝜓𝑗 ) ↦ 𝑝             Build a typed probe from the investigator-specified kind
+                                                                  and parameters
+ Assess            In-place update       (ℎ, 𝑝, 𝑒) ↦ (ℎ′ , 𝑎)     Compare the observed value with the prediction; link the
+                                                                  observation; change the score
+ Project           Model to view         (𝑏, 𝑆, 𝐸, 𝐵) ↦ 𝑥         Build the request view of hypotheses, observations,
+                                                                  unresolved predictions, and budget
+ Reset             Selection             (𝐻, 𝐴, Ω) ↦ (𝑆, ∅, ∅)    Prune the pool to the portfolio; clear dialogues and the
+                                                                  progress window; preserve everything else
+
+
+
+The metamodel is implemented as Python dataclasses rather than in a modeling framework such as EMF. I2–I4
+are enforced by explicit checks in the evidence model, the operations, and the controller; I1 holds by construction,
+because no operation assigns a status after creation and grounding overwrites the status of every proposed causal
+edge (Section 4.3). These checks guard the invariants at runtime; they are not a proof. The I4 assertion, for example,
+compares the observation identifiers before and after a reset. Because the reset code never touches the evidence model,
+the assertion guards against future regressions rather than proving a property, and it is removed when Python runs
+with optimizations (-O). Status is fixed per element type and is used to keep facts and conjectures apart in requests
+and assessments, not to drive control decisions. Assessments of pruned hypotheses remain in the evidence model as
+history but are no longer shown.
+
+3.3. Model Operations
+     The models change only through a fixed set of operations, and this is what lets the invariants be checked: each
+operation has a declared input and output model, so it is clear which operation may create an observation, which
+may only create a conjecture, and which may only select. In MDE terms, extraction operations are text-to-model
+and code-to-model transformations, grounding and planning are model-to-model transformations, and projection is
+a model-to-view transformation that produces the LLM request. Table 3 lists the operations that build and connect
+the models. In its signatures, 𝑟 is the report, 𝑅 and 𝑣 the repository and revision, 𝑧 an accepted LLM response with
+proposals 𝑧𝑗 , and 𝜓𝑗 the probe parameters of proposal 𝑗; 𝑠, 𝑏, ℎ, 𝑝, 𝑒, and 𝑎 denote a structure model, behavior model,
+hypothesis, probe, observation, and assessment, and 𝐻, 𝑆, 𝐸, 𝐵, 𝐴, and Ω the hypothesis pool, portfolio, evidence
+model, budget, role dialogues, and progress window.
+     Extraction. E XTRACTSTRUCTURE parses every production Python file with Python’s ast module, skipping test
+directories and test files. Files that fail to parse remain retrievable but contribute only a diagnostic.
+     Candidate preparation. MORPH-FL ranks all files against the report with BM25, a term-based retrieval func-
+tion (Robertson and Zaragoza, 2009). The five highest-ranked files seed E XPAND, which collects files reachable within
+two hops in either direction over relations not marked unresolved. Data-flow relations stay within a file, so in practice
+the neighborhood follows imports and calls. The candidate pool consists of the seeds, then the neighborhood files in
+BM25 order, then the remaining files in BM25 order, truncated to 20 files. The pool is fixed for the run. In a larger
+version of the running example, the import and call from handle to normalize would bring config.py into the pool
+even if BM25 ranked it below the seeds. Only pool files are ever shown to the investigator, so the pool bounds which
+files can receive hypotheses.
+
+
+Babaei: Preprint submitted to Elsevier                                                                         Page 7 of 29
+                                         Does forgetting help in LLM fault localization?
+
+    Grounding and planning. MORPH-FL considers the first four proposals of a response, each with a file, a
+mechanism, a prediction, and a probe. G ROUND accepts a proposal only if its file was shown in the request, the proposed
+line exists in that file, the probe targets the same file, and the mechanism and prediction are nonempty. It then builds
+a source location with the revision, the file digest, and the narrowest enclosing symbol, and it adds the hypothesis
+to the pool or merges it with an existing one. PLAN turns the investigator’s probe specification into a typed probe of
+one of five kinds: a source quote, an AST query, a test, a trace, or a counterfactual comparison of two procedures.
+The investigator, not MORPH-FL, chooses the check. MORPH-FL checks the probe kind when planning and the
+kind-specific parameters when running the probe; a hypothesis whose probe proves malformed stays in the pool with
+score zero. MORPH-FL never synthesizes tests from a mechanism.
+    Running probes. A source-quote probe checks whether a quoted text occurs on a given line. An AST query checks
+whether the file contains a node of an allowed type, such as a return statement, whose source text contains a
+given string; the whole file is searched. Tests, traces, and counterfactuals run only as procedures registered by the
+experimenter in an isolated container; an unregistered request is recorded as a blocked observation. Two mechanisms
+avoid repeated work. First, a check, identified by probe kind, file, and parameters, executes at most once per run: if
+another hypothesis already ran it, the recorded observation is reused and assessed for the new hypothesis, but it does
+not count as new. Second, if the same hypothesis already ran a probe with the same kind and parameters, the probe is
+skipped and nothing is assessed.
+    Assessment. A SSESS reads the observed value that the prediction’s predicate refers to—for an AST query, whether
+any node matched—and compares it with the expected value. Equal values support the prediction, unequal values
+contradict it, and a missing value, a blocked or timed-out procedure, or a predicate that does not fit the probe kind is
+inconclusive. A hypothesis’s score is the signed sum of the weights of its assessments,
+                       ∑                  ∑
+       score(ℎ) =            𝑤(ℎ, 𝑒) −          𝑤(ℎ, 𝑒),                                                             (1)
+                   𝑒∈Sup(ℎ)              𝑒∈Con(ℎ)
+
+where Sup(ℎ) and Con(ℎ) are the supporting and contradicting observations, and 𝑤(ℎ, 𝑒) is 0.25 when 𝑒 was assessed
+for ℎ against a source-presence prediction, 1 for a structural prediction checked by an AST query, and 2 for a prediction
+checked by execution. The weights encode the relative strength of the three kinds of check; they are chosen ordering
+priorities, not probabilities. An additive score is the simplest aggregate in which contradictions offset support, and
+it treats observations as independent, a simplification we return to in Section 6. Each hypothesis–observation pair
+contributes to the score at most once.
+     Projection. PROJECT builds the request view from the behavior model, the current portfolio, the observations
+accessible to the role, and the remaining token budget. Each hypothesis appears with its locations, its mechanism
+labeled as unverified, its predictions, its conjectured causal edges, and the identifiers of its supporting observations,
+split into static and execution-based, and of its contradicting observations. Predictions of hypotheses without execution
+support are listed as unresolved. The view lists hypotheses in portfolio order and shows no scores.
+     The controller adds numbered excerpts of up to four pool files, their BM25 ranks, and up to twelve structural
+relations from those files. The first request shows the four leading candidates; later requests show the BM25 leader and
+the file of the first portfolio hypothesis and rotate through the rest of the pool. The role’s dialogue, if any, precedes the
+new request. Because projection runs before every request, a reset needs no separate reconstruction step.
+
+3.4. The Investigation Loop
+    The operations say how the models change, but not in which order or when to stop. A localization investigation
+must interleave asking the LLM, checking its proposals, and deciding whether to continue, while keeping every LLM
+call inside a cumulative budget and giving the reset policy a defined point at which to act. Algorithm 1 gives the
+loop that ties the operations together; we describe it in line order. Lines 1–4 prepare the structure model, the behavior
+model, the BM25 ranking 𝐿, and the candidate pool 𝐶, and they initialize the hypothesis pool 𝐻, the evidence model
+𝐸 (including the probe cache and the set of handled probes), the role dialogues 𝐴, and the progress window Ω.
+    Each iteration of the loop is one attempt. The loop ends early when the token, probe, or time budget is exhausted
+(line 6); the LLM backend can also end the run when a request no longer fits the remaining budget or the context
+window. Roles follow a fixed schedule—behavioral, skeptical, structural, dynamic—and share the models but not
+their dialogues. The behavioral role separates report claims from observations, the skeptical role tries to falsify the
+leading hypothesis and keep a distinct alternative, the structural role traces dependencies, and the dynamic role proposes
+registered tests or traces and falls back to static queries.
+
+Babaei: Preprint submitted to Elsevier                                                                         Page 8 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Algorithm 1 The MORPH-FL investigation loop
+Require: report 𝑟; repository 𝑅 at revision 𝑣; attempt limit 𝑁; budget 𝐵 (tokens, probes, time); portfolio bound 𝑚
+Ensure: ranked files and functions; evidence model 𝐸
+ 1: 𝑠 ← E XTRACTSTRUCTURE(𝑅, 𝑣)
+ 2: 𝑏 ← E XTRACTB EHAVIOR(𝑟, ∅)
+ 3: 𝐿 ← BM25(𝑟, 𝑠); 𝐶 ← P OOL(𝐿, E XPAND (𝑠, 𝐿1..5 ))
+ 4: 𝐻, 𝐸, 𝐴, Ω ← ∅; 𝑛 ← 0
+ 5: for 𝑖 ← 1 to 𝑁 do
+ 6:     if E XHAUSTED(𝐵) then
+ 7:         break
+ 8:     𝜌 ← ROLE(𝑖); 𝑆 ← PORTFOLIO(𝐻, 𝑚)
+ 9:     𝐹 ← FILES(𝐶, 𝐿, 𝑆, 𝑖)
+10:     𝑥 ← PROJECT(𝑏, 𝑆, 𝐸, 𝐵) ⊕ E XCERPTS(𝐹 )
+11:     𝑧 ← A SK(𝜌, 𝐴𝜌 , 𝑥)                                                                                  ⊳ charges tokens to 𝐵
+12:     if 𝑧 = ⊥ then
+13:         continue                                                                                           ⊳ rejected response
+14:     𝐴𝜌 ← 𝐴𝜌 ⋅ (𝑥, 𝑧); 𝑏 ← E XTRACTB EHAVIOR(𝑟, 𝑧)
+15:     𝑛←𝑛+1                                                                                                   ⊳ accepted rounds
+16:     (𝐻, 𝑃 ) ← G ROUNDA NDPLAN(𝑧, 𝑠, 𝐻, 𝐹 )
+17:     (𝐻, 𝐸) ← RUNA NDA SSESS(𝑃 , 𝐻, 𝐸, 𝐵)
+18:     Ω ← R ECORD(Ω, 𝐻, 𝐸, 𝑃 , 𝐵)
+19:     𝐻− ← 𝐻                                                                                              ⊳ pool before any reset
+20:     if STAGNATED(Ω, 𝑛, 𝐵) then
+21:         𝐻 ← PORTFOLIO(𝐻, 𝑚); 𝐴 ← ∅; Ω ← ∅                                                                               ⊳ reset
+22:     if E XECUTIONSTOP(𝐻 , 𝐸) then
+                               −
+
+23:         break
+24: return R ANK (𝐿, 𝐻), 𝐸
+
+
+
+    Lines 8–10 select the portfolio 𝑆 and the files 𝐹 to show and project the request; ⊕ appends the source excerpts to
+the projected view. A response that is not a well-formed object with a list of hypotheses is rejected (line 12): it consumes
+the attempt and its tokens but changes no state. An accepted response is appended to the role’s dialogue 𝐴𝜌 , refreshes
+the behavior model, and yields the planned probes 𝑃 (lines 14–16); invalid proposals are skipped individually. Line 17
+runs the probes not yet handled, in the order described in Section 3.5, and assesses their results. Line 18 records
+the round’s progress, and lines 20–21 reset the context when the investigation stagnates (Section 3.6). If execution
+procedures are registered, the run can also stop once the leading hypothesis has support from two distinct procedures,
+stated assumptions, and no contradiction (line 22); the check inspects the pool 𝐻 − as it was before any reset in the
+same round, and in a source-only configuration it never holds. Finally, line 24 produces the ranking (Section 3.7).
+
+3.5. The Hypothesis Portfolio
+    The portfolio decides which hypotheses the investigator sees. Showing every hypothesis would let near-duplicates
+crowd out alternatives, and showing only the leader would repeat the restart-from-best problem. Whether showing
+hypotheses helps at all is an empirical question; Section 6 discusses configuration-level evidence that, for a 7B LLM, it
+may not. MORPH-FL therefore selects hypotheses by score and diversity, in the spirit of maximal marginal relevance
+in retrieval (Carbonell and Goldstein, 1998). Diversity rests on a dissimilarity between hypotheses,
+                      (                              )
+              ′                  |𝜏(ℎ) ∩ 𝜏(ℎ′ )|
+       𝐷(ℎ, ℎ ) = 0.6 1 −
+                             max(1, |𝜏(ℎ) ∪ 𝜏(ℎ′ )|)                                                                 (2)
+                   + 0.4 𝟏[𝜋(ℎ) ≠ 𝜋(ℎ′ )],
+
+where 𝜏(ℎ) is the set of lowercase alphabetic words of at least three letters in the mechanism of ℎ and 𝜋(ℎ) is its file. 𝐷
+ranges over [0, 1]: it combines how differently two mechanisms are worded with whether they concern different files.
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                               Page 9 of 29
+                                         Does forgetting help in LLM fault localization?
+
+The portfolio 𝑆 = PORTFOLIO(𝐻, 𝑚) is built greedily. Starting from 𝑆0 = ∅,
+
+      𝑆𝑗+1 = 𝑆𝑗 ∪ {ℎ𝑗+1 },
+                    [                         ]
+                                          ′                                                                            (3)
+      ℎ𝑗+1 = arg max score(ℎ) + min
+                                ′
+                                    𝐷(ℎ, ℎ  )  ,
+               ℎ∈𝐻⧵𝑆𝑗                ℎ ∈𝑆𝑗
+
+
+with the minimum over an empty set taken as 1, until |𝑆| = 𝑚 or 𝐻 is exhausted; ties go to the higher score and then
+the smaller identifier. The first choice is thus the highest-scored hypothesis, and each later choice trades score against
+difference from those already chosen. Because 𝐷 is at most 1, diversity reorders only hypotheses whose scores differ
+by less than one, the weight of a single AST check; among those, it prefers hypotheses that differ in wording or file
+from the ones already chosen. The default bound is 𝑚 = 3.
+    Within a round, MORPH-FL runs every unhandled probe. It orders them by a utility that prefers inexpensive static
+probes, probes whose prediction contrasts with those of other hypotheses, and probes of hypotheses that differ from
+the rest of the pool (Appendix A.4). The order matters only when the probe or time ceiling is reached in the middle of
+a round.
+
+3.6. Stagnation Detection and Context Reset
+    The reset policy is designed to act when observable progress stalls; whether this intervention is worth its cost
+is an empirical question. Resetting too early discards each role’s line of reasoning while it is still producing new
+checks; resetting too late lets the investigation keep re-proposing the same checks and converging on near-identical
+explanations, as in rounds 2–4 of the running example. The reset rule therefore watches for the observable signs of that
+second situation: rounds that add no new observation while the investigation either repeats executed checks or loses
+diversity among its hypotheses. After each accepted round 𝑡, the monitor records four quantities: the number 𝑔𝑡 of new
+observations that are not blocked; the fraction 𝑢𝑡 of the round’s probes whose check (kind, file, and parameters) had
+already been executed (zero if the round has no grounded probe); the pool diversity 𝑑𝑡 , the mean of 𝐷 over all pairs of
+live hypotheses (zero for fewer than two); and the tokens 𝜅𝑡 the round consumed. The window Ω holds the samples of
+the last 𝑊 accepted rounds since the start or the most recent reset, and 𝑛 counts accepted rounds since the start. The
+investigation has stagnated when
+
+         𝑛 ≥ 𝑛0 ∧ |Ω| = 𝑊                     (ready)
+      ∧ 𝑔̄ ≤ 𝜃𝑔 ∧ (𝑢̄ ≥ 𝜃𝑢 ∨ 𝑑̄ < 𝜃𝑑 )        (stalled)                                                                (4)
+                    (            )
+      ∧ 𝐵rem > max 𝜅0 , ⌊𝜅𝑡 ∕2⌋ + 𝜅0          (affordable),
+
+where 𝑔,   ̄ and 𝑑̄ are window means and 𝐵rem is the remaining token budget. The defaults are 𝑊 = 3, 𝑛0 = 4,
+        ̄ 𝑢,
+𝜃𝑔 = 0, 𝜃𝑢 = 𝜃𝑑 = 0.5, and a reserve of 𝜅0 = 256 tokens; Appendix A.6 lists two further conditions: an optional
+consumed-fraction gate, which is vacuous under the defaults, and a requirement that the window’s rounds consumed at
+least 𝜅0 tokens, which realistic LLM rounds satisfy. With 𝜃𝑔 = 0, the gain condition requires that the last three rounds
+produced no new observation at all.
+    The conditions encode three judgments. Judging gain over a window, not a single round, avoids resetting after one
+unproductive response. Requiring repetition or low diversity is intended to distinguish an investigation that circles—re-
+proposing executed checks or converging on similar hypotheses—from one that explores without immediate success.
+The budget condition requires the remaining tokens to exceed a reserve plus half the tokens of the latest round, a
+heuristic estimate of the cost of a fresh request; it does not guarantee that a full further round fits. The thresholds are
+design parameters, not calibrated values. Exposure differs across models; Section 5.2 reports how often the default
+policy acts.
+    A reset (line 21 of Algorithm 1) prunes the hypothesis pool to the portfolio, clears every role dialogue and the
+progress window, and changes nothing else. The behavior and structure models, all observations and assessments, the
+probe cache, the set of handled probes, the accepted-round count 𝑛, and the cumulative budget remain. Because the
+window is cleared while 𝑛 is kept, two resets are at least 𝑊 accepted rounds apart.
+    The effects of a reset unfold at two times. Immediately, the next request no longer carries any dialogue. Because
+each dialogue turn stores the full request that produced it, a long dialogue holds several stale copies of earlier state,
+and the reset removes them. Between resets, the dialogue is the only place where excerpts of files no longer displayed
+persist, since displayed files rotate, and it preserves each role’s own line of reasoning; a reset trades this continuity
+
+Babaei: Preprint submitted to Elsevier                                                                      Page 10 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 4
+The running example traced through MORPH-FL, with hypotheses ℎ𝑏 (bypass) and ℎ𝑑 (defaulting).
+
+  Step                What happens
+  Prepare             The structure model records handle and normalize, an import of config.py, and a call from handle to
+                      normalize; the call to render is unresolved. Both files are BM25 seeds, and config.py is also reachable
+                      from handler.py through the import and call.
+  Round 1             The behavioral role sees the report and both files. It records the trigger and the expected and observed
+                      behavior, and proposes ℎ𝑏 and ℎ𝑑 with AST probes whose predictions use the predicate ast_matches
+                      with expected value true.
+  Ground              ℎ𝑏 is placed at handler.py:4 in handle, ℎ𝑑 at config.py:2 in normalize, each with revision and file
+                      digest.
+  Assess              No return in handler.py contains options: ℎ𝑏 is contradicted, score −1. The return in config.py
+                      contains or True: ℎ𝑑 is supported, score +1.
+  Rounds 2–4          The skeptical, structural, and dynamic roles re-propose the executed checks. Each round adds no
+                      observation (𝑔𝑡 = 0) and repeats every probe (𝑢𝑡 = 1).
+  Reset               After round 4, 𝑛 = 4, the window is full, 𝑔̄ = 0, 𝑢̄ = 1, and the budget suffices. The pool is pruned to the
+                      portfolio (ℎ𝑑 , ℎ𝑏 ); dialogues and window are cleared; observations, scores, and budget are unchanged.
+  Round 5             The request carries the behavior model, ℎ𝑑 and ℎ𝑏 , both observations, and the remaining budget, but no
+                      earlier dialogue.
+  Rank                config.py (score 1) ranks first; handler.py ties at −1 with uninvestigated files and is placed by BM25.
+                      Functions: normalize, then handle.
+  Leader only         With 𝑚 = 1, every request shows only ℎ𝑑 , and the reset discards ℎ𝑏 . If a later round proposes the bypass
+                      idea again, ℎ𝑏 returns with score 0 and no links, and its probe is skipped as already handled; the refuting
+                      observation stays in the request but is no longer linked to it.
+
+
+
+for a request free of stale state, and the fixed-interval and no-reset variants bracket that trade-off. The visible portfolio
+does not change at that moment, since the portfolio of a pruned pool is the pool itself. Pruning acts later: pruned
+hypotheses can no longer re-enter the portfolio, no longer count toward diversity, and no longer influence the final
+ranking. A reset therefore forgets interpretations as well as dialogue. This forgetting is a design choice: at a stagnation
+point, the hypotheses outside the portfolio are those that score and diversity already rank below 𝑚 others, and pruning
+them keeps the diversity signal and the final ranking focused on the explanations the investigation is still pursuing.
+The context_only variant is designed to test whether this helps. If a pruned hypothesis is proposed again, it returns
+with a zero score and without its former links, and its earlier probe is not rerun because it has already been handled.
+Observations remain recorded (I4) and available to the next projection; I4 does not guarantee that every record fits the
+backend context window.
+
+3.7. Producing the Ranking
+     When the loop ends, R ANK orders files by the highest score of a live hypothesis in each file. A file without a live
+hypothesis receives score −1, and BM25 order breaks ties, so lexical retrieval serves as the fallback. A consequence
+matters for interpreting the results: a file whose hypothesis was proposed but not yet checked (score 0), or contradicted
+only by a source-presence check (−0.25), still ranks above every uninvestigated file. The LLM’s proposals can therefore
+reorder the BM25 list without supporting evidence; Section 5.1 reports changes in whether a patch target appears
+first, not necessarily the identity of the first-ranked file. The function ranking lists the enclosing symbols of live
+hypotheses’ locations in decreasing order of score; it has no lexical fallback. The output contains observations and
+assessments, allowing hypothesis-backed locations to be linked to recorded checks when available. Retrieval-only
+entries and unchecked hypotheses have no such check support. MORPH-FL reports no confidence value. Its abstention
+flag is cleared by any supporting execution-based assessment in the run, including one for a non-leading or pruned
+hypothesis; the flag does not certify the leading location (Appendix A.7). It remains set for source-only runs.
+
+3.8. The Running Example, End to End
+    Table 4 follows the running example through Algorithm 1, and Table 13 in Appendix A.6 spells out the reset
+arithmetic. Scripts in the support files check both against the implementation. The last row shows what the portfolio
+adds: with a leader-only bound, the refuted bypass idea could return without the link that records its refutation.
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                               Page 11 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 5
+Repository composition of the fixed 50-issue sample. Function eligibility is determined separately by nonempty patch-derived
+targets.
+
+Repository                                                      Issues                                     Function-eligible
+astropy/astropy                                                      5                                                    5
+django/django                                                        5                                                    5
+matplotlib/matplotlib                                                5                                                    5
+mwaskom/seaborn                                                      4                                                    4
+pallets/flask                                                        3                                                    3
+psf/requests                                                         4                                                    4
+pydata/xarray                                                        4                                                    4
+pylint-dev/pylint                                                    4                                                    3
+pytest-dev/pytest                                                    4                                                    4
+scikit-learn/scikit-learn                                            4                                                    4
+sphinx-doc/sphinx                                                    4                                                    4
+sympy/sympy                                                          4                                                    3
+Total                                                               50                                                   48
+
+
+3.9. Scope and Assumptions
+    Several boundaries apply throughout. MORPH-FL targets Python, and its structure model is approximate: calls are
+resolved syntactically, dynamic dispatch stays unresolved, and the two-hop neighborhood is a heuristic, not a semantic
+slice; because import targets outside the repository are traversed, widely imported standard-library modules act as hubs
+at the second hop and can make the neighborhood broad. The stagnation monitor counts an observation as new by its
+identity, which includes the probe parameters, so a slightly reworded quote counts as new evidence. The evaluation uses
+source and AST probes only, so its assessments establish static facts; registered execution procedures are an extension
+outside that protocol. Scores and dissimilarities are heuristics, not probabilities. The fixed candidate pool bounds recall,
+and retaining every observation does not bound the size of later requests. Finally, a reset preserves observations but
+not the interpretations attached to pruned hypotheses. Appendix A documents the remaining operational details.
+
+
+4. Evaluation
+4.1. Design and subjects
+    An experimental unit is one issue investigated by one workflow with one LLM and seed. The same 50 issues receive
+four context configurations with two LLMs, giving 50×4×2 = 400 investigations. Two deterministic retrieval controls
+run once per issue, giving 100 additional records. All specified keys are present; there is no workflow-dependent case
+exclusion.
+    Subjects come from the 707 unique issues in the union of SWE-bench Lite and Verified (Jimenez et al., 2024;
+Chowdhury et al., 2024). The splits contain 300 and 500 issues and share 93; an issue in both enters our sample once.
+Selection proceeds round-robin across twelve repositories, in deterministic hash order within each repository, after
+excluding thirteen previously inspected development IDs. The selected IDs were fixed before opening predictions or
+labels for this selection. Balancing limits domination by a large project but changes the benchmark mixture; the sample
+is not randomly representative of either split.
+    Table 5 gives repository composition. All fifty issues have file targets and 48 have function targets. Investigators
+receive public reports and pre-fix source. Reference patches remain evaluator-only and supply changed-file/function
+targets. These are unreviewed localization proxies, not adjudicated root causes.
+
+4.2. Workflow contrasts
+    The four LLM conditions share grounding, source/probe validation, evidence processing, scoring, source-excerpt
+construction rules, role instructions and ranking machinery. Within each model, they use the same checkpoint and
+resource ceilings. Evolving hypotheses can change which files are displayed, so downstream source visibility need not
+be identical across workflows.
+
+
+Babaei: Preprint submitted to Elsevier                                                                       Page 12 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 6
+Evaluated configurations. Dialogue and hypothesis-pool retention are part of the treatment.
+
+Workflow                      Artifact name                        Memory and reset policy
+Full adaptive                 morph                                Project model state plus role dialogue; reset and prune on
+                                                                   stagnation
+Continuous                    no_forgetting                        Keep dialogue and all live hypotheses; no resets
+Fixed reset                   fixed_reset                          Same reset/pruning operation every third attempt if that
+                                                                   attempt is accepted
+Observation-only              stateless_summary                    Report and compact observations as memory; no dialogue,
+                                                                   resets or pruning
+BM25 / Graph                  bm25, graph                          File retrieval; no LLM or function ranking
+
+
+    Observation-only retains common numbered source excerpts, retrieval ranks, revision and instructions. It omits
+hypotheses, interpreted behavior, unresolved predictions, relations, displayed budget and detailed provenance from its
+memory view. Its historical name does not refer to an LLM-written summary. It still retains hypotheses internally,
+grounds/checks proposals and uses scores to rank locations. Its unpruned pool can affect final ranking.
+    This bundled contrast cannot isolate removing dialogue, hypotheses or any individual field. All workflows
+retain evidence externally, so none identifies the benefit of preserving observations against deleting them. The
+scope is controlled context-policy comparison within one implementation, not competition against complete external
+localization systems.
+
+4.3. Runtime and provenance
+    The checkpoints are Qwen2.5-Coder-7B-Instruct (Hui et al., 2024) and DeepSeek-Coder-6.7B-Instruct (Guo et al.,
+2024). Runs use seed 1, BF16, a cumulative 32,000 input-plus-output token ceiling, at most 16 attempts and a 16,384-
+token per-request limit. Generation is capped at 1,536 output tokens per request. Sampling uses temperature 0.2, top-𝑝
+0.95 and top-𝑘 50. Each model runs on one NVIDIA A30 GPU (24 GB) according to pinned allocation. Roles are
+sequential, not four concurrent models. Invalid generations consume their actual tokens. Library defaults in Table 14
+differ from study settings.
+    The evaluated runtime is frozen v12 from 20 October 2026. The manifest records selection/protocol digests;
+Appendix A.10 records model/dataset pins. Of the 400 predictions, 132 Qwen records were imported from earlier
+collection after identity validation and 268 were newly collected. Reused records were not regenerated or counted
+twice. The selected sample excludes the recorded development IDs, but reuse and outcome-informed interpretation
+mean it is not untouched confirmation.
+    Archived finalization verified 400 investigation and 100 control records on 25 October. Subsequent checker
+hardening addressed protocol, revision and shard-identity checks; metadata inspection found saved configurations
+consistent with those identities. It did not freshly revalidate all raw contents under the hardened checker. Our local
+analysis checks score-table coverage and aggregates; complete raw audit release remains an artifact requirement.
+    All evaluated probes are source-only. Source/AST agreement is not execution-based causal validation. The frozen
+behavior transformation has a demonstrated prompt-growth defect: repeated unresolved ambiguities can be appended
+and displayed again. Richer requests show these duplicates; observation-only omits the field. Prevalence and accuracy
+impact remain unquantified. A later regression-tested correction is outside the evaluated runtime and supplies no new
+inference result.
+
+4.4. Measures and analysis
+    For an eligible issue 𝑖, let 𝑟𝑖 be the first patch target’s rank in a deduplicated ranking, with 𝑟𝑖 = ∞ if absent:
+
+                1 ∑                                 1 ∑
+                     𝑀                                  𝑀
+      Top-𝑘 =         𝟙[𝑟𝑖 ≤ 𝑘],           MRR =          1∕𝑟𝑖 ,    1∕∞ = 0.                                             (5)
+                𝑀 𝑖=1                               𝑀 𝑖=1
+
+File metrics use 𝑀 = 50, function metrics 𝑀 = 48. Class-only entries are not exact function hits. Empty outputs are
+misses, not removed. File/function outputs are independently ranked. Source grounding establishes admissibility, not
+diagnostic correctness.
+
+Babaei: Preprint submitted to Elsevier                                                                         Page 13 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 7
+Ranking outcomes on all 50 study issues per workflow and model (seed 1). Top-5/10 are percentages; Top-1 cells show
+exact hits and denominators. Retrieval controls run once per issue and produce no function ranking.
+
+LLM             Workflow                  File Top-1       Top-5       Top-10       File MRR       Fn. Top-1       Fn. MRR
+Qwen            Full adaptive                 21/50           72           86              0.561       8/48           0.177
+Qwen            Continuous                    21/50           74           86              0.572       8/48           0.177
+Qwen            Fixed reset                   21/50           76           88              0.577       7/48           0.170
+Qwen            Observation-only              25/50           78           90              0.645      11/48           0.271
+DeepSeek        Full adaptive                 20/50           70           86              0.547       0/48           0.000
+DeepSeek        Continuous                    20/50           70           86              0.547       0/48           0.000
+DeepSeek        Fixed reset                   20/50           70           86              0.547       0/48           0.000
+DeepSeek        Observation-only              20/50           72           88              0.550       6/48           0.135
+ BM25 (shared)                                20/50           70           86              0.547          –               –
+ Graph (shared)                               20/50           70           86              0.547          –               –
+
+
+    We also measure final nonempty pools, runs with at least one reset, total/mean resets, actual tokens and elapsed
+seconds. Empty pools use retrieval order for files and supply no hypothesis-derived function ranking. Resources include
+calls within the recorded completed investigation but exclude interrupted/retried attempts, setup, energy and developer
+effort. Different tokenizers limit cross-model token comparisons.
+    Paired file-Top-1 effects are full adaptive minus comparator in percentage points (pp). We report discordances in
+both directions. Saved descriptive 95% repository-cluster intervals use 2,000 draws, Python random seed 20261024,
+resampling twelve repository groups with replacement while retaining all their issues (Efron and Tibshirani, 1993;
+Field and Welsh, 2007). These unadjusted intervals are not confirmatory superiority or equivalence tests. We do not
+retrofit significance testing to inspected outcomes.
+    Reset exposure and paired pool analyses are descriptive analyses of saved scores added during revision. Interpreting
+observation-only as preferable is post hoc. We preserve the manifest, scores, original bootstrap report and diagnostics;
+generated manuscript tables are separate analysis artifacts. Smoke/preflight records and other issue cohorts are
+excluded.
+
+5. Results
+5.1. RQ1: ranking outcomes
+     With Qwen, adaptive, continuous and fixed reset each place a patch file first on 21/50 issues (42%). Observation-
+only reaches 25/50 (50%), file MRR 0.645 versus 0.561 for adaptive, and function Top-1 of 11/48 versus 8/48. Its
+Top-10 also rises from 86% to 90%; the difference is not confined to first rank (Table 7).
+     With DeepSeek all four conditions reach 20/50 file Top-1 (40%). Adaptive, continuous and fixed reset also share file
+Top-5/10 and MRR, equal to BM25’s reported values. Observation-only reaches 72% Top-5 and 88% Top-10 versus
+70% and 86%, and yields six function Top-1 hits instead of zero. Aggregate equality with retrieval does not establish
+identical ranked paths.
+     Full, continuous and fixed reset have identical per-issue Top-1 hit indicators under each model, not merely equal
+means. Their full rankings need not match: Qwen Top-5 and MRR differ. Observation-only gains five Qwen hits that
+adaptive misses and loses one, a net four issues or 8 pp; with DeepSeek it gains four and loses four (Table 8).
+     The full-minus-observation-only intervals are [−16, 0] pp with Qwen and [−9.8, +12.0] pp with DeepSeek. The
+[0, 0] intervals against continuous and fixed reset reflect zero discordance in this fixed sample, not population precision
+or equivalence. These descriptive intervals and few discordances do not establish confirmatory superiority. Both
+retrieval controls supply 20/50 Top-1 hits: the full workflow adds one net hit with Qwen and none with DeepSeek.
+Answer to RQ1. Observation-only has the highest observed Qwen ranking scores and the only nonzero DeepSeek
+function Top-1. Reset workflows gain no Top-1 hits over continuous context in this sample. No whole-benchmark or
+state-of-the-art claim follows.
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                         Page 14 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 8
+Paired file Top-1 contrasts: full adaptive minus comparator. Counts concern target-hit status, not identity of the top-ranked
+path. Intervals are descriptive repository-cluster intervals from the saved 2,000-draw analysis.
+
+LLM               Comparator                   Full only           Comparator only         Difference (pp)      95% interval
+Qwen              Continuous                          0                         0                        0             [0, 0]
+Qwen              Fixed reset                         0                         0                        0             [0, 0]
+Qwen              Observation-only                    1                         5                       -8           [-16, 0]
+DeepSeek          Continuous                          0                         0                        0             [0, 0]
+DeepSeek          Fixed reset                         0                         0                        0             [0, 0]
+DeepSeek          Observation-only                    4                         4                        0         [-9.8, 12]
+
+
+Table 9
+Reset exposure and final-pool availability. An empty pool returns retrieval file order. A nonempty pool establishes source-
+valid proposals, not correct causal explanations.
+
+LLM                Workflow                     Runs with reset           Total resets         Mean resets       Final pools
+Qwen               Full adaptive                            8/50                      9               0.18            49/50
+Qwen               Continuous                               0/50                      0               0.00            49/50
+Qwen               Fixed reset                             50/50                     52               1.04            49/50
+Qwen               Observation-only                         0/50                      0               0.00            50/50
+DeepSeek           Full adaptive                           29/50                     30               0.60             6/50
+DeepSeek           Continuous                               0/50                      0               0.00             6/50
+DeepSeek           Fixed reset                             45/50                     72               1.44             7/50
+DeepSeek           Observation-only                         0/50                      0               0.00            47/50
+
+
+5.2. RQ2: reset exposure and rank-one hits
+    Adaptive reset acts in 8/50 Qwen runs, with nine events (mean 0.18), and 29/50 DeepSeek runs, with thirty events
+(mean 0.60). Fixed reset acts in all fifty Qwen runs with 52 events and 45/50 DeepSeek runs with 72 events (Table 9).
+Invalid attempts and budget termination can prevent a scheduled reset.
+    Adaptive exposure is limited with Qwen but covers a majority of DeepSeek investigations. The absence of extra
+Top-1 hits cannot be explained simply by no resets occurring. It also does not prove each reset was ineffective: other
+ranks and trajectories may change, and triggering on evolving state does not randomly assign intervention to a stalled
+trajectory.
+    Diversity is zero for fewer than two hypotheses. The monitor can therefore act on an empty, zero-gain investigation,
+subject to other readiness/budget gates. A reset event is not evidence of recovery from a wrong explanation. An
+identifier-preservation assertion checks record retention, not reasoning quality.
+Answer to RQ2. Adaptive resets affect 16% of Qwen and 58% of DeepSeek runs; fixed reset acts more often. Neither
+reset workflow gains file Top-1 hits over continuous context. This is a negative result for the tested configurations, not
+proof that resetting is universally unnecessary.
+
+5.3. RQ3: tokens and elapsed time
+    Adaptive uses 28,257 versus 27,573 tokens with Qwen and 29,197 versus 27,912 with DeepSeek compared with
+continuous context. Mean times are 93.6 versus 89.5 seconds and 55.0 versus 48.3 seconds. There is no positive file-
+Top-1 difference to offset these larger means (Table 10).
+    Observation-only uses 29,325 tokens and 140.3 seconds with Qwen and 29,920 tokens and 111.5 seconds with
+DeepSeek. Relative to adaptive, time is approximately 1.50× and 2.03×. Mean output tokens rise from 3,138 to 5,150
+with Qwen and 920 to 2,506 with DeepSeek. More usable output and proposals are compatible with higher time, but
+no phase-level causal timing attribution is established.
+    A common ceiling does not equalize actual consumption, output volume or time. Retrieval uses zero LLM tokens
+but nonzero computation. These means do not establish total savings, budget scaling or developer productivity.
+Answer to RQ3. Adaptive reset has no demonstrated token/time benefit over continuous context at this ceiling.
+Observation-only’s favorable output outcomes accompany greater mean time with both models.
+
+Babaei: Preprint submitted to Elsevier                                                                        Page 15 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 10
+Actual mean resources per completed study run. Tokens include input and output; elapsed seconds exclude interrupted/re-
+tried attempts. Different model tokenizers limit cross-model token comparisons.
+
+LLM                      Workflow                           Total tokens               Output tokens            Seconds
+Qwen                     Full adaptive                            28,257                       3,138                93.6
+Qwen                     Continuous                               27,573                       3,025                89.5
+Qwen                     Fixed reset                              29,114                       3,222                94.7
+Qwen                     Observation-only                         29,325                       5,150               140.3
+DeepSeek                 Full adaptive                            29,197                         920                55.0
+DeepSeek                 Continuous                               27,912                         812                48.3
+DeepSeek                 Fixed reset                              29,553                         961                53.8
+DeepSeek                 Observation-only                         29,920                       2,506               111.5
+
+
+Table 11
+DeepSeek output diagnostics from archived audit counts. Events may exceed case counts; hypothesis events are not distinct
+final hypotheses or correct explanations.
+
+Workflow                   Accepted responses              Invalid responses          Hypothesis events       Final pools
+Full adaptive                                 218                          68                       22              6/50
+Continuous                                    193                          63                       19              6/50
+Fixed reset                                   226                          69                       25              7/50
+Observation-only                              293                          50                      259             47/50
+
+
+5.4. RQ4: output beyond file accuracy
+    DeepSeek finishes with hypotheses on 6/50 adaptive and continuous runs, 7/50 fixed runs and 47/50 observation-
+only runs (Table 9). Observation-only’s net difference from adaptive is 41 runs or 82 pp. Paired by issue, 43 cases gain
+a pool under observation-only and two have a pool only under adaptive; four have both and one neither. This is not a
+claim that every adaptive output survives.
+    Qwen has pools in 49/50 runs for each richer view and 50/50 for observation-only. Groundability does not certify
+correctness. The two models share subjects and must not be pooled into one general accuracy estimate.
+    Table 11 separates DeepSeek events from run outcomes. Adaptive has 218 accepted responses and 22 hypothesis
+events; observation-only has 293 and 259. Invalid-response counts are 68 and 50. Accepted responses can therefore
+yield no grounded hypothesis; malformed JSON alone does not explain the final pools.
+    Hypothesis events may repeat proposals and are not correct explanations. Request counts need not equal accepted
+plus invalid responses because a request can terminate at a context/token limit. We do not infer a response-level
+conversion probability from heterogeneous event totals.
+Answer to RQ4. File accuracy can mask failure to produce hypothesis-based investigations. Pool availability, response
+diagnostics and function hits distinguish workflows even where file Top-1 is equal. This finding concerns recorded
+output; its cause remains confounded by bundled changes and the ambiguity defect.
+
+
+6. Discussion
+6.1. Does forgetting help?
+    The answer depends on the intervention and outcome. Resetting on stagnation does not yield extra Top-1 hits
+over continuous context with either model. Observation-only yields higher observed Qwen scores and much greater
+DeepSeek final-pool availability, while taking more time. These findings answer a bounded engineering question, not
+a universal claim that less context is better.
+    The architecture distinguishes retention from effectiveness. Observations remain inspectable after a reset, but every
+tested condition stores evidence externally, so its accuracy benefit is not isolated. Omitting hypotheses from requests
+while retaining them internally differs from pruning them, which changes ranking inputs. The term forgetting needs
+this explicit state boundary.
+
+
+Babaei: Preprint submitted to Elsevier                                                                     Page 16 of 29
+                                         Does forgetting help in LLM fault localization?
+
+6.2. Alternative explanations
+    Earlier hypotheses could anchor later proposals; compact observations and omitted fields could reduce prompt
+burden; removing dialogue could change valid-empty output; omitting the defective behavior field could avoid artificial
+growth; an unpruned pool could alter rankings. The data do not separate these explanations. Shared JSON output
+requirements do not remove input-complexity effects (Tam et al., 2024).
+    Observation-only is consequently a candidate configuration for corrected controlled replication, not a retrospec-
+tively validated causal treatment. Correcting ambiguity duplication alone will not isolate other changes. A stronger
+design varies fields, serialization, dialogue and pruning while controlling inference and source exposure.
+
+6.3. Implications for engineering and evaluation
+    The intended output is an unverified shortlist with source-check provenance:
+   • Report fallback and exact-function scores beside file accuracy. A useful retrieval rank should not be credited as
+     demonstrated causal reasoning.
+   • Record reset-exposed runs separately from event totals. The mean hides low Qwen exposure and majority
+     DeepSeek exposure; neither demonstrates recovery.
+   • Distinguish accepted-empty output, invalid responses, source grounding and final retention. A schema-valid
+     response need not be a usable investigation.
+   • Compare actual tokens, output volume and time. Observation-only is slower here; deployment recommendations
+     require costs and inspection outcomes for the intended use.
+No industrial deployment, developer time saved, repair success or correct causal explanations were measured. Real
+repositories supply relevant code context but do not establish those outcomes. Larger models may process rich views
+differently. The contribution is reproducible negative and diagnostic evidence for tested configurations and a precise
+architecture for defining subsequent experiments.
+
+6.4. Next validation
+    First quantify ambiguity duplication and the output funnel on development traces, then evaluate a separately
+versioned correction under matched settings. Confirmation requires subjects untouched by outcome-informed prompt
+changes. Repeated-reset recovery needs explicit plateau opportunities and incorrect initial leads, not merely more
+ordinary runs. A complete upstream localizer and independent unstructured tool agent would test competitiveness
+beyond this harness. These extensions are not counted among the study’s 400 investigations.
+
+7. Threats to Validity
+7.1. Construct validity
+    Patch changes are unreviewed proxies: a fix can touch supporting code or omit an indirectly responsible location.
+Source/AST observations establish static facts, not reproduced execution or causal diagnosis. Two issues lack function
+targets and are excluded from that metric only. Grounding and pool availability measure source admissibility and
+output, not truth. Scores and lexical/path diversity are heuristics, not calibrated probabilities. An unsupported proposal
+can outrank an uninvestigated file. Confidence is null, and abstention does not certify the leader.
+
+7.2. Internal validity
+    The strongest contrast changes fields, provenance verbosity, dialogue, resets and pruning together. Ambiguity
+duplication is demonstrated but unquantified and affects richer requests. We retain frozen results and disclose
+this imbalance rather than infer a hypothesis-removal effect. Adaptive exposure differs by model; reacting to state
+does not randomize intervention opportunities. A shared controller controls engineering differences but supplies no
+independent-agent comparison.
+    Selection excluded recorded development IDs, but 132 Qwen predictions were reused and the preference for
+observation-only is outcome-informed. This is exploratory evidence, not untouched confirmation. Archived identity
+checks and receipts establish stated collection provenance; the local audit does not freshly verify all raw signatures.
+The October 28 checker-hardening metadata inspection was not replacement content-level verification. The release
+must include raw sources, configurations, receipts and permissible traces.
+
+Babaei: Preprint submitted to Elsevier                                                                     Page 17 of 29
+                                         Does forgetting help in LLM fault localization?
+
+7.3. External validity
+    The sample contains fifty issues from twelve Python repositories, two approximately 7B-scale models and one
+seed. Balancing changes the benchmark mixture; neither whole splits nor an industrial population are represented.
+Both models use the same subjects. Public reports may leak fixes or have appeared in training (Liang et al., 2026;
+Aleithan et al., 2024). Pinning inputs does not remove contamination. Untouched/decontaminated subjects such as
+SWE-rebench test a different boundary (Badertdinov et al., 2025). Other languages, sizes and execution evidence are
+outside the claims.
+
+7.4. Conclusion validity and reproducibility
+    Paired counts are exact for saved outputs; generalization is uncertain. Intervals have twelve clusters, are unadjusted
+and descriptive. Zero discordance is not equivalence under other seeds or inputs. One seed does not estimate stochastic
+variation. Even without a reset, nondeterministic inference can change tokens from continuous context; we attribute no
+difference solely to a reset event. Exposure/pool analyses added in revision are descriptive, not retrospective protocol
+changes.
+    Resource means exclude interrupted/retried attempts, setup, energy and developer effort. Tokenizers differ. The
+local audit checks complete score keys, aggregates and tables; it does not reconstruct rankings from inaccessible
+raw model outputs. Exact evaluated dependencies and durable public release remain requirements. Shallow dataclass
+immutability and operational retention checks are not formal semantic-preservation proofs. These limits restrict
+inference without changing the recorded 400-investigation/100-control coverage.
+
+
+8. Related Work
+    We relate MORPH-FL to five lines of work: techniques that rank locations from fixed evidence, LLM-based
+localization agents, hypothesis-driven debugging, memory and context management for LLM agents, and models in
+fault localization and at runtime. Table 12 summarizes the approaches closest to ours in how they manage state; the
+descriptions concern the versions we examined.
+
+8.1. Ranking from Reports, Executions, and Learned Representations
+    Most classical fault localization techniques rank program elements from evidence that is fixed before ranking
+begins (Wong et al., 2016; Chang et al., 2025); spectrum-based formulas such as Tarantula and Ochiai, for example,
+score statements by their coverage in passing and failing tests (Jones and Harrold, 2005; Abreu et al., 2007). BugLocator
+combines report–source similarity with the fixes of similar past reports (Zhou et al., 2012), and KBL improves the
+report used as a query by learning which keywords matter and expanding them with historical ones (Cai et al.,
+2025). Execution-based techniques rank elements by their behavior in passing and failing runs: DeepRL4FL learns
+from coverage, statement dependencies, and code (Li et al., 2021), and SmartFL reasons probabilistically about the
+correctness of values along dynamic dependencies (Wu et al., 2025). LLMAO predicts faulty lines from code alone,
+using adapters on a pretrained code language model (Yang et al., 2024a), and SweRank trains a retrieve-and-rerank
+model that ranks code for an issue description in one pass (Reddy et al., 2026). MORPH-FL uses lexical retrieval to
+seed and order its candidate pool, to keep the BM25 leader in view, and as the fallback order for files without a live
+hypothesis. Its ranking is the outcome of an investigation whose state evolves, and the question we study—what that
+state should retain across a reset—does not arise when ranking happens once from fixed evidence. Stronger retrieval
+or execution evidence would complement MORPH-FL; the source-only configuration we evaluate does not supply the
+runtime evidence that execution-based methods use.
+
+8.2. LLM-Based Localization Agents
+    AutoFL lets an LLM explore a repository with tools, explain its prediction, and aggregate predictions over repeated
+runs (Kang et al., 2024). SoapFL (first released as AgentFL) organizes localization as a standard operating procedure
+of comprehension, navigation, and confirmation, passing analysis results between steps through a state store (Qin
+et al., 2025), and FlexFL narrows candidates in two stages with open-source LLMs and agent tools, drawing on
+bug reports and tests (Xu et al., 2025a). LLM4FL divides a large code base among several agents and refines their
+rankings by reflection (Rafi et al., 2024). Agentless narrows the search hierarchically from files to code elements to
+edit locations (Xia et al., 2025). AutoCodeRover searches code through program-structure-aware interfaces before
+patching (Zhang et al., 2024), and SWE-agent, OpenHands, and CodeAct give agents interfaces or executable actions
+
+Babaei: Preprint submitted to Elsevier                                                                     Page 18 of 29
+                                         Does forgetting help in LLM fault localization?
+
+for repository navigation and editing (Yang et al., 2024b; Wang et al., 2025, 2024); MASAI splits the work among
+sub-agents with separate contexts, one of which localizes edits (Arora et al., 2024). RGFL generates candidate-specific
+reasoning to rank files and elements (Sepidband et al., 2026). LocAgent, CoSIL, and ARISE navigate repository graphs;
+ARISE adds definition–use relations and token-budgeted evidence bundles (Chen et al., 2025; Jiang et al., 2025; Seddik
+et al., 2026). OrcaLoca is the closest of these in managing what the agent sees: it schedules actions by priority and
+prunes context by code distance (Yu et al., 2025), whereas MORPH-FL partitions context by epistemic status and
+resets it on stagnation. Together these systems show that LLM investigations benefit from tools, program structure,
+and intermediate state, so external state alone does not distinguish MORPH-FL. Their contributions concern how an
+agent navigates, reasons, and narrows the search. MORPH-FL addresses a complementary question: which parts of an
+investigation survive when its dialogue is cleared, and how checked facts stay apart from the conjectures that motivated
+them. Its structural neighborhood is deliberately simpler than the graphs of LocAgent or ARISE, and a richer navigation
+backend could feed the same controller.
+
+8.3. Hypothesis-Driven Debugging and Diagnosis
+    Scientific debugging frames debugging as a cycle of hypothesis, prediction, experiment, and conclusion (Zeller,
+2009). AutoSD prompts an LLM to follow this cycle, using a debugger to test its predictions and producing explanations
+for developers (Kang et al., 2025), and RepairAgent guides hypothesis-driven repair with a finite-state machine over
+tool use (Bouzenia et al., 2025); both keep the dialogue history as their state. Model-based diagnosis formalizes the
+underlying distinction between a system description and observations (Reiter, 1987), and GDE maintains several
+candidate diagnoses against a shared set of observations while choosing the next measurement by its expected
+information (de Kleer and Williams, 1987). MORPH-FL inherits the hypothesis–prediction–observation cycle and, like
+GDE, keeps several candidates against one observation base. It does not offer the guarantees of model-based diagnosis:
+its mechanisms are natural language, its structure model is approximate, and its probe ordering is a heuristic rather
+than an information-theoretic choice. It adds an explicit retention/reset policy to that cycle; its productivity benefit
+remains unestablished. Keeping several candidate explanations consistent with a shared, growing set of facts also recalls
+blackboard architectures such as Hearsay-II, in which independent knowledge sources post and revise hypotheses on
+a shared store (Erman et al., 1980), and assumption-based truth maintenance, which records the assumptions under
+which each conclusion holds (de Kleer, 1986). MORPH-FL’s roles play the part of knowledge sources over a shared
+evidence model, without the formal dependency tracking of an ATMS. Provenance models such as PROV-DM describe
+how entities derive from activities (Moreau and Missier, 2013). MORPH-FL records a comparable trail for each
+observation—revision, file digest, procedure, and artifact digest—so that observations stay usable after the dialogue
+that requested them is gone.
+
+8.4. Memory and Context Management for LLM Agents
+     Because LLMs do not use long contexts uniformly (Liu et al., 2024; Hong et al., 2025), agent designers manage what
+an agent keeps in view. Prompt compression removes tokens that an LLM can do without (Jiang et al., 2023). MemGPT
+moves information between a bounded context and external storage, evicting and summarizing messages (Packer et al.,
+2024), and ACON learns natural-language guidelines for compressing an agent’s history and observations (Kang et al.,
+2026). Generative Agents, MemoryBank, and A-Mem keep long-term memory stores that agents retrieve from and
+reflect on (Park et al., 2023; Zhong et al., 2024; Xu et al., 2025b). Reflexion retains verbal reflections on feedback across
+trials (Shinn et al., 2023). Ledger keeps observed source, modifications, and commands in an execution ledger, renders
+a current-state view, and mediates redundant actions (Wang et al., 2026b). It is the closest precedent for separating
+mechanically recorded state from reasoning, although its view supplements rather than replaces the interaction history.
+SWE-agent makes the opposite choice to ours: it collapses older observations in the agent’s history while keeping its
+reasoning (Yang et al., 2024b). Lindenbauer et al. find that such observation masking matches LLM summarization on
+SWE-bench at about half the cost (Lindenbauer et al., 2025), and HiAgent keeps full action–observation pairs only for
+the current subgoal while summarizing completed ones (Hu et al., 2025). MORPH-FL’s observation-only view inverts
+the choice, keeping every observation and dropping the reasoning, but the bundled contrast and known defect prevent
+attributing the observed advantage to that inversion.
+     Memory for debugging and repair often draws on knowledge from outside the current task: MemFL supplies
+project summaries and debugging guidance refined on pseudo-training bugs (Yeo et al., 2025), Repository Memory
+retrieves historical commits, linked issues, and summaries of active files (Wang et al., 2026a), and AdaRepair-Mem
+selects earlier repair experiences with coverage-, quality-, and stage-aware criteria (Luo et al., 2026). Restarting is
+
+Babaei: Preprint submitted to Elsevier                                                                        Page 19 of 29
+                                         Does forgetting help in LLM fault localization?
+
+a policy of its own. In combinatorial search, randomized restarts counter heavy-tailed runtimes caused by early bad
+choices (Gomes et al., 1998), and recent work on automated discovery clears agent sessions while keeping the best
+evaluated candidate (Tan et al., 2026).
+    MORPH-FL differs from these policies in what it retains. It keeps observations from the current task at the target
+revision rather than knowledge from earlier tasks. It clears the dialogue instead of summarizing it. And it resumes
+from a portfolio of competing hypotheses rather than from the best candidate, because a localization score, unlike an
+evaluated objective, does not establish which explanation is correct. Historical memory could still inform hypothesis
+generation in MORPH-FL, provided that observations from earlier revisions remain distinguishable from checks on
+the target snapshot.
+
+8.5. Models in Fault Localization and at Runtime
+    MDE research has localized faults in Simulink models and model transformations (Liu et al., 2016; Troya et al.,
+2018). In those settings the model is the artifact being debugged. Here the models describe an investigator of ordinary
+Python code. The closer lineage is models@run.time, which keeps explicit models to monitor and adapt a running
+system (Blair et al., 2009), and the monitor–analyze–plan–execute loop of autonomic computing (Kephart and Chess,
+2003). MORPH-FL applies that pattern to investigation state and context. Its lightweight dataclasses, explicit checks
+and source links provide operational traceability without a dedicated transformation language or formal proof. Their
+value as a representation is not isolated by the available comparisons.
+
+8.6. Recent studies of LLM localization
+    Xu et al. study the potential and limitations of LLM localization in novice programs (Xu et al., 2026). SHARE-
+RAG explicitly combines structure-aware and hypothesis-guided retrieval for novice-program fault localization (Wu
+et al., 2026). These are relevant connections to prompt sensitivity and explicit hypotheses, but their task differs from
+report-based localization in a pre-fix repository. Our question concerns within-investigation state lifetimes and prompt
+views, not the value of hypotheses in every localization setting. The present observation-only result therefore does not
+imply that hypothesis guidance generally harms localization. These task-level comparisons use publisher abstracts and
+verified metadata; no claim about their internal state-retention algorithms is made.
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                    Page 20 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 12
+State and context policies of closely related approaches, as described in the examined versions.
+
+ Approach               Retained information       Context policy                     Difference from MORPH-FL
+ AutoFL (Kang           Current run; repeated      Tool exploration; aggregation    Combines runs; MORPH-FL manages
+ et al., 2024)          predictions                across runs                      state within one run
+ SoapFL (Qin et al.,    Analysis results and       State storage feeds task prompts Carries task state; MORPH-FL also
+ 2025)                  task outputs                                                defines what survives a dialogue reset
+ Agentless,             Current issue and          Hierarchical narrowing;          Narrows by stage; MORPH-FL
+ RGFL (Xia et al.,      candidate code             candidate reasoning              iterates with assessed checks
+ 2025; Sepidband
+ et al., 2026)
+ LocAgent,              Repository structure;      Graph tools; structural and        Decide what can be inspected;
+ ARISE (Chen et al.,    retrieved context          data-flow context                  MORPH-FL decides what is retained
+ 2025; Seddik et al.,
+ 2026)
+ MemFL, Repository      Project knowledge,         Retrieve summaries, history, or    Knowledge from other tasks;
+ Memory, AdaRepair-     history, earlier repairs   experiences                        MORPH-FL retains current-task
+ Mem (Yeo et al.,                                                                     observations
+ 2025; Wang et al.,
+ 2026a; Luo et al.,
+ 2026)
+ OrcaLoca (Yu et al.,   Current localization       Priority-scheduled actions;     Prunes by relevance; MORPH-FL
+ 2025)                  run                        context pruned by code distance separates by epistemic status and
+                                                                                   resets on stagnation
+ Ledger (Wang           Current repair             State view rendered alongside   Closest state precedent; MORPH-FL
+ et al., 2026b)         execution                  history; repeated actions       clears dialogue and keeps competing
+                                                   mediated                        hypotheses
+ Reflexion,             Trial feedback;            Reflections; paging and         Retain prose; MORPH-FL keeps
+ MemGPT (Shinn          external memory            summaries                       check results as observations
+ et al., 2023; Packer
+ et al., 2024)
+ Discovery              Optimization episodes      Restart from the best evaluated    Relies on an objective; MORPH-FL
+ forgetting (Tan                                   candidate                          keeps a diverse portfolio
+ et al., 2026)
+ MORPH-FL               Current localization       Projection from models; reset on All observations and a hypothesis
+                        investigation              stagnation                       portfolio under a cumulative budget
+
+
+
+9. Conclusion
+    We studied context forgetting with an implementation that separates observations, hypotheses and dialogue. The
+fixed fifty-issue, twelve-repository evaluation contains 400 investigations with two models and four workflows, plus
+100 retrieval controls. Adaptive and fixed resets yield no extra file Top-1 hits over continuous context. Observation-only
+increases observed Qwen Top-1 from 42% to 50%, while DeepSeek stays at 40% but increases final-pool availability
+from 6/50 to 47/50 versus adaptive. Mean elapsed time is greater with both models.
+    File rankings alone can conceal failed investigations behind retrieval fallback. Reset exposure, grounded output,
+function hits and resources must accompany accuracy. The tested adaptive policy has no demonstrated benefit
+at this budget; observation-only is a configuration-level result limited by bundled changes and a known prompt-
+growth defect. Corrected, factor-isolating tests on independent subjects are needed for broader causal or deployment
+recommendations.
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                       Page 21 of 29
+                                         Does forgetting help in LLM fault localization?
+
+A. Implementation Details
+    This appendix documents the operational details of the prototype that the main text summarizes. Paths are relative
+to src/morph_fl/.
+
+A.1. Realization
+    Section 4.3 maps the algorithm to the code. Two details complete it. The ledger rejects a changed observation
+under an existing identifier, except for the identifier of the originating probe, and nested result dictionaries are not
+deeply immutable. The reset itself combines select_portfolio with the controller’s reset branch, which clears the
+role sessions and the monitor window.
+
+A.2. Structure Extraction and Requests
+     Structure extraction skips symbolic links, files whose names start with test_, and the directories tests, test,
+.git, venv, .venv, __pycache__, and node_modules. A file with a syntax error stays in the source map with a
+diagnostic but contributes no symbols or relations. Import relations and syntactically resolved calls are marked resolved
+even when their target lies outside the repository. E XPAND traverses such targets but returns only repository files, so
+two files that import the same external module become neighbors at the second hop.
+     Each excerpt holds 40 numbered lines, capped at 4,500 characters. When the report names a function of the file,
+the excerpt starts at that function’s body, after any docstring; otherwise it is centered on a stack-trace line for the file,
+if the report gives one, and else on the line with the greatest identifier overlap with the report. The relations shown are
+the first twelve import, call, or data-flow relations, in extraction order, whose source file is displayed. A proposal’s file
+must be displayed, but its line need only exist in the file. Requests also carry the revision, the identifiers of registered
+procedures, and a fixed instruction to recheck recorded contradictions and to quote numbered source.
+
+A.3. Grounding, Identity, and Reuse
+    The proposed line defaults to 1. The enclosing symbol is the narrowest class or function whose line range contains
+the line, so a location inside a class but outside its methods yields a class-only entry. A prediction given as a plain
+string defaults to the predicate source_contains with expected value true. Hypothesis identity hashes the file,
+the case-folded mechanism, and the probe kind, so the same mechanism checked by two probe kinds yields two
+hypotheses. Logical probe identity hashes the hypothesis identity, the kind, and the parameters but not the prediction.
+The physical cache key is the kind, file, and parameters, and an observation’s identity additionally covers the file digest,
+the procedure, and the result. Handled logical probes survive resets, so changing only a prediction does not cause a
+probe to run again. Assessment records contain the hypothesis and observation identifiers but no prediction or probe
+identifier; recovering the exact prediction requires the ordered proposal artifacts in the audit log.
+
+A.4. Probe Ordering
+   For a probe 𝑝 of hypothesis ℎ𝑝 , let 𝛼(𝑝) count the other live hypotheses that, when 𝑝 was proposed, had a prediction
+whose predicate or expected value differs from 𝑝’s prediction. Probes in a round run in decreasing order of
+                  (                   ∑                      )
+              𝑞(𝑝) max{1, 𝛼(𝑝)} + ℎ′ ∈𝐻⧵{ℎ𝑝 } 𝐷(ℎ𝑝 , ℎ′ )
+     𝑈 (𝑝) =                                                   ,                                                     (6)
+                            max{10−3 , 𝑐(𝑝)}
+with ties broken by identifier. The reliability weight 𝑞(𝑝) is 0.9 for a source quote and 0.7 otherwise, and the estimated
+cost 𝑐(𝑝) is 1 for static probes and 30 for tests, traces, and counterfactuals. Both are chosen ordering parameters.
+Because 𝛼(𝑝) is captured as proposals are processed, an earlier proposal does not count an alternative introduced later
+in the same response. Probes stopped by the probe or time ceiling are not marked as handled.
+
+A.5. Assessment Rules
+    For source_contains, the observed value is the result’s matched field, whatever the probe kind, and the weight
+is 0.25; an AST probe paired with this predicate therefore receives source-presence scope. For ast_matches on an
+AST query, the value is matched and the weight is 1. For exit_code, test_fails, and output_contains on a test,
+trace, or counterfactual, and for counterfactual_changes_outcome on a counterfactual, the value comes from the
+procedure’s return code or output, and the weight is 2. Any other combination is inconclusive. AST matching compares
+against the unparsed node text, which normalizes quotes and spacing.
+
+Babaei: Preprint submitted to Elsevier                                                                        Page 22 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 13
+Constructed reset calculation for the running example.
+
+  Condition or quantity                                    Value and check
+  Accepted rounds, window                                  𝑛 = 4 ≥ 𝑛0 = 4; |Ω| = 3 = 𝑊
+  Budget total, remaining                                  𝐵tot = 16,000; 𝐵rem = 13,952
+  Consumed fraction                                        0.128 ≥ 𝜙 = 0
+  Window tokens                                            3 × 512 = 1,536 ≥ 𝜅0 = 256
+  Mean gain                                                𝑔̄ = 0 ≤ 𝜃𝑔 = 0
+  Repetition or diversity                                  𝑢̄ = 1 ≥ 0.5 holds; 𝑑̄ = 1 < 0.5 fails
+  Restart estimate                                         max(256, ⌊512∕2⌋) = 256
+  Affordability                                            13,952 > 256 + 256
+
+
+A.6. Reset Conditions and Variants
+     Besides the conditions of Eq. (4), the monitor requires that the window’s token total reach the reserve 𝜅0 and,
+optionally, that the consumed budget fraction 1 − 𝐵rem ∕𝐵tot reach a threshold 𝜙. With the default 𝜙 = 0, the second
+condition always holds. The repetition fraction 𝑢𝑡 divides by the number of the round’s validly grounded probes, and
+duplicates within one response do not count against each other. The fixed-reset variant resets after every third attempt,
+provided that attempt was accepted, and applies none of the monitor’s conditions.
+     In the independent-role configuration, each role has its own hypothesis pool, behavior model, and accessible
+observations, while the probe cache is shared. A reset prunes every pool and clears every dialogue. Handled-probe
+filtering is disabled in this configuration, one progress window collects the samples of all roles, and an observation
+reused from another role’s check counts as new for the receiving role’s progress sample.
+     Table 13 checks the reset conditions on the running example with the library defaults. Four accepted rounds each
+consume 512 tokens. The first yields two observations, and the next three yield none and propose only executed checks,
+so each recent sample is (𝑔𝑡 , 𝑢𝑡 , 𝑑𝑡 , 𝜅𝑡 ) = (0, 1, 1, 512). The 16,000-token budget is the library default, separate from
+the study’s 32,000-token ceiling.
+
+A.7. Termination and Output
+    A new attempt requires at least 64 remaining tokens, and the probe and time ceilings are tested before each attempt
+and between probes. The controller does not impose a hard deadline on an LLM call. The execution-based stop requires
+support for the leading hypothesis from at least two distinct registered procedure identifiers, nonempty assumptions,
+and no contradiction. It does not filter by assessment scope, and because it inspects the pool as it was before a reset in
+the same round, it sees hypotheses that the reset has just pruned, although the leading hypothesis itself is never pruned.
+The output’s abstention flag is cleared by any supporting execution-based assessment in the run, even for a pruned or
+non-leading hypothesis; the confidence field is always empty. Neither the stop nor the flag certifies the leading location.
+In the no_probes variant, the 𝑗-th proposal of a response receives the score max(score, 0.01(4 − 𝑗)) for 𝑗 = 0, … , 3.
+A function ranking keeps the first occurrence of each symbol and may contain class-only entries, which exact-function
+scoring must keep apart from functions. Artifact digests and a hash-linked audit log provide integrity and provenance,
+not a proof of diagnostic correctness.
+
+A.8. Configuration scope
+   Table 6 defines the evaluated configurations. Additional library controls are outside this article, including
+context_only, single_hypothesis, no_mde and independent_agents. Their implementation is not perfor-
+mance evidence.
+
+A.9. Code correspondence and operational checks
+    A reader who wants to check a claim about MORPH-FL against its code needs to know where each step
+of the algorithm lives. The prototype is a Python package, morph_fl, and Table 15 maps each line group of
+Algorithm 1 and each operation of Table 3 to the function that realizes it. All workflows of Table 6 run through
+the same controller, LocalizationController.run in search/controller.py; a workflow is a configuration
+object (search/config.py), not separate code. The observation-only view, for example, is the configuration
+forgetting="stateless", model_memory=False: the controller still calls PROJECT but replaces the projected
+
+Babaei: Preprint submitted to Elsevier                                                                        Page 23 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 14
+Library defaults. All values are chosen, not tuned or calibrated; study settings override some of them.
+
+Parameter                                   Default                     Role                                     Module
+Attempt / token / probe / time ceil-        12 / 16,000 / 48 /          Cumulative limits                        config
+ings                                        3,600 s
+Portfolio bound 𝑚 / pool size / files       3 / 20 / 4                  Visible hypotheses and files             config
+per request
+Seed files / neighborhood hops              5/2                         Candidate preparation                    controller,
+                                                                                                                 pipeline
+Excerpt lines / characters / relations      40 / 4,500 / 12             Request excerpts                         config,
+                                                                                                                 controller
+Proposals per response / admission          4 / 64 tokens               Proposal processing; loop admission      controller
+floor
+𝑊 , 𝑛0 , 𝜅0 , 𝜙                             3, 4, 256, 0                Window, rounds, reserve, consumed        config
+                                                                        fraction
+𝜃𝑔 , 𝜃𝑢 , 𝜃𝑑                                0, 0.5, 0.5                 Gain, repetition, diversity thresholds   config
+Fixed reset interval                        3 attempts                  fixed_reset variant                      config
+Dissimilarity weights (words / file)        0.6 / 0.4                   Eq. (2)                                  policies
+Probe reliability 𝑞 (source quote /         0.9 / 0.7                   Eq. (6)                                  pipeline
+other)
+Probe cost 𝑐 (static / execution)           1 / 30; floor 10−3          Eq. (6)                                  pipeline, poli-
+                                                                                                                 cies
+Assessment weight 𝑤                         0.25 / 1 / 2                Eq. (1); inconclusive 0                  pipeline
+no_probes proposal scores                   0.01(4 − 𝑗), 𝑗 = 0, … , 3   Proposal-order scores                    controller
+
+
+view with the report and the list of accessible observations before sending the request, and it rebuilds each request
+from scratch instead of appending to a dialogue.
+    Data model and integrity. The metamodel of Fig. 2 is implemented in domain/models.py as the data-
+classes BehavioralModel, SystemModel, Relation, SourceLocation, FaultHypothesis, Prediction, Probe,
+Evidence (an observation), and Assessment, with a Status enumeration holding the values observed, derived,
+and conjectured. Dataclass annotations are not enforced at runtime, so I2–I4 rest on explicit checks: insertion checks
+in EvidenceLedger, digest comparisons in the controller, and a Python assertion after every reset that the set of
+observation identifiers is unchanged. Every request and response is stored as a content-addressed artifact, and a hash-
+linked audit log records each step, so a run can be replayed and inspected after the fact.
+    Checking the paper against the code. Two scripts in the replication package check the running example of Table 4
+and the reset arithmetic of Table 13 against the implementation, so the worked examples in this paper are executable
+rather than illustrative.
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                           Page 24 of 29
+                                         Does forgetting help in LLM fault localization?
+
+Table 15
+Where each step of Algorithm 1 is realized in the implementation. Paths are relative to src/morph_fl/; all steps execute
+inside LocalizationController.run (search/controller.py).
+
+Algorithm lines    Step                              Implementation                        Invariant or check
+1                  ExtractStructure                  analyze_python                        I2: file digests recorded
+                                                     (program_analysis/python.py)
+2                  ExtractBehavior                   complaint_to_contract                 I1: fields conjectured
+                                                     (transformations/pipeline.py)
+3                  BM25, Expand, Pool                bm25 (program_analysis/               Pool fixed for the run
+                                                     retrieval.py), compose_slice
+                                                     (pipeline.py)
+6                  Exhausted                         token, probe, and time checks at      64-token admission floor
+                                                     the top of the loop
+8                  Role, Portfolio                   role schedule in SearchConfig;        Eq. (3)
+                                                     select_portfolio
+                                                     (search/policies.py)
+10                 Project, Excerpts                 fresh_context (pipeline.py);          I3: links checked on projection
+                                                     source_window (controller.py)
+11–12              Ask                               InvestigatorSessions                  Budget charged per call
+                                                     (agents/sessions.py); BF16
+                                                     Transformers backend
+                                                     (experiments/full/
+                                                     inference.py)
+16                 Ground, Plan                      synthesize,                           I1, I2: causal edges conjectured
+                                                     hypothesis_to_probe
+                                                     (pipeline.py)
+17                 RunAndAssess                      rank_probes (policies.py);            I2, I4: insertion checks; Eq. (1)
+                                                     ProbeExecutor
+                                                     (investigation/executor.py);
+                                                     evidence_update (pipeline.py);
+                                                     EvidenceLedger
+                                                     (investigation/ledger.py)
+18–20              Record, Stagnated                 PlateauMonitor.update,                Eq. (4)
+                                                     PlateauMonitor.evaluate
+                                                     (policies.py)
+21                 Reset                             reset branch of the controller;       I4: runtime assertion on
+                                                     select_portfolio                      observation identifiers
+24                 Rank                              ranking construction at the end of    BM25 fallback for files
+                                                     run
+
+
+
+A.10. Evidence and reproduction map
+     All empirical tables derive from the fixed selected study under experiments/pilot/results/analysis/.
+Paths retain their original collection identifiers. Inputs are scores.csv, summary.json, controls.json, quality.
+json, completeness.json and final-verification.json; selection/protocol identity is in experiments/
+pilot/results/pilot.json. Collection/reuse is documented in experiments/pilot/README.md. These specify
+fifty IDs, 400 investigation scores and 100 controls. Earlier benchmark aggregates and other cohorts are not inputs to
+the manuscript tables.
+     From the repository root, docs/JSS/scripts/analyze_completed_study.mjs checks every model/work-
+flow/issue/seed key, eligibility, tokens, saved means, controls, reset exposure and paired hit/pool changes. With –write
+it emits six tables under docs/JSS/generated/; otherwise it checks their deterministic reconstruction. It writes
+docs/JSS/validation/completed-study-audit.json with input digests. This is score-table reconstruction, not
+fresh raw-output/signature validation. Original cluster intervals remain tied to their saved report and stated procedure.
+
+
+Babaei: Preprint submitted to Elsevier                                                                          Page 25 of 29
+                                           Does forgetting help in LLM fault localization?
+
+   The frozen protocol SHA-256 is 3afba2e46e120a3e35fc585e16ab9ddd474605ec93a5294abd8c618ad740
+f076. Model/dataset pins are in experiments/full/pins.json. Checkpoint commits are c03e6d358207e414f1
+eca0bb1891e29f1db0e242 (Qwen) and e5d64addd26a6a1db0f9b863abf6ee3141936807 (DeepSeek). Dataset
+commits are 6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2 (Lite) and c104f840cc67f8b6eec6f759ebc8b26
+93d585d4a (Verified). Large raw archives must be deposited or durably linked. [AUTHOR TO PROVIDE: archive
+exact frozen source/environment, raw predictions and permissible traces, receipts, labels and clean-environment
+reproduction instructions.]
+
+
+Data Availability
+    The working repository identifies https://github.com/ai4se4ai-lab/MORPH-FL as the project location.
+Public accessibility and completeness of the evaluated-source/result archive have not been independently established
+in this revision. Local evidence and analysis are mapped in Appendix A.10. [AUTHOR TO PROVIDE: provide
+the accessible replication-package URL and archival DOI, immutable evaluated code/protocol version, raw
+predictions and permissible audit traces, label-generation inputs, dependency lock and licenses.] No completed
+open archival deposit is claimed.
+
+
+CRediT authorship contribution statement
+    [AUTHOR TO PROVIDE: confirm the full author list and each author’s applicable CRediT roles.]
+
+
+Declaration of competing interests
+    [AUTHOR TO PROVIDE: provide the verified competing-interest declaration or confirm no competing
+interests.]
+
+
+Funding
+   [AUTHOR TO PROVIDE: provide funder names, grant numbers and sponsor roles, or confirm no specific
+funding.]
+
+
+Declaration of generative AI and AI-assisted technologies in the writing process
+    OpenAI Codex assisted repository/evidence inspection, literature discovery, drafting, LaTeX preparation and sim-
+ulated critical-review passes. The prior manuscript also records assistance from Claude (Anthropic) with restructuring,
+writing and result integration. The three review passes for this revision were AI-generated assessments requested
+by the author, not human or journal peer review. [AUTHOR TO PROVIDE: confirm the complete tool/version
+history, review and verify the manuscript, references and analyses, and finalize this declaration accepting full
+responsibility for submitted content.]
+
+
+References
+Abreu, R., Zoeteweij, P., van Gemund, A.J.C., 2007. On the accuracy of spectrum-based fault localization, in: Testing: Academic and Industrial
+   Conference Practice and Research Techniques – MUTATION (TAICPART-MUTATION), IEEE. pp. 89–98. doi:10.1109/TAIC.PART.2007.
+   13.
+Aleithan, R., Xue, H., Mohajer, M.M., Nnorom, E., Uddin, G., Wang, S., 2024. SWE-bench+: Enhanced coding benchmark for LLMs.
+   arXiv:2410.06992. URL: https://arxiv.org/abs/2410.06992, doi:10.48550/arXiv.2410.06992.
+Arora, D., Sonwane, A., Wadhwa, N., Mehrotra, A., Utpala, S., Bairi, R., Kanade, A., Natarajan, N., 2024. MASAI: Modular architecture for
+   software-engineering AI agents. arXiv:2406.11638. URL: https://arxiv.org/abs/2406.11638, doi:10.48550/arXiv.2406.11638.
+Badertdinov, I., Golubev, A., Nekrashevich, M., Shevtsov, A., Karasik, S., Andriushchenko, A., Trofimova, M., Litvintseva, D., Yangel, B.,
+   2025. SWE-rebench: An automated pipeline for task collection and decontaminated evaluation of software engineering agents, in: Advances
+   in Neural Information Processing Systems 38 (NeurIPS), Datasets and Benchmarks Track. URL: https://arxiv.org/abs/2505.20411.
+   arXiv:2505.20411.
+Blair, G., Bencomo, N., France, R.B., 2009. Models@run.time. Computer 42, 22–27. doi:10.1109/MC.2009.326.
+Bouzenia, I., Devanbu, P., Pradel, M., 2025. RepairAgent: An autonomous, LLM-based agent for program repair, in: Proceedings of the 47th
+   IEEE/ACM International Conference on Software Engineering (ICSE), IEEE. pp. 2188–2200. doi:10.1109/ICSE55347.2025.00157.
+
+
+Babaei: Preprint submitted to Elsevier                                                                                       Page 26 of 29
+                                             Does forgetting help in LLM fault localization?
+
+Cai, B., Zou, W., Meng, Q., Xu, H., Zhang, J., 2025. KBL: A golden keywords-based query reformulation approach for bug localization. Empirical
+   Software Engineering 30, 135. doi:10.1007/s10664-025-10694-2.
+Carbonell, J., Goldstein, J., 1998. The use of MMR, diversity-based reranking for reordering documents and producing summaries, in: Proceedings
+   of the 21st Annual International ACM SIGIR Conference on Research and Development in Information Retrieval, ACM. pp. 335–336.
+   doi:10.1145/290941.291025.
+Chang, X., Li, D., Wong, W.E., 2025. Large language models for software fault localization: A survey, in: Proceedings of the 12th International
+   Conference on Dependable Systems and Their Applications (DSA), IEEE. pp. 111–120. doi:10.1109/DSA66321.2025.00024.
+Chen, Z., Tang, R., Deng, G., Wu, F., Wu, J., Jiang, Z., Prasanna, V., Cohan, A., Wang, X., 2025. LocAgent: Graph-guided LLM agents for code
+   localization, in: Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), Association
+   for Computational Linguistics, Vienna, Austria. pp. 8697–8727. doi:10.18653/v1/2025.acl-long.426.
+Chowdhury, N., Aung, J., Shern, C.J., Jaffe, O., Sherburn, D., Starace, G., Mays, E., Dias, R., Aljubeh, M., Glaese, M., Jimenez, C.E., Yang, J.,
+   Ho, L., Patwardhan, T., Liu, K., Madry, A., 2024. Introducing SWE-bench Verified. OpenAI Blog. URL: https://openai.com/index/
+   introducing-swe-bench-verified/.
+Efron, B., Tibshirani, R.J., 1993. An Introduction to the Bootstrap. Springer US. doi:10.1007/978-1-4899-4541-9.
+Erman, L.D., Hayes-Roth, F., Lesser, V.R., Reddy, D.R., 1980. The Hearsay-II speech-understanding system: Integrating knowledge to resolve
+   uncertainty. ACM Computing Surveys 12, 213–253. doi:10.1145/356810.356816.
+Field, C.A., Welsh, A.H., 2007. Bootstrapping clustered data. Journal of the Royal Statistical Society: Series B (Statistical Methodology) 69,
+   369–390. doi:10.1111/j.1467-9868.2007.00593.x.
+Gomes, C.P., Selman, B., Kautz, H., 1998. Boosting combinatorial search through randomization, in: Proceedings of the 15th National Conference
+   on Artificial Intelligence (AAAI), AAAI Press. pp. 431–437.
+Guo, D., Zhu, Q., Yang, D., Xie, Z., Dong, K., Zhang, W., Chen, G., Bi, X., Wu, Y., Li, Y.K., Luo, F., Xiong, Y., Liang, W., 2024. DeepSeek-Coder:
+   When the large language model meets programming – the rise of code intelligence. arXiv:2401.14196. URL: https://arxiv.org/abs/
+   2401.14196, doi:10.48550/arXiv.2401.14196.
+Hong, K., Troynikov, A., Huber, J., 2025. Context Rot: How Increasing Input Tokens Impacts LLM Performance. Technical Report. Chroma. URL:
+   https://research.trychroma.com/context-rot.
+Hu, M., Chen, T., Chen, Q., Mu, Y., Shao, W., Luo, P., 2025. HiAgent: Hierarchical working memory management for solving long-horizon agent
+   tasks with large language model, in: Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long
+   Papers), Association for Computational Linguistics, Vienna, Austria. pp. 32779–32798. doi:10.18653/v1/2025.acl-long.1575.
+Hui, B., Yang, J., Cui, Z., Yang, J., Liu, D., Zhang, L., Liu, T., Zhang, J., Yu, B., Lu, K., Dang, K., Fan, Y., Zhang, Y., Yang, A., Men, R., Huang,
+   F., Zheng, B., Miao, Y., Quan, S., Feng, Y., Ren, X., Ren, X., Zhou, J., Lin, J., 2024. Qwen2.5-Coder technical report. arXiv:2409.12186. URL:
+   https://arxiv.org/abs/2409.12186, doi:10.48550/arXiv.2409.12186.
+Jiang, H., Wu, Q., Lin, C.Y., Yang, Y., Qiu, L., 2023. LLMLingua: Compressing prompts for accelerated inference of large language models,
+   in: Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP), Association for Computational
+   Linguistics. pp. 13358–13376. doi:10.18653/v1/2023.emnlp-main.825.
+Jiang, Z., Ren, X., Yan, M., Jiang, W., Li, Y., Liu, Z., 2025. Issue localization via LLM-driven iterative code graph searching, in: Proceedings of
+   the 40th IEEE/ACM International Conference on Automated Software Engineering (ASE), IEEE. pp. 3034–3045. doi:10.1109/ASE63991.
+   2025.00249.
+Jimenez, C.E., Yang, J., Wettig, A., Yao, S., Pei, K., Press, O., Narasimhan, K., 2024. SWE-bench: Can language models resolve real-world GitHub
+   issues?, in: Proceedings of the 12th International Conference on Learning Representations (ICLR). URL: https://openreview.net/forum?
+   id=VTF8yNQM66.
+Jones, J.A., Harrold, M.J., 2005. Empirical evaluation of the Tarantula automatic fault-localization technique, in: Proceedings of the 20th IEEE/ACM
+   International Conference on Automated Software Engineering (ASE), ACM. pp. 273–282. doi:10.1145/1101908.1101949.
+Kang, M., Chen, W.N., Han, D., Inan, H.A., Wutschitz, L., Chen, Y., Sim, R., Rajmohan, S., 2026. ACON: Optimizing context compression for
+   long-horizon LLM agents, in: Proceedings of the 43rd International Conference on Machine Learning (ICML). URL: https://arxiv.org/
+   abs/2510.00615. arXiv:2510.00615.
+Kang, S., An, G., Yoo, S., 2024. A quantitative and qualitative evaluation of LLM-based explainable fault localization. Proceedings of the ACM
+   on Software Engineering 1, 1424–1446. doi:10.1145/3660771.
+Kang, S., Chen, B., Yoo, S., Lou, J.G., 2025. Explainable automated debugging via large language model-driven scientific debugging. Empirical
+   Software Engineering 30, 45. doi:10.1007/s10664-024-10594-x.
+Kephart, J.O., Chess, D.M., 2003. The vision of autonomic computing. Computer 36, 41–50. doi:10.1109/MC.2003.1160055.
+de Kleer, J., 1986. An assumption-based TMS. Artificial Intelligence 28, 127–162. doi:10.1016/0004-3702(86)90080-9.
+de Kleer, J., Williams, B.C., 1987. Diagnosing multiple faults. Artificial Intelligence 32, 97–130. doi:10.1016/0004-3702(87)90063-4.
+Laban, P., Hayashi, H., Zhou, Y., Neville, J., 2026. LLMs get lost in multi-turn conversation, in: Proceedings of the 14th International Conference
+   on Learning Representations (ICLR). URL: https://arxiv.org/abs/2505.06120. arXiv:2505.06120.
+Li, Y., Wang, S., Nguyen, T.N., 2021. Fault localization with code coverage representation learning, in: Proceedings of the 43rd IEEE/ACM
+   International Conference on Software Engineering (ICSE), IEEE. pp. 661–673. doi:10.1109/ICSE43902.2021.00067.
+Liang, S., Garg, S., Zilouchian Moghaddam, R., 2026. The SWE-Bench illusion: When state-of-the-art LLMs remember instead of reason, in:
+   Proceedings of the IEEE/ACM 48th International Conference on Software Engineering: Software Engineering in Practice, ACM. pp. 395–405.
+   URL: https://doi.org/10.1145/3786583.3786882, doi:10.1145/3786583.3786882. arXiv:2506.12286.
+Lindenbauer, T., Slinko, I., Felder, L., Bogomolov, E., Zharov, Y., 2025. The complexity trap: Simple observation masking is as efficient as
+   LLM summarization for agent context management, in: Proceedings of the 4th Deep Learning for Code (DL4C) Workshop at NeurIPS. URL:
+   https://arxiv.org/abs/2508.21433. arXiv:2508.21433.
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                                             Page 27 of 29
+                                              Does forgetting help in LLM fault localization?
+
+Liu, B., Lucia, Nejati, S., Briand, L.C., Bruckmann, T., 2016. Simulink fault localization: An iterative statistical debugging approach. Software
+   Testing, Verification and Reliability 26, 431–459. doi:10.1002/stvr.1605.
+Liu, N.F., Lin, K., Hewitt, J., Paranjape, A., Bevilacqua, M., Petroni, F., Liang, P., 2024. Lost in the middle: How language models use long contexts.
+   Transactions of the Association for Computational Linguistics 12, 157–173. doi:10.1162/tacl_a_00638.
+Luo, Z., Guo, J., He, W., Wang, S., Yu, J., Zhao, F., Chen, Y., Cao, T., Liu, L., Zheng, N., Xu, W., Jiang, J., Zhao, Z., 2026. AdaRepair-Mem:
+   Adaptive experience orchestration for repository-level program repair. arXiv:2609.20130. URL: https://arxiv.org/abs/2609.20130,
+   doi:10.48550/arXiv.2609.20130.
+Moreau, L., Missier, P., 2013. PROV-DM: The PROV data model. W3C Recommendation. URL: https://www.w3.org/TR/2013/
+   REC-prov-dm-20130430/. luc Moreau and Paolo Missier, Eds.
+Packer, C., Wooders, S., Lin, K., Fang, V., Patil, S.G., Stoica, I., Gonzalez, J.E., 2024. MemGPT: Towards LLMs as operating systems.
+   arXiv:2310.08560v2. URL: https://arxiv.org/abs/2310.08560v2, doi:10.48550/arXiv.2310.08560.
+Park, J.S., O’Brien, J., Cai, C.J., Morris, M.R., Liang, P., Bernstein, M.S., 2023. Generative agents: Interactive simulacra of human behavior, in:
+   Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology (UIST), ACM. pp. 1–22. doi:10.1145/3586183.
+   3606763.
+Qin, Y., Wang, S., Lou, Y., Dong, J., Wang, K., Li, X., Mao, X., 2025. SoapFL: A standard operating procedure for LLM-based method-level fault
+   localization. IEEE Transactions on Software Engineering 51, 1173–1187. doi:10.1109/TSE.2025.3543187.
+Rafi, M.N., Kim, D.J., Chen, T.H., Wang, S., 2024. A multi-agent approach to fault localization via graph-based retrieval and reflexion.
+   arXiv:2409.13642. URL: https://arxiv.org/abs/2409.13642, doi:10.48550/arXiv.2409.13642.
+Reddy, R.G., Suresh, T., Doo, J., Liu, Y., Nguyen, X.P., Zhou, Y., Yavuz, S., Xiong, C., Ji, H., Joty, S., 2026. SweRank: Software issue
+   localization with code ranking, in: Proceedings of the 14th International Conference on Learning Representations (ICLR). URL: https:
+   //arxiv.org/abs/2505.07849. arXiv:2505.07849.
+Reiter, R., 1987. A theory of diagnosis from first principles. Artificial Intelligence 32, 57–95. doi:10.1016/0004-3702(87)90062-2.
+Robertson, S., Zaragoza, H., 2009. The probabilistic relevance framework: BM25 and beyond. Foundations and Trends in Information Retrieval 3,
+   333–389. doi:10.1561/1500000019.
+Schmidt, D.C., 2006. Guest editor’s introduction: Model-driven engineering. Computer 39, 25–31. doi:10.1109/MC.2006.58.
+Seddik, S., Seddik, F., Esmaeili, A., Sadatbenis, M., Fard, F., 2026. ARISE: A repository-level graph representation and toolset for agentic program
+   repair and fault localization. arXiv:2605.03117v2. URL: https://arxiv.org/abs/2605.03117, doi:10.48550/arXiv.2605.03117.
+Sepidband, M., Taherkhani, H., Pham, H.V., Hemmati, H., 2026. RGFL: Reasoning guided fault localization for automated program repair using
+   large language models. arXiv:2601.18044. URL: https://arxiv.org/abs/2601.18044, doi:10.48550/arXiv.2601.18044.
+Shi, F., Chen, X., Misra, K., Scales, N., Dohan, D., Chi, E.H., Schärli, N., Zhou, D., 2023. Large language models can be easily distracted
+   by irrelevant context, in: Proceedings of the 40th International Conference on Machine Learning (ICML), pp. 31210–31227. URL: https:
+   //proceedings.mlr.press/v202/shi23a.html.
+Shinn, N., Cassano, F., Gopinath, A., Narasimhan, K., Yao, S., 2023. Reflexion: Language agents with verbal reinforcement learning, in: Advances
+   in Neural Information Processing Systems 36 (NeurIPS), pp. 8634–8652. doi:10.52202/075280-0377.
+Tam, Z.R., Wu, C.K., Tsai, Y.L., Lin, C.Y., Lee, H.y., Chen, Y.N., 2024. Let me speak freely? A study on the impact of format restrictions on large
+   language model performance, in: Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing: Industry Track,
+   Association for Computational Linguistics, Miami, FL, USA. pp. 1218–1236. doi:10.18653/v1/2024.emnlp-industry.91.
+Tan, S., Zhou, B., Agrawal, L.A., Zhang, J., Chen, Y., Mang, Q., Lee, D., Jacob, D., Sen, K., Dimakis, A., Zaharia, M., 2026. Scaling discovery
+   requires forgetting. arXiv:2610.20563. URL: https://arxiv.org/abs/2610.20563, doi:10.48550/arXiv.2610.20563.
+Troya, J., Segura, S., Parejo, J.A., Ruiz-Cortés, A., 2018. Spectrum-based fault localization in model transformations. ACM Transactions on
+   Software Engineering and Methodology 27, 13:1–13:50. doi:10.1145/3241744.
+Wang, B., Xu, W., Li, Y., Gao, M., Xie, Y., Sun, H., Chen, D., 2026a. Improving code localization with repository memory, in: Proceedings of the
+   14th International Conference on Learning Representations (ICLR). URL: https://openreview.net/forum?id=8yjWLJy2eX.
+Wang, X., Chen, Y., Yuan, L., Zhang, Y., Li, Y., Peng, H., Ji, H., 2024. Executable code actions elicit better LLM agents, in: Proceedings of the 41st
+   International Conference on Machine Learning (ICML), pp. 50208–50232. URL: https://proceedings.mlr.press/v235/wang24h.html.
+Wang, X., Li, B., Song, Y., Xu, F.F., Tang, X., Zhuge, M., Pan, J., Song, Y., Li, B., Singh, J., Tran, H.H., Li, F., Ma, R., Zheng, M., Qian, B.,
+   Shao, Y., Muennighoff, N., Zhang, Y., Hui, B., Lin, J., Brennan, R., Peng, H., Ji, H., Neubig, G., 2025. OpenHands: An open platform for
+   AI software developers as generalist agents, in: Proceedings of the 13th International Conference on Learning Representations (ICLR). URL:
+   https://arxiv.org/abs/2407.16741. arXiv:2407.16741.
+Wang, Z., Xu, Y., Li, C., Peng, C., Adams, B., Hassan, A.E., Chen, T.H.P., 2026b. Turning interaction history into execution state: A runtime layer
+   for long-horizon coding agents. arXiv:2608.00808. URL: https://arxiv.org/abs/2608.00808, doi:10.48550/arXiv.2608.00808.
+Wong, W.E., Gao, R., Li, Y., Abreu, R., Wotawa, F., 2016. A survey on software fault localization. IEEE Transactions on Software Engineering 42,
+   707–740. doi:10.1109/TSE.2016.2521368.
+Wu, L., Wei, J., Wu, Y., Du, B., Zhao, R., Liu, Y., 2026. SHARE-RAG: A structure-aware and hypothesis-guided retrieval-augmented framework
+   for fault localization in novice programs. Journal of Systems and Software 242, 113057. doi:10.1016/j.jss.2026.113057.
+Wu, Y., Liu, Y., Yin, Y., Zeng, M., Ye, Z., Zhang, X., Xiong, Y., Zhang, L., 2025. SmartFL: Semantics based probabilistic fault localization. IEEE
+   Transactions on Software Engineering 51, 2161–2180. doi:10.1109/TSE.2025.3574487.
+Xia, C.S., Deng, Y., Dunn, S., Zhang, L., 2025. Demystifying LLM-based software engineering agents. Proceedings of the ACM on Software
+   Engineering 2, 801–824. doi:10.1145/3715754.
+Xu, C., Liu, Z., Ren, X., Zhang, G., Liang, M., Lo, D., 2025a. FlexFL: Flexible and effective fault localization with open-source large language
+   models. IEEE Transactions on Software Engineering 51, 1455–1471. doi:10.1109/TSE.2025.3553363.
+Xu, H., Liu, H., Wu, Y., Kang, X., Chen, X., Liu, Y., 2026. Exploring the potential and limitations of large language models for novice program
+   fault localization. Journal of Systems and Software 234, 112731. doi:10.1016/j.jss.2025.112731.
+
+
+Babaei: Preprint submitted to Elsevier                                                                                               Page 28 of 29
+                                             Does forgetting help in LLM fault localization?
+
+Xu, W., Liang, Z., Mei, K., Gao, H., Tan, J., Zhang, Y., 2025b. A-Mem: Agentic memory for LLM agents, in: Advances in Neural Information
+   Processing Systems 38 (NeurIPS). URL: https://arxiv.org/abs/2502.12110. arXiv:2502.12110.
+Yang, A.Z.H., Le Goues, C., Martins, R., Hellendoorn, V.J., 2024a. Large language models for test-free fault localization, in: Proceedings of the
+   46th IEEE/ACM International Conference on Software Engineering (ICSE), ACM. pp. 1–12. doi:10.1145/3597503.3623342.
+Yang, J., Jimenez, C.E., Wettig, A., Lieret, K., Yao, S., Narasimhan, K., Press, O., 2024b. SWE-agent: Agent-computer interfaces enable automated
+   software engineering, in: Advances in Neural Information Processing Systems 37 (NeurIPS), pp. 50528–50652. doi:10.52202/079017-1601.
+Yeo, I., Ryu, D., Baik, J., 2025. Improving LLM-based fault localization with external memory and project context. arXiv:2506.03585. URL:
+   https://arxiv.org/abs/2506.03585, doi:10.48550/arXiv.2506.03585.
+Yu, Z., Zhang, H., Zhao, Y., Huang, H., Yao, M., Ding, K., Zhao, J., 2025. OrcaLoca: An LLM agent framework for software issue localization,
+   in: Proceedings of the 42nd International Conference on Machine Learning (ICML), pp. 73416–73436. URL: https://proceedings.mlr.
+   press/v267/yu25x.html.
+Zeller, A., 2009. Why Programs Fail: A Guide to Systematic Debugging. 2 ed., Morgan Kaufmann, Burlington, MA, USA. URL: https:
+   //www.whyprogramsfail.com/.
+Zhang, Y., Ruan, H., Fan, Z., Roychoudhury, A., 2024. AutoCodeRover: Autonomous program improvement, in: Proceedings of the 33rd ACM
+   SIGSOFT International Symposium on Software Testing and Analysis (ISSTA), ACM. pp. 1592–1604. doi:10.1145/3650212.3680384.
+Zhong, W., Guo, L., Gao, Q., Ye, H., Wang, Y., 2024. MemoryBank: Enhancing large language models with long-term memory, in: Proceedings of
+   the AAAI Conference on Artificial Intelligence, pp. 19724–19731. doi:10.1609/aaai.v38i17.29946.
+Zhou, J., Zhang, H., Lo, D., 2012. Where should the bugs be fixed? more accurate information retrieval-based bug localization based on bug reports,
+   in: Proceedings of the 34th International Conference on Software Engineering (ICSE), IEEE. pp. 14–24. doi:10.1109/ICSE.2012.6227210.
+
+
+
+
+Babaei: Preprint submitted to Elsevier                                                                                            Page 29 of 29
+

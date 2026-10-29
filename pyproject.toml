@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "morph-fl"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Evidence-preserving hypothesis search for fault localization"
+[project.scripts]
+morph-fl = "morph_fl.cli:main"
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+inference = ["torch>=2.4", "transformers>=4.45,<5", "accelerate>=0.34"]
+data = ["datasets>=3", "huggingface_hub>=0.25"]
+analysis = ["matplotlib>=3.8"]
+ollama = ["tokenizers>=0.20", "huggingface_hub>=0.25"]
+local-eval = ["tokenizers>=0.20", "huggingface_hub>=0.25", "pyarrow>=18"]
+dev = ["ruff>=0.8", "build>=1.2", "libcst==1.9.0"]
+baselines = ["libcst==1.9.0", "tokenizers>=0.20", "huggingface_hub>=0.25"]
+
+[tool.setuptools.package-data]
+morph_fl = ["py.typed", "baselines/vendor/*.json", "baselines/vendor/*.LICENSE"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["src/morph_fl/baselines/vendor"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP"]

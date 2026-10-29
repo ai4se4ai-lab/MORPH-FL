@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{Ranking outcomes on all 50 study issues per workflow and model (seed 1). Top-5/10 are percentages; Top-1 cells show exact hits and denominators. Retrieval controls run once per issue and produce no function ranking.}\label{tab:eval-ranking}
+\centering\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llrrrrrr@{}}\toprule
+LLM & Workflow & File Top-1 & Top-5 & Top-10 & File MRR & Fn. Top-1 & Fn. MRR\\\midrule
+Qwen & Full adaptive & 21/50 & 72 & 86 & 0.561 & 8/48 & 0.177\\
+Qwen & Continuous & 21/50 & 74 & 86 & 0.572 & 8/48 & 0.177\\
+Qwen & Fixed reset & 21/50 & 76 & 88 & 0.577 & 7/48 & 0.170\\
+Qwen & Observation-only & 25/50 & 78 & 90 & 0.645 & 11/48 & 0.271\\
+\midrule
+DeepSeek & Full adaptive & 20/50 & 70 & 86 & 0.547 & 0/48 & 0.000\\
+DeepSeek & Continuous & 20/50 & 70 & 86 & 0.547 & 0/48 & 0.000\\
+DeepSeek & Fixed reset & 20/50 & 70 & 86 & 0.547 & 0/48 & 0.000\\
+DeepSeek & Observation-only & 20/50 & 72 & 88 & 0.550 & 6/48 & 0.135\\
+\midrule
+\multicolumn{2}{l}{BM25 (shared)} & 20/50 & 70 & 86 & 0.547 & -- & --\\
+\multicolumn{2}{l}{Graph (shared)} & 20/50 & 70 & 86 & 0.547 & -- & --\\
+\bottomrule\end{tabular*}
+\end{table}

@@ -1,0 +1,763 @@
+\begin{thebibliography}{71}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Inproceedings
+\bibitem[{Abreu et~al.(2007)Abreu, Zoeteweij and van Gemund}]{ochiai2007}
+\bibinfo{author}{Abreu, R.}, \bibinfo{author}{Zoeteweij, P.},
+  \bibinfo{author}{van Gemund, A.J.C.}, \bibinfo{year}{2007}.
+\newblock \bibinfo{title}{On the accuracy of spectrum-based fault
+  localization}, in: \bibinfo{booktitle}{Testing: Academic and Industrial
+  Conference Practice and Research Techniques -- MUTATION (TAICPART-MUTATION)},
+  \bibinfo{publisher}{IEEE}. pp. \bibinfo{pages}{89--98}.
+\newblock \DOIprefix\doi{10.1109/TAIC.PART.2007.13}.
+%Type = Misc
+\bibitem[{Aleithan et~al.(2024)Aleithan, Xue, Mohajer, Nnorom, Uddin and
+  Wang}]{swebenchplus2024}
+\bibinfo{author}{Aleithan, R.}, \bibinfo{author}{Xue, H.},
+  \bibinfo{author}{Mohajer, M.M.}, \bibinfo{author}{Nnorom, E.},
+  \bibinfo{author}{Uddin, G.}, \bibinfo{author}{Wang, S.},
+  \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{SWE-bench+}: Enhanced coding benchmark for {LLMs}}.
+\newblock \bibinfo{howpublished}{arXiv:2410.06992}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2410.06992},
+  \DOIprefix\doi{10.48550/arXiv.2410.06992}.
+%Type = Misc
+\bibitem[{Arora et~al.(2024)Arora, Sonwane, Wadhwa, Mehrotra, Utpala, Bairi,
+  Kanade and Natarajan}]{masai2024}
+\bibinfo{author}{Arora, D.}, \bibinfo{author}{Sonwane, A.},
+  \bibinfo{author}{Wadhwa, N.}, \bibinfo{author}{Mehrotra, A.},
+  \bibinfo{author}{Utpala, S.}, \bibinfo{author}{Bairi, R.},
+  \bibinfo{author}{Kanade, A.}, \bibinfo{author}{Natarajan, N.},
+  \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{MASAI}: Modular architecture for
+  software-engineering {AI} agents}.
+\newblock \bibinfo{howpublished}{arXiv:2406.11638}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2406.11638},
+  \DOIprefix\doi{10.48550/arXiv.2406.11638}.
+%Type = Inproceedings
+\bibitem[{Badertdinov et~al.(2025)Badertdinov, Golubev, Nekrashevich, Shevtsov,
+  Karasik, Andriushchenko, Trofimova, Litvintseva and Yangel}]{swerebench2025}
+\bibinfo{author}{Badertdinov, I.}, \bibinfo{author}{Golubev, A.},
+  \bibinfo{author}{Nekrashevich, M.}, \bibinfo{author}{Shevtsov, A.},
+  \bibinfo{author}{Karasik, S.}, \bibinfo{author}{Andriushchenko, A.},
+  \bibinfo{author}{Trofimova, M.}, \bibinfo{author}{Litvintseva, D.},
+  \bibinfo{author}{Yangel, B.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{SWE-rebench}: An automated pipeline for task
+  collection and decontaminated evaluation of software engineering agents}, in:
+  \bibinfo{booktitle}{Advances in Neural Information Processing Systems 38
+  (NeurIPS), Datasets and Benchmarks Track}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2505.20411}.
+  \bibinfo{note}{arXiv:2505.20411}.
+%Type = Article
+\bibitem[{Blair et~al.(2009)Blair, Bencomo and France}]{modelsruntime2009}
+\bibinfo{author}{Blair, G.}, \bibinfo{author}{Bencomo, N.},
+  \bibinfo{author}{France, R.B.}, \bibinfo{year}{2009}.
+\newblock \bibinfo{title}{Models@run.time}.
+\newblock \bibinfo{journal}{Computer} \bibinfo{volume}{42},
+  \bibinfo{pages}{22--27}.
+\newblock \DOIprefix\doi{10.1109/MC.2009.326}.
+%Type = Inproceedings
+\bibitem[{Bouzenia et~al.(2025)Bouzenia, Devanbu and Pradel}]{repairagent2025}
+\bibinfo{author}{Bouzenia, I.}, \bibinfo{author}{Devanbu, P.},
+  \bibinfo{author}{Pradel, M.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{RepairAgent}: An autonomous, {LLM}-based agent for
+  program repair}, in: \bibinfo{booktitle}{Proceedings of the 47th IEEE/ACM
+  International Conference on Software Engineering (ICSE)},
+  \bibinfo{publisher}{IEEE}. pp. \bibinfo{pages}{2188--2200}.
+\newblock \DOIprefix\doi{10.1109/ICSE55347.2025.00157}.
+%Type = Article
+\bibitem[{Cai et~al.(2025)Cai, Zou, Meng, Xu and Zhang}]{kbl2025}
+\bibinfo{author}{Cai, B.}, \bibinfo{author}{Zou, W.}, \bibinfo{author}{Meng,
+  Q.}, \bibinfo{author}{Xu, H.}, \bibinfo{author}{Zhang, J.},
+  \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{KBL}: A golden keywords-based query reformulation
+  approach for bug localization}.
+\newblock \bibinfo{journal}{Empirical Software Engineering}
+  \bibinfo{volume}{30}, \bibinfo{pages}{135}.
+\newblock \DOIprefix\doi{10.1007/s10664-025-10694-2}.
+%Type = Inproceedings
+\bibitem[{Carbonell and Goldstein(1998)}]{mmr1998}
+\bibinfo{author}{Carbonell, J.}, \bibinfo{author}{Goldstein, J.},
+  \bibinfo{year}{1998}.
+\newblock \bibinfo{title}{The use of {MMR}, diversity-based reranking for
+  reordering documents and producing summaries}, in:
+  \bibinfo{booktitle}{Proceedings of the 21st Annual International ACM SIGIR
+  Conference on Research and Development in Information Retrieval},
+  \bibinfo{publisher}{ACM}. pp. \bibinfo{pages}{335--336}.
+\newblock \DOIprefix\doi{10.1145/290941.291025}.
+%Type = Inproceedings
+\bibitem[{Chang et~al.(2025)Chang, Li and Wong}]{llmflsurvey2025}
+\bibinfo{author}{Chang, X.}, \bibinfo{author}{Li, D.}, \bibinfo{author}{Wong,
+  W.E.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{Large language models for software fault
+  localization: A survey}, in: \bibinfo{booktitle}{Proceedings of the 12th
+  International Conference on Dependable Systems and Their Applications (DSA)},
+  \bibinfo{publisher}{IEEE}. pp. \bibinfo{pages}{111--120}.
+\newblock \DOIprefix\doi{10.1109/DSA66321.2025.00024}.
+%Type = Inproceedings
+\bibitem[{Chen et~al.(2025)Chen, Tang, Deng, Wu, Wu, Jiang, Prasanna, Cohan and
+  Wang}]{locagent2025}
+\bibinfo{author}{Chen, Z.}, \bibinfo{author}{Tang, R.}, \bibinfo{author}{Deng,
+  G.}, \bibinfo{author}{Wu, F.}, \bibinfo{author}{Wu, J.},
+  \bibinfo{author}{Jiang, Z.}, \bibinfo{author}{Prasanna, V.},
+  \bibinfo{author}{Cohan, A.}, \bibinfo{author}{Wang, X.},
+  \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{LocAgent}: Graph-guided {LLM} agents for code
+  localization}, in: \bibinfo{booktitle}{Proceedings of the 63rd Annual Meeting
+  of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  \bibinfo{publisher}{Association for Computational Linguistics},
+  \bibinfo{address}{Vienna, Austria}. pp. \bibinfo{pages}{8697--8727}.
+\newblock \DOIprefix\doi{10.18653/v1/2025.acl-long.426}.
+%Type = Misc
+\bibitem[{Chowdhury et~al.(2024)Chowdhury, Aung, Shern, Jaffe, Sherburn,
+  Starace, Mays, Dias, Aljubeh, Glaese, Jimenez, Yang, Ho, Patwardhan, Liu and
+  Madry}]{swebenchverified2024}
+\bibinfo{author}{Chowdhury, N.}, \bibinfo{author}{Aung, J.},
+  \bibinfo{author}{Shern, C.J.}, \bibinfo{author}{Jaffe, O.},
+  \bibinfo{author}{Sherburn, D.}, \bibinfo{author}{Starace, G.},
+  \bibinfo{author}{Mays, E.}, \bibinfo{author}{Dias, R.},
+  \bibinfo{author}{Aljubeh, M.}, \bibinfo{author}{Glaese, M.},
+  \bibinfo{author}{Jimenez, C.E.}, \bibinfo{author}{Yang, J.},
+  \bibinfo{author}{Ho, L.}, \bibinfo{author}{Patwardhan, T.},
+  \bibinfo{author}{Liu, K.}, \bibinfo{author}{Madry, A.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{Introducing {SWE-bench Verified}}.
+\newblock \bibinfo{howpublished}{OpenAI Blog}.
+\newblock \URLprefix
+  \url{https://openai.com/index/introducing-swe-bench-verified/}.
+%Type = Book
+\bibitem[{Efron and Tibshirani(1993)}]{efron1993}
+\bibinfo{author}{Efron, B.}, \bibinfo{author}{Tibshirani, R.J.},
+  \bibinfo{year}{1993}.
+\newblock \bibinfo{title}{An Introduction to the Bootstrap}.
+\newblock \bibinfo{publisher}{Springer US}.
+\newblock \DOIprefix\doi{10.1007/978-1-4899-4541-9}.
+%Type = Article
+\bibitem[{Erman et~al.(1980)Erman, Hayes-Roth, Lesser and Reddy}]{hearsay1980}
+\bibinfo{author}{Erman, L.D.}, \bibinfo{author}{Hayes-Roth, F.},
+  \bibinfo{author}{Lesser, V.R.}, \bibinfo{author}{Reddy, D.R.},
+  \bibinfo{year}{1980}.
+\newblock \bibinfo{title}{The {Hearsay-II} speech-understanding system:
+  Integrating knowledge to resolve uncertainty}.
+\newblock \bibinfo{journal}{ACM Computing Surveys} \bibinfo{volume}{12},
+  \bibinfo{pages}{213--253}.
+\newblock \DOIprefix\doi{10.1145/356810.356816}.
+%Type = Article
+\bibitem[{Field and Welsh(2007)}]{clusterbootstrap2007}
+\bibinfo{author}{Field, C.A.}, \bibinfo{author}{Welsh, A.H.},
+  \bibinfo{year}{2007}.
+\newblock \bibinfo{title}{Bootstrapping clustered data}.
+\newblock \bibinfo{journal}{Journal of the Royal Statistical Society: Series B
+  (Statistical Methodology)} \bibinfo{volume}{69}, \bibinfo{pages}{369--390}.
+\newblock \DOIprefix\doi{10.1111/j.1467-9868.2007.00593.x}.
+%Type = Inproceedings
+\bibitem[{Gomes et~al.(1998)Gomes, Selman and Kautz}]{restarts1998}
+\bibinfo{author}{Gomes, C.P.}, \bibinfo{author}{Selman, B.},
+  \bibinfo{author}{Kautz, H.}, \bibinfo{year}{1998}.
+\newblock \bibinfo{title}{Boosting combinatorial search through randomization},
+  in: \bibinfo{booktitle}{Proceedings of the 15th National Conference on
+  Artificial Intelligence ({AAAI})}, \bibinfo{publisher}{AAAI Press}. pp.
+  \bibinfo{pages}{431--437}.
+%Type = Misc
+\bibitem[{Guo et~al.(2024)Guo, Zhu, Yang, Xie, Dong, Zhang, Chen, Bi, Wu, Li,
+  Luo, Xiong and Liang}]{deepseekcoder2024}
+\bibinfo{author}{Guo, D.}, \bibinfo{author}{Zhu, Q.}, \bibinfo{author}{Yang,
+  D.}, \bibinfo{author}{Xie, Z.}, \bibinfo{author}{Dong, K.},
+  \bibinfo{author}{Zhang, W.}, \bibinfo{author}{Chen, G.}, \bibinfo{author}{Bi,
+  X.}, \bibinfo{author}{Wu, Y.}, \bibinfo{author}{Li, Y.K.},
+  \bibinfo{author}{Luo, F.}, \bibinfo{author}{Xiong, Y.},
+  \bibinfo{author}{Liang, W.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{DeepSeek-Coder}: When the large language model meets
+  programming -- the rise of code intelligence}.
+\newblock \bibinfo{howpublished}{arXiv:2401.14196}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2401.14196},
+  \DOIprefix\doi{10.48550/arXiv.2401.14196}.
+%Type = Techreport
+\bibitem[{Hong et~al.(2025)Hong, Troynikov and Huber}]{contextrot2025}
+\bibinfo{author}{Hong, K.}, \bibinfo{author}{Troynikov, A.},
+  \bibinfo{author}{Huber, J.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{Context Rot: How Increasing Input Tokens Impacts
+  {LLM} Performance}.
+\newblock \bibinfo{type}{Technical Report}. Chroma.
+\newblock \URLprefix \url{https://research.trychroma.com/context-rot}.
+%Type = Inproceedings
+\bibitem[{Hu et~al.(2025)Hu, Chen, Chen, Mu, Shao and Luo}]{hiagent2025}
+\bibinfo{author}{Hu, M.}, \bibinfo{author}{Chen, T.}, \bibinfo{author}{Chen,
+  Q.}, \bibinfo{author}{Mu, Y.}, \bibinfo{author}{Shao, W.},
+  \bibinfo{author}{Luo, P.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{HiAgent}: Hierarchical working memory management for
+  solving long-horizon agent tasks with large language model}, in:
+  \bibinfo{booktitle}{Proceedings of the 63rd Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers)},
+  \bibinfo{publisher}{Association for Computational Linguistics},
+  \bibinfo{address}{Vienna, Austria}. pp. \bibinfo{pages}{32779--32798}.
+\newblock \DOIprefix\doi{10.18653/v1/2025.acl-long.1575}.
+%Type = Misc
+\bibitem[{Hui et~al.(2024)Hui, Yang, Cui, Yang, Liu, Zhang, Liu, Zhang, Yu, Lu,
+  Dang, Fan, Zhang, Yang, Men, Huang, Zheng, Miao, Quan, Feng, Ren, Ren, Zhou
+  and Lin}]{qwen25coder2024}
+\bibinfo{author}{Hui, B.}, \bibinfo{author}{Yang, J.}, \bibinfo{author}{Cui,
+  Z.}, \bibinfo{author}{Yang, J.}, \bibinfo{author}{Liu, D.},
+  \bibinfo{author}{Zhang, L.}, \bibinfo{author}{Liu, T.},
+  \bibinfo{author}{Zhang, J.}, \bibinfo{author}{Yu, B.}, \bibinfo{author}{Lu,
+  K.}, \bibinfo{author}{Dang, K.}, \bibinfo{author}{Fan, Y.},
+  \bibinfo{author}{Zhang, Y.}, \bibinfo{author}{Yang, A.},
+  \bibinfo{author}{Men, R.}, \bibinfo{author}{Huang, F.},
+  \bibinfo{author}{Zheng, B.}, \bibinfo{author}{Miao, Y.},
+  \bibinfo{author}{Quan, S.}, \bibinfo{author}{Feng, Y.}, \bibinfo{author}{Ren,
+  X.}, \bibinfo{author}{Ren, X.}, \bibinfo{author}{Zhou, J.},
+  \bibinfo{author}{Lin, J.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{Qwen2.5-Coder} technical report}.
+\newblock \bibinfo{howpublished}{arXiv:2409.12186}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2409.12186},
+  \DOIprefix\doi{10.48550/arXiv.2409.12186}.
+%Type = Inproceedings
+\bibitem[{Jiang et~al.(2023)Jiang, Wu, Lin, Yang and Qiu}]{llmlingua2023}
+\bibinfo{author}{Jiang, H.}, \bibinfo{author}{Wu, Q.}, \bibinfo{author}{Lin,
+  C.Y.}, \bibinfo{author}{Yang, Y.}, \bibinfo{author}{Qiu, L.},
+  \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{{LLMLingua}: Compressing prompts for accelerated
+  inference of large language models}, in: \bibinfo{booktitle}{Proceedings of
+  the 2023 Conference on Empirical Methods in Natural Language Processing
+  (EMNLP)}, \bibinfo{publisher}{Association for Computational Linguistics}. pp.
+  \bibinfo{pages}{13358--13376}.
+\newblock \DOIprefix\doi{10.18653/v1/2023.emnlp-main.825}.
+%Type = Inproceedings
+\bibitem[{Jiang et~al.(2025)Jiang, Ren, Yan, Jiang, Li and Liu}]{cosil2025}
+\bibinfo{author}{Jiang, Z.}, \bibinfo{author}{Ren, X.}, \bibinfo{author}{Yan,
+  M.}, \bibinfo{author}{Jiang, W.}, \bibinfo{author}{Li, Y.},
+  \bibinfo{author}{Liu, Z.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{Issue localization via {LLM}-driven iterative code
+  graph searching}, in: \bibinfo{booktitle}{Proceedings of the 40th IEEE/ACM
+  International Conference on Automated Software Engineering (ASE)},
+  \bibinfo{publisher}{IEEE}. pp. \bibinfo{pages}{3034--3045}.
+\newblock \DOIprefix\doi{10.1109/ASE63991.2025.00249}.
+%Type = Inproceedings
+\bibitem[{Jimenez et~al.(2024)Jimenez, Yang, Wettig, Yao, Pei, Press and
+  Narasimhan}]{swebench2024}
+\bibinfo{author}{Jimenez, C.E.}, \bibinfo{author}{Yang, J.},
+  \bibinfo{author}{Wettig, A.}, \bibinfo{author}{Yao, S.},
+  \bibinfo{author}{Pei, K.}, \bibinfo{author}{Press, O.},
+  \bibinfo{author}{Narasimhan, K.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{Swe-bench: Can language models resolve real-world
+  github issues?}, in: \bibinfo{booktitle}{International Conference on Learning
+  Representations}, pp. \bibinfo{pages}{54107--54157}.
+%Type = Inproceedings
+\bibitem[{Jones and Harrold(2005)}]{tarantula2005}
+\bibinfo{author}{Jones, J.A.}, \bibinfo{author}{Harrold, M.J.},
+  \bibinfo{year}{2005}.
+\newblock \bibinfo{title}{Empirical evaluation of the {Tarantula} automatic
+  fault-localization technique}, in: \bibinfo{booktitle}{Proceedings of the
+  20th IEEE/ACM International Conference on Automated Software Engineering
+  (ASE)}, \bibinfo{publisher}{ACM}. pp. \bibinfo{pages}{273--282}.
+\newblock \DOIprefix\doi{10.1145/1101908.1101949}.
+%Type = Inproceedings
+\bibitem[{Kang et~al.(2026)Kang, Chen, Han, Inan, Wutschitz, Chen, Sim and
+  Rajmohan}]{acon2026}
+\bibinfo{author}{Kang, M.}, \bibinfo{author}{Chen, W.N.}, \bibinfo{author}{Han,
+  D.}, \bibinfo{author}{Inan, H.A.}, \bibinfo{author}{Wutschitz, L.},
+  \bibinfo{author}{Chen, Y.}, \bibinfo{author}{Sim, R.},
+  \bibinfo{author}{Rajmohan, S.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{ACON}: Optimizing context compression for
+  long-horizon {LLM} agents}, in: \bibinfo{booktitle}{Proceedings of the 43rd
+  International Conference on Machine Learning (ICML)}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2510.00615}.
+  \bibinfo{note}{arXiv:2510.00615}.
+%Type = Article
+\bibitem[{Kang et~al.(2024)Kang, An and Yoo}]{autofl2024}
+\bibinfo{author}{Kang, S.}, \bibinfo{author}{An, G.}, \bibinfo{author}{Yoo,
+  S.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{A quantitative and qualitative evaluation of
+  {LLM}-based explainable fault localization}.
+\newblock \bibinfo{journal}{Proceedings of the ACM on Software Engineering}
+  \bibinfo{volume}{1}, \bibinfo{pages}{1424--1446}.
+\newblock \DOIprefix\doi{10.1145/3660771}.
+%Type = Article
+\bibitem[{Kang et~al.(2025)Kang, Chen, Yoo and Lou}]{autosd2023}
+\bibinfo{author}{Kang, S.}, \bibinfo{author}{Chen, B.}, \bibinfo{author}{Yoo,
+  S.}, \bibinfo{author}{Lou, J.G.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{Explainable automated debugging via large language
+  model-driven scientific debugging}.
+\newblock \bibinfo{journal}{Empirical Software Engineering}
+  \bibinfo{volume}{30}, \bibinfo{pages}{45}.
+\newblock \DOIprefix\doi{10.1007/s10664-024-10594-x}.
+%Type = Article
+\bibitem[{Kephart and Chess(2003)}]{mapek2003}
+\bibinfo{author}{Kephart, J.O.}, \bibinfo{author}{Chess, D.M.},
+  \bibinfo{year}{2003}.
+\newblock \bibinfo{title}{The vision of autonomic computing}.
+\newblock \bibinfo{journal}{Computer} \bibinfo{volume}{36},
+  \bibinfo{pages}{41--50}.
+\newblock \DOIprefix\doi{10.1109/MC.2003.1160055}.
+%Type = Article
+\bibitem[{de~Kleer(1986)}]{atms1986}
+\bibinfo{author}{de~Kleer, J.}, \bibinfo{year}{1986}.
+\newblock \bibinfo{title}{An assumption-based {TMS}}.
+\newblock \bibinfo{journal}{Artificial Intelligence} \bibinfo{volume}{28},
+  \bibinfo{pages}{127--162}.
+\newblock \DOIprefix\doi{10.1016/0004-3702(86)90080-9}.
+%Type = Article
+\bibitem[{de~Kleer and Williams(1987)}]{gde1987}
+\bibinfo{author}{de~Kleer, J.}, \bibinfo{author}{Williams, B.C.},
+  \bibinfo{year}{1987}.
+\newblock \bibinfo{title}{Diagnosing multiple faults}.
+\newblock \bibinfo{journal}{Artificial Intelligence} \bibinfo{volume}{32},
+  \bibinfo{pages}{97--130}.
+\newblock \DOIprefix\doi{10.1016/0004-3702(87)90063-4}.
+%Type = Inproceedings
+\bibitem[{Laban et~al.(2026)Laban, Hayashi, Zhou and Neville}]{multiturn2025}
+\bibinfo{author}{Laban, P.}, \bibinfo{author}{Hayashi, H.},
+  \bibinfo{author}{Zhou, Y.}, \bibinfo{author}{Neville, J.},
+  \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{LLMs} get lost in multi-turn conversation}, in:
+  \bibinfo{booktitle}{Proceedings of the 14th International Conference on
+  Learning Representations (ICLR)}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2505.06120}.
+  \bibinfo{note}{arXiv:2505.06120}.
+%Type = Inproceedings
+\bibitem[{Li et~al.(2021)Li, Wang and Nguyen}]{deeprl4fl2021}
+\bibinfo{author}{Li, Y.}, \bibinfo{author}{Wang, S.}, \bibinfo{author}{Nguyen,
+  T.N.}, \bibinfo{year}{2021}.
+\newblock \bibinfo{title}{Fault localization with code coverage representation
+  learning}, in: \bibinfo{booktitle}{Proceedings of the 43rd IEEE/ACM
+  International Conference on Software Engineering (ICSE)},
+  \bibinfo{publisher}{IEEE}. pp. \bibinfo{pages}{661--673}.
+\newblock \DOIprefix\doi{10.1109/ICSE43902.2021.00067}.
+%Type = Inproceedings
+\bibitem[{Liang et~al.(2026)Liang, Garg and
+  Zilouchian~Moghaddam}]{swebenchillusion2025}
+\bibinfo{author}{Liang, S.}, \bibinfo{author}{Garg, S.},
+  \bibinfo{author}{Zilouchian~Moghaddam, R.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{The {SWE-Bench} illusion: When state-of-the-art
+  {LLMs} remember instead of reason}, in: \bibinfo{booktitle}{Proceedings of
+  the IEEE/ACM 48th International Conference on Software Engineering: Software
+  Engineering in Practice}, \bibinfo{publisher}{ACM}. pp.
+  \bibinfo{pages}{395--405}.
+\newblock \URLprefix \url{https://doi.org/10.1145/3786583.3786882},
+  \DOIprefix\doi{10.1145/3786583.3786882}. \bibinfo{note}{arXiv:2506.12286}.
+%Type = Inproceedings
+\bibitem[{Lindenbauer et~al.(2025)Lindenbauer, Slinko, Felder, Bogomolov and
+  Zharov}]{complexitytrap2025}
+\bibinfo{author}{Lindenbauer, T.}, \bibinfo{author}{Slinko, I.},
+  \bibinfo{author}{Felder, L.}, \bibinfo{author}{Bogomolov, E.},
+  \bibinfo{author}{Zharov, Y.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{The complexity trap: Simple observation masking is as
+  efficient as {LLM} summarization for agent context management}, in:
+  \bibinfo{booktitle}{Proceedings of the 4th Deep Learning for Code (DL4C)
+  Workshop at NeurIPS}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2508.21433}.
+  \bibinfo{note}{arXiv:2508.21433}.
+%Type = Article
+\bibitem[{Liu et~al.(2016)Liu, {Lucia}, Nejati, Briand and
+  Bruckmann}]{simfl2016}
+\bibinfo{author}{Liu, B.}, \bibinfo{author}{{Lucia}}, \bibinfo{author}{Nejati,
+  S.}, \bibinfo{author}{Briand, L.C.}, \bibinfo{author}{Bruckmann, T.},
+  \bibinfo{year}{2016}.
+\newblock \bibinfo{title}{{Simulink} fault localization: An iterative
+  statistical debugging approach}.
+\newblock \bibinfo{journal}{Software Testing, Verification and Reliability}
+  \bibinfo{volume}{26}, \bibinfo{pages}{431--459}.
+\newblock \DOIprefix\doi{10.1002/stvr.1605}.
+%Type = Article
+\bibitem[{Liu et~al.(2024)Liu, Lin, Hewitt, Paranjape, Bevilacqua, Petroni and
+  Liang}]{lostmiddle2024}
+\bibinfo{author}{Liu, N.F.}, \bibinfo{author}{Lin, K.},
+  \bibinfo{author}{Hewitt, J.}, \bibinfo{author}{Paranjape, A.},
+  \bibinfo{author}{Bevilacqua, M.}, \bibinfo{author}{Petroni, F.},
+  \bibinfo{author}{Liang, P.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{Lost in the middle: How language models use long
+  contexts}.
+\newblock \bibinfo{journal}{Transactions of the Association for Computational
+  Linguistics} \bibinfo{volume}{12}, \bibinfo{pages}{157--173}.
+\newblock \DOIprefix\doi{10.1162/tacl_a_00638}.
+%Type = Misc
+\bibitem[{Luo et~al.(2026)Luo, Guo, He, Wang, Yu, Zhao, Chen, Cao, Liu, Zheng,
+  Xu, Jiang and Zhao}]{adarepair2026}
+\bibinfo{author}{Luo, Z.}, \bibinfo{author}{Guo, J.}, \bibinfo{author}{He, W.},
+  \bibinfo{author}{Wang, S.}, \bibinfo{author}{Yu, J.}, \bibinfo{author}{Zhao,
+  F.}, \bibinfo{author}{Chen, Y.}, \bibinfo{author}{Cao, T.},
+  \bibinfo{author}{Liu, L.}, \bibinfo{author}{Zheng, N.}, \bibinfo{author}{Xu,
+  W.}, \bibinfo{author}{Jiang, J.}, \bibinfo{author}{Zhao, Z.},
+  \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{AdaRepair-Mem}: Adaptive experience orchestration
+  for repository-level program repair}.
+\newblock \bibinfo{howpublished}{arXiv:2609.20130}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2609.20130},
+  \DOIprefix\doi{10.48550/arXiv.2609.20130}.
+%Type = Misc
+\bibitem[{Moreau and Missier(2013)}]{prov2013}
+\bibinfo{author}{Moreau, L.}, \bibinfo{author}{Missier, P.},
+  \bibinfo{year}{2013}.
+\newblock \bibinfo{title}{{PROV-DM}: The {PROV} data model}.
+\newblock \bibinfo{howpublished}{W3C Recommendation}.
+\newblock \URLprefix \url{https://www.w3.org/TR/2013/REC-prov-dm-20130430/}.
+  \bibinfo{note}{luc Moreau and Paolo Missier, Eds.}
+%Type = Misc
+\bibitem[{Packer et~al.(2024)Packer, Wooders, Lin, Fang, Patil, Stoica and
+  Gonzalez}]{memgpt2024}
+\bibinfo{author}{Packer, C.}, \bibinfo{author}{Wooders, S.},
+  \bibinfo{author}{Lin, K.}, \bibinfo{author}{Fang, V.},
+  \bibinfo{author}{Patil, S.G.}, \bibinfo{author}{Stoica, I.},
+  \bibinfo{author}{Gonzalez, J.E.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{MemGPT}: Towards {LLMs} as operating systems}.
+\newblock \bibinfo{howpublished}{arXiv:2310.08560v2}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2310.08560v2},
+  \DOIprefix\doi{10.48550/arXiv.2310.08560}.
+%Type = Inproceedings
+\bibitem[{Park et~al.(2023)Park, O'Brien, Cai, Morris, Liang and
+  Bernstein}]{generativeagents2023}
+\bibinfo{author}{Park, J.S.}, \bibinfo{author}{O'Brien, J.},
+  \bibinfo{author}{Cai, C.J.}, \bibinfo{author}{Morris, M.R.},
+  \bibinfo{author}{Liang, P.}, \bibinfo{author}{Bernstein, M.S.},
+  \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{Generative agents: Interactive simulacra of human
+  behavior}, in: \bibinfo{booktitle}{Proceedings of the 36th Annual ACM
+  Symposium on User Interface Software and Technology (UIST)},
+  \bibinfo{publisher}{ACM}. pp. \bibinfo{pages}{1--22}.
+\newblock \DOIprefix\doi{10.1145/3586183.3606763}.
+%Type = Article
+\bibitem[{Qin et~al.(2025)Qin, Wang, Lou, Dong, Wang, Li and Mao}]{soapfl2025}
+\bibinfo{author}{Qin, Y.}, \bibinfo{author}{Wang, S.}, \bibinfo{author}{Lou,
+  Y.}, \bibinfo{author}{Dong, J.}, \bibinfo{author}{Wang, K.},
+  \bibinfo{author}{Li, X.}, \bibinfo{author}{Mao, X.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{SoapFL}: A standard operating procedure for
+  {LLM}-based method-level fault localization}.
+\newblock \bibinfo{journal}{IEEE Transactions on Software Engineering}
+  \bibinfo{volume}{51}, \bibinfo{pages}{1173--1187}.
+\newblock \DOIprefix\doi{10.1109/TSE.2025.3543187}.
+%Type = Misc
+\bibitem[{Rafi et~al.(2024)Rafi, Kim, Chen and Wang}]{llm4fl2024}
+\bibinfo{author}{Rafi, M.N.}, \bibinfo{author}{Kim, D.J.},
+  \bibinfo{author}{Chen, T.H.}, \bibinfo{author}{Wang, S.},
+  \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{A multi-agent approach to fault localization via
+  graph-based retrieval and reflexion}.
+\newblock \bibinfo{howpublished}{arXiv:2409.13642}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2409.13642},
+  \DOIprefix\doi{10.48550/arXiv.2409.13642}.
+%Type = Inproceedings
+\bibitem[{Reddy et~al.(2026)Reddy, Suresh, Doo, Liu, Nguyen, Zhou, Yavuz,
+  Xiong, Ji and Joty}]{swerank2026}
+\bibinfo{author}{Reddy, R.G.}, \bibinfo{author}{Suresh, T.},
+  \bibinfo{author}{Doo, J.}, \bibinfo{author}{Liu, Y.},
+  \bibinfo{author}{Nguyen, X.P.}, \bibinfo{author}{Zhou, Y.},
+  \bibinfo{author}{Yavuz, S.}, \bibinfo{author}{Xiong, C.},
+  \bibinfo{author}{Ji, H.}, \bibinfo{author}{Joty, S.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{SweRank}: Software issue localization with code
+  ranking}, in: \bibinfo{booktitle}{Proceedings of the 14th International
+  Conference on Learning Representations (ICLR)}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2505.07849}.
+  \bibinfo{note}{arXiv:2505.07849}.
+%Type = Article
+\bibitem[{Reiter(1987)}]{reiter1987}
+\bibinfo{author}{Reiter, R.}, \bibinfo{year}{1987}.
+\newblock \bibinfo{title}{A theory of diagnosis from first principles}.
+\newblock \bibinfo{journal}{Artificial Intelligence} \bibinfo{volume}{32},
+  \bibinfo{pages}{57--95}.
+\newblock \DOIprefix\doi{10.1016/0004-3702(87)90062-2}.
+%Type = Article
+\bibitem[{Robertson and Zaragoza(2009)}]{bm25_2009}
+\bibinfo{author}{Robertson, S.}, \bibinfo{author}{Zaragoza, H.},
+  \bibinfo{year}{2009}.
+\newblock \bibinfo{title}{The probabilistic relevance framework: Bm25 and
+  beyond}.
+\newblock \bibinfo{journal}{Foundations and trends{\textregistered} in
+  information retrieval} \bibinfo{volume}{4}, \bibinfo{pages}{1--174}.
+%Type = Article
+\bibitem[{Schmidt(2006)}]{mde2006}
+\bibinfo{author}{Schmidt, D.C.}, \bibinfo{year}{2006}.
+\newblock \bibinfo{title}{Guest editor's introduction: Model-driven
+  engineering}.
+\newblock \bibinfo{journal}{Computer} \bibinfo{volume}{39},
+  \bibinfo{pages}{25--31}.
+\newblock \DOIprefix\doi{10.1109/MC.2006.58}.
+%Type = Misc
+\bibitem[{Seddik et~al.(2026)Seddik, Seddik, Esmaeili, Sadatbenis and
+  Fard}]{arise2026}
+\bibinfo{author}{Seddik, S.}, \bibinfo{author}{Seddik, F.},
+  \bibinfo{author}{Esmaeili, A.}, \bibinfo{author}{Sadatbenis, M.},
+  \bibinfo{author}{Fard, F.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{ARISE}: A repository-level graph representation and
+  toolset for agentic program repair and fault localization}.
+\newblock \bibinfo{howpublished}{arXiv:2605.03117v2}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2605.03117},
+  \DOIprefix\doi{10.48550/arXiv.2605.03117}.
+%Type = Misc
+\bibitem[{Sepidband et~al.(2026)Sepidband, Taherkhani, Pham and
+  Hemmati}]{rgfl2026}
+\bibinfo{author}{Sepidband, M.}, \bibinfo{author}{Taherkhani, H.},
+  \bibinfo{author}{Pham, H.V.}, \bibinfo{author}{Hemmati, H.},
+  \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{RGFL}: Reasoning guided fault localization for
+  automated program repair using large language models}.
+\newblock \bibinfo{howpublished}{arXiv:2601.18044}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2601.18044},
+  \DOIprefix\doi{10.48550/arXiv.2601.18044}.
+%Type = Inproceedings
+\bibitem[{Shi et~al.(2023)Shi, Chen, Misra, Scales, Dohan, Chi, Sch{\"a}rli and
+  Zhou}]{distract2023}
+\bibinfo{author}{Shi, F.}, \bibinfo{author}{Chen, X.}, \bibinfo{author}{Misra,
+  K.}, \bibinfo{author}{Scales, N.}, \bibinfo{author}{Dohan, D.},
+  \bibinfo{author}{Chi, E.H.}, \bibinfo{author}{Sch{\"a}rli, N.},
+  \bibinfo{author}{Zhou, D.}, \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{Large language models can be easily distracted by
+  irrelevant context}, in: \bibinfo{booktitle}{Proceedings of the 40th
+  International Conference on Machine Learning (ICML)}, pp.
+  \bibinfo{pages}{31210--31227}.
+\newblock \URLprefix \url{https://proceedings.mlr.press/v202/shi23a.html}.
+%Type = Inproceedings
+\bibitem[{Shinn et~al.(2023)Shinn, Cassano, Gopinath, Narasimhan and
+  Yao}]{reflexion2023}
+\bibinfo{author}{Shinn, N.}, \bibinfo{author}{Cassano, F.},
+  \bibinfo{author}{Gopinath, A.}, \bibinfo{author}{Narasimhan, K.},
+  \bibinfo{author}{Yao, S.}, \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{Reflexion: Language agents with verbal reinforcement
+  learning}, in: \bibinfo{booktitle}{Advances in Neural Information Processing
+  Systems 36 (NeurIPS)}, pp. \bibinfo{pages}{8634--8652}.
+\newblock \DOIprefix\doi{10.52202/075280-0377}.
+%Type = Inproceedings
+\bibitem[{Tam et~al.(2024)Tam, Wu, Tsai, Lin, Lee and
+  Chen}]{formatrestrict2024}
+\bibinfo{author}{Tam, Z.R.}, \bibinfo{author}{Wu, C.K.}, \bibinfo{author}{Tsai,
+  Y.L.}, \bibinfo{author}{Lin, C.Y.}, \bibinfo{author}{Lee, H.y.},
+  \bibinfo{author}{Chen, Y.N.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{Let me speak freely? {A} study on the impact of
+  format restrictions on large language model performance}, in:
+  \bibinfo{booktitle}{Proceedings of the 2024 Conference on Empirical Methods
+  in Natural Language Processing: Industry Track},
+  \bibinfo{publisher}{Association for Computational Linguistics},
+  \bibinfo{address}{Miami, FL, USA}. pp. \bibinfo{pages}{1218--1236}.
+\newblock \DOIprefix\doi{10.18653/v1/2024.emnlp-industry.91}.
+%Type = Misc
+\bibitem[{Tan et~al.(2026)Tan, Zhou, Agrawal, Zhang, Chen, Mang, Lee, Jacob,
+  Sen, Dimakis and Zaharia}]{forgetting2026}
+\bibinfo{author}{Tan, S.}, \bibinfo{author}{Zhou, B.},
+  \bibinfo{author}{Agrawal, L.A.}, \bibinfo{author}{Zhang, J.},
+  \bibinfo{author}{Chen, Y.}, \bibinfo{author}{Mang, Q.}, \bibinfo{author}{Lee,
+  D.}, \bibinfo{author}{Jacob, D.}, \bibinfo{author}{Sen, K.},
+  \bibinfo{author}{Dimakis, A.}, \bibinfo{author}{Zaharia, M.},
+  \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{Scaling discovery requires forgetting}.
+\newblock \bibinfo{howpublished}{arXiv:2610.20563}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2610.20563},
+  \DOIprefix\doi{10.48550/arXiv.2610.20563}.
+%Type = Article
+\bibitem[{Troya et~al.(2018)Troya, Segura, Parejo and
+  Ruiz-Cort{\'e}s}]{mtspectrum2018}
+\bibinfo{author}{Troya, J.}, \bibinfo{author}{Segura, S.},
+  \bibinfo{author}{Parejo, J.A.}, \bibinfo{author}{Ruiz-Cort{\'e}s, A.},
+  \bibinfo{year}{2018}.
+\newblock \bibinfo{title}{Spectrum-based fault localization in model
+  transformations}.
+\newblock \bibinfo{journal}{ACM Transactions on Software Engineering and
+  Methodology} \bibinfo{volume}{27}, \bibinfo{pages}{13:1--13:50}.
+\newblock \DOIprefix\doi{10.1145/3241744}.
+%Type = Inproceedings
+\bibitem[{Wang et~al.(2026a)Wang, Xu, Li, Gao, Xie, Sun and Chen}]{repomem2026}
+\bibinfo{author}{Wang, B.}, \bibinfo{author}{Xu, W.}, \bibinfo{author}{Li, Y.},
+  \bibinfo{author}{Gao, M.}, \bibinfo{author}{Xie, Y.}, \bibinfo{author}{Sun,
+  H.}, \bibinfo{author}{Chen, D.}, \bibinfo{year}{2026}a.
+\newblock \bibinfo{title}{Improving code localization with repository memory},
+  in: \bibinfo{booktitle}{Proceedings of the 14th International Conference on
+  Learning Representations (ICLR)}.
+\newblock \URLprefix \url{https://openreview.net/forum?id=8yjWLJy2eX}.
+%Type = Inproceedings
+\bibitem[{Wang et~al.(2024)Wang, Chen, Yuan, Zhang, Li, Peng and
+  Ji}]{codeact2024}
+\bibinfo{author}{Wang, X.}, \bibinfo{author}{Chen, Y.}, \bibinfo{author}{Yuan,
+  L.}, \bibinfo{author}{Zhang, Y.}, \bibinfo{author}{Li, Y.},
+  \bibinfo{author}{Peng, H.}, \bibinfo{author}{Ji, H.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{Executable code actions elicit better {LLM} agents},
+  in: \bibinfo{booktitle}{Proceedings of the 41st International Conference on
+  Machine Learning (ICML)}, pp. \bibinfo{pages}{50208--50232}.
+\newblock \URLprefix \url{https://proceedings.mlr.press/v235/wang24h.html}.
+%Type = Inproceedings
+\bibitem[{Wang et~al.(2025)Wang, Li, Song, Xu, Tang, Zhuge, Pan, Song, Li,
+  Singh, Tran, Li, Ma, Zheng, Qian, Shao, Muennighoff, Zhang, Hui, Lin,
+  Brennan, Peng, Ji and Neubig}]{openhands2025}
+\bibinfo{author}{Wang, X.}, \bibinfo{author}{Li, B.}, \bibinfo{author}{Song,
+  Y.}, \bibinfo{author}{Xu, F.F.}, \bibinfo{author}{Tang, X.},
+  \bibinfo{author}{Zhuge, M.}, \bibinfo{author}{Pan, J.},
+  \bibinfo{author}{Song, Y.}, \bibinfo{author}{Li, B.}, \bibinfo{author}{Singh,
+  J.}, \bibinfo{author}{Tran, H.H.}, \bibinfo{author}{Li, F.},
+  \bibinfo{author}{Ma, R.}, \bibinfo{author}{Zheng, M.}, \bibinfo{author}{Qian,
+  B.}, \bibinfo{author}{Shao, Y.}, \bibinfo{author}{Muennighoff, N.},
+  \bibinfo{author}{Zhang, Y.}, \bibinfo{author}{Hui, B.}, \bibinfo{author}{Lin,
+  J.}, \bibinfo{author}{Brennan, R.}, \bibinfo{author}{Peng, H.},
+  \bibinfo{author}{Ji, H.}, \bibinfo{author}{Neubig, G.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{OpenHands}: An open platform for {AI} software
+  developers as generalist agents}, in: \bibinfo{booktitle}{Proceedings of the
+  13th International Conference on Learning Representations (ICLR)}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2407.16741}.
+  \bibinfo{note}{arXiv:2407.16741}.
+%Type = Misc
+\bibitem[{Wang et~al.(2026b)Wang, Xu, Li, Peng, Adams, Hassan and
+  Chen}]{ledger2026}
+\bibinfo{author}{Wang, Z.}, \bibinfo{author}{Xu, Y.}, \bibinfo{author}{Li, C.},
+  \bibinfo{author}{Peng, C.}, \bibinfo{author}{Adams, B.},
+  \bibinfo{author}{Hassan, A.E.}, \bibinfo{author}{Chen, T.H.P.},
+  \bibinfo{year}{2026}b.
+\newblock \bibinfo{title}{Turning interaction history into execution state: A
+  runtime layer for long-horizon coding agents}.
+\newblock \bibinfo{howpublished}{arXiv:2608.00808}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2608.00808},
+  \DOIprefix\doi{10.48550/arXiv.2608.00808}.
+%Type = Article
+\bibitem[{Wong et~al.(2016)Wong, Gao, Li, Abreu and Wotawa}]{flsurvey2016}
+\bibinfo{author}{Wong, W.E.}, \bibinfo{author}{Gao, R.}, \bibinfo{author}{Li,
+  Y.}, \bibinfo{author}{Abreu, R.}, \bibinfo{author}{Wotawa, F.},
+  \bibinfo{year}{2016}.
+\newblock \bibinfo{title}{A survey on software fault localization}.
+\newblock \bibinfo{journal}{IEEE Transactions on Software Engineering}
+  \bibinfo{volume}{42}, \bibinfo{pages}{707--740}.
+\newblock \DOIprefix\doi{10.1109/TSE.2016.2521368}.
+%Type = Article
+\bibitem[{Wu et~al.(2026)Wu, Wei, Wu, Du, Zhao and Liu}]{wu2026sharerag}
+\bibinfo{author}{Wu, L.}, \bibinfo{author}{Wei, J.}, \bibinfo{author}{Wu, Y.},
+  \bibinfo{author}{Du, B.}, \bibinfo{author}{Zhao, R.}, \bibinfo{author}{Liu,
+  Y.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{Share-rag: A structure-aware and hypothesis-guided
+  retrieval-augmented framework for fault localization in novice programs}.
+\newblock \bibinfo{journal}{Journal of Systems and Software} ,
+  \bibinfo{pages}{113057}.
+%Type = Article
+\bibitem[{Wu et~al.(2025)Wu, Liu, Yin, Zeng, Ye, Zhang, Xiong and
+  Zhang}]{smartfl2025}
+\bibinfo{author}{Wu, Y.}, \bibinfo{author}{Liu, Y.}, \bibinfo{author}{Yin, Y.},
+  \bibinfo{author}{Zeng, M.}, \bibinfo{author}{Ye, Z.}, \bibinfo{author}{Zhang,
+  X.}, \bibinfo{author}{Xiong, Y.}, \bibinfo{author}{Zhang, L.},
+  \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{SmartFL}: Semantics based probabilistic fault
+  localization}.
+\newblock \bibinfo{journal}{IEEE Transactions on Software Engineering}
+  \bibinfo{volume}{51}, \bibinfo{pages}{2161--2180}.
+\newblock \DOIprefix\doi{10.1109/TSE.2025.3574487}.
+%Type = Article
+\bibitem[{Xia et~al.(2025)Xia, Deng, Dunn and Zhang}]{agentless2025}
+\bibinfo{author}{Xia, C.S.}, \bibinfo{author}{Deng, Y.}, \bibinfo{author}{Dunn,
+  S.}, \bibinfo{author}{Zhang, L.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{Demystifying {LLM}-based software engineering
+  agents}.
+\newblock \bibinfo{journal}{Proceedings of the ACM on Software Engineering}
+  \bibinfo{volume}{2}, \bibinfo{pages}{801--824}.
+\newblock \DOIprefix\doi{10.1145/3715754}.
+%Type = Article
+\bibitem[{Xu et~al.(2025a)Xu, Liu, Ren, Zhang, Liang and Lo}]{flexfl2025}
+\bibinfo{author}{Xu, C.}, \bibinfo{author}{Liu, Z.}, \bibinfo{author}{Ren, X.},
+  \bibinfo{author}{Zhang, G.}, \bibinfo{author}{Liang, M.},
+  \bibinfo{author}{Lo, D.}, \bibinfo{year}{2025}a.
+\newblock \bibinfo{title}{{FlexFL}: Flexible and effective fault localization
+  with open-source large language models}.
+\newblock \bibinfo{journal}{IEEE Transactions on Software Engineering}
+  \bibinfo{volume}{51}, \bibinfo{pages}{1455--1471}.
+\newblock \DOIprefix\doi{10.1109/TSE.2025.3553363}.
+%Type = Article
+\bibitem[{Xu et~al.(2026)Xu, Liu, Wu, Kang, Chen and Liu}]{xu2026novice}
+\bibinfo{author}{Xu, H.}, \bibinfo{author}{Liu, H.}, \bibinfo{author}{Wu, Y.},
+  \bibinfo{author}{Kang, X.}, \bibinfo{author}{Chen, X.}, \bibinfo{author}{Liu,
+  Y.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{Exploring the potential and limitations of large
+  language models for novice program fault localization}.
+\newblock \bibinfo{journal}{Journal of Systems and Software}
+  \bibinfo{volume}{234}, \bibinfo{pages}{112731}.
+\newblock \DOIprefix\doi{10.1016/j.jss.2025.112731}.
+%Type = Inproceedings
+\bibitem[{Xu et~al.(2025b)Xu, Liang, Mei, Gao, Tan and Zhang}]{amem2025}
+\bibinfo{author}{Xu, W.}, \bibinfo{author}{Liang, Z.}, \bibinfo{author}{Mei,
+  K.}, \bibinfo{author}{Gao, H.}, \bibinfo{author}{Tan, J.},
+  \bibinfo{author}{Zhang, Y.}, \bibinfo{year}{2025}b.
+\newblock \bibinfo{title}{{A-Mem}: Agentic memory for {LLM} agents}, in:
+  \bibinfo{booktitle}{Advances in Neural Information Processing Systems 38
+  (NeurIPS)}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2502.12110}.
+  \bibinfo{note}{arXiv:2502.12110}.
+%Type = Inproceedings
+\bibitem[{Yang et~al.(2024a)Yang, Le~Goues, Martins and
+  Hellendoorn}]{llmao2024}
+\bibinfo{author}{Yang, A.Z.H.}, \bibinfo{author}{Le~Goues, C.},
+  \bibinfo{author}{Martins, R.}, \bibinfo{author}{Hellendoorn, V.J.},
+  \bibinfo{year}{2024}a.
+\newblock \bibinfo{title}{Large language models for test-free fault
+  localization}, in: \bibinfo{booktitle}{Proceedings of the 46th IEEE/ACM
+  International Conference on Software Engineering (ICSE)},
+  \bibinfo{publisher}{ACM}. pp. \bibinfo{pages}{1--12}.
+\newblock \DOIprefix\doi{10.1145/3597503.3623342}.
+%Type = Inproceedings
+\bibitem[{Yang et~al.(2024b)Yang, Jimenez, Wettig, Lieret, Yao, Narasimhan and
+  Press}]{sweagent2024}
+\bibinfo{author}{Yang, J.}, \bibinfo{author}{Jimenez, C.E.},
+  \bibinfo{author}{Wettig, A.}, \bibinfo{author}{Lieret, K.},
+  \bibinfo{author}{Yao, S.}, \bibinfo{author}{Narasimhan, K.},
+  \bibinfo{author}{Press, O.}, \bibinfo{year}{2024}b.
+\newblock \bibinfo{title}{{SWE}-agent: Agent-computer interfaces enable
+  automated software engineering}, in: \bibinfo{booktitle}{Advances in Neural
+  Information Processing Systems 37 (NeurIPS)}, pp.
+  \bibinfo{pages}{50528--50652}.
+\newblock \DOIprefix\doi{10.52202/079017-1601}.
+%Type = Misc
+\bibitem[{Yeo et~al.(2025)Yeo, Ryu and Baik}]{memfl2025}
+\bibinfo{author}{Yeo, I.}, \bibinfo{author}{Ryu, D.}, \bibinfo{author}{Baik,
+  J.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{Improving {LLM}-based fault localization with
+  external memory and project context}.
+\newblock \bibinfo{howpublished}{arXiv:2506.03585}.
+\newblock \URLprefix \url{https://arxiv.org/abs/2506.03585},
+  \DOIprefix\doi{10.48550/arXiv.2506.03585}.
+%Type = Inproceedings
+\bibitem[{Yu et~al.(2025)Yu, Zhang, Zhao, Huang, Yao, Ding and
+  Zhao}]{orcaloca2025}
+\bibinfo{author}{Yu, Z.}, \bibinfo{author}{Zhang, H.}, \bibinfo{author}{Zhao,
+  Y.}, \bibinfo{author}{Huang, H.}, \bibinfo{author}{Yao, M.},
+  \bibinfo{author}{Ding, K.}, \bibinfo{author}{Zhao, J.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{OrcaLoca}: An {LLM} agent framework for software
+  issue localization}, in: \bibinfo{booktitle}{Proceedings of the 42nd
+  International Conference on Machine Learning (ICML)}, pp.
+  \bibinfo{pages}{73416--73436}.
+\newblock \URLprefix \url{https://proceedings.mlr.press/v267/yu25x.html}.
+%Type = Book
+\bibitem[{Zeller(2009)}]{zeller2009}
+\bibinfo{author}{Zeller, A.}, \bibinfo{year}{2009}.
+\newblock \bibinfo{title}{Why Programs Fail: A Guide to Systematic Debugging}.
+\newblock \bibinfo{edition}{2} ed., \bibinfo{publisher}{Morgan Kaufmann},
+  \bibinfo{address}{Burlington, MA, USA}.
+\newblock \URLprefix \url{https://www.whyprogramsfail.com/}.
+%Type = Inproceedings
+\bibitem[{Zhang et~al.(2024)Zhang, Ruan, Fan and
+  Roychoudhury}]{autocoderover2024}
+\bibinfo{author}{Zhang, Y.}, \bibinfo{author}{Ruan, H.}, \bibinfo{author}{Fan,
+  Z.}, \bibinfo{author}{Roychoudhury, A.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{AutoCodeRover}: Autonomous program improvement}, in:
+  \bibinfo{booktitle}{Proceedings of the 33rd ACM SIGSOFT International
+  Symposium on Software Testing and Analysis (ISSTA)},
+  \bibinfo{publisher}{ACM}. pp. \bibinfo{pages}{1592--1604}.
+\newblock \DOIprefix\doi{10.1145/3650212.3680384}.
+%Type = Inproceedings
+\bibitem[{Zhong et~al.(2024)Zhong, Guo, Gao, Ye and Wang}]{memorybank2024}
+\bibinfo{author}{Zhong, W.}, \bibinfo{author}{Guo, L.}, \bibinfo{author}{Gao,
+  Q.}, \bibinfo{author}{Ye, H.}, \bibinfo{author}{Wang, Y.},
+  \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{MemoryBank}: Enhancing large language models with
+  long-term memory}, in: \bibinfo{booktitle}{Proceedings of the AAAI Conference
+  on Artificial Intelligence}, pp. \bibinfo{pages}{19724--19731}.
+\newblock \DOIprefix\doi{10.1609/aaai.v38i17.29946}.
+%Type = Inproceedings
+\bibitem[{Zhou et~al.(2012)Zhou, Zhang and Lo}]{buglocator2012}
+\bibinfo{author}{Zhou, J.}, \bibinfo{author}{Zhang, H.}, \bibinfo{author}{Lo,
+  D.}, \bibinfo{year}{2012}.
+\newblock \bibinfo{title}{Where should the bugs be fixed? more accurate
+  information retrieval-based bug localization based on bug reports}, in:
+  \bibinfo{booktitle}{Proceedings of the 34th International Conference on
+  Software Engineering (ICSE)}, \bibinfo{publisher}{IEEE}. pp.
+  \bibinfo{pages}{14--24}.
+\newblock \DOIprefix\doi{10.1109/ICSE.2012.6227210}.
+
+\end{thebibliography}

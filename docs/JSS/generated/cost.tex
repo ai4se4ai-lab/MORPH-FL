@@ -1,0 +1,16 @@
+\begin{table}[t]
+\caption{Actual mean resources per completed study run. Tokens include input and output; elapsed seconds exclude interrupted/retried attempts. Different model tokenizers limit cross-model token comparisons.}\label{tab:eval-cost}
+\centering\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llrrr@{}}\toprule
+LLM & Workflow & Total tokens & Output tokens & Seconds\\\midrule
+Qwen & Full adaptive & 28,257 & 3,138 & 93.6\\
+Qwen & Continuous & 27,573 & 3,025 & 89.5\\
+Qwen & Fixed reset & 29,114 & 3,222 & 94.7\\
+Qwen & Observation-only & 29,325 & 5,150 & 140.3\\
+\midrule
+DeepSeek & Full adaptive & 29,197 & 920 & 55.0\\
+DeepSeek & Continuous & 27,912 & 812 & 48.3\\
+DeepSeek & Fixed reset & 29,553 & 961 & 53.8\\
+DeepSeek & Observation-only & 29,920 & 2,506 & 111.5\\
+\bottomrule\end{tabular*}
+\end{table}

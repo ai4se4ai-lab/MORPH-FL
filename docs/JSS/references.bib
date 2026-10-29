@@ -1,0 +1,895 @@
+% Reviewed 2026-10-28. See bibliography-audit.md for source conflicts and limitations.
+
+@article{agentless2025,
+  title   = {Demystifying {LLM}-Based Software Engineering Agents},
+  author  = {Xia, Chunqiu Steven and Deng, Yinlin and Dunn, Soren and Zhang, Lingming},
+  journal = {Proceedings of the ACM on Software Engineering},
+  volume  = {2},
+  number  = {FSE},
+  pages   = {801--824},
+  year    = {2025},
+  doi     = {10.1145/3715754}
+}
+
+% Added volume/number/pages (Crossref 10.1145/3660771).
+@article{autofl2024,
+  title   = {A Quantitative and Qualitative Evaluation of {LLM}-Based Explainable Fault Localization},
+  author  = {Kang, Sungmin and An, Gabin and Yoo, Shin},
+  journal = {Proceedings of the ACM on Software Engineering},
+  volume  = {1},
+  number  = {FSE},
+  pages   = {1424--1446},
+  year    = {2024},
+  doi     = {10.1145/3660771}
+}
+
+% AgentFL (arXiv 2403.16362) was published as SoapFL in IEEE TSE 2025
+% (same seven authors; arXiv v2 points to SoapFL as the latest version).
+@misc{agentfl2024,
+  title        = {{AgentFL}: Scaling {LLM}-Based Fault Localization to Project-Level Context},
+  author       = {Qin, Yihao and Wang, Shangwen and Lou, Yiling and Dong, Jinhao and Wang, Kaixin and Li, Xiaoling and Mao, Xiaoguang},
+  year         = {2024},
+  howpublished = {arXiv:2403.16362},
+  doi          = {10.48550/arXiv.2403.16362},
+  url          = {https://arxiv.org/abs/2403.16362}
+}
+
+@misc{rgfl2026,
+  title        = {{RGFL}: Reasoning Guided Fault Localization for Automated Program Repair Using Large Language Models},
+  author       = {Sepidband, Melika and Taherkhani, Hamed and Pham, Hung Viet and Hemmati, Hadi},
+  year         = {2026},
+  howpublished = {arXiv:2601.18044},
+  doi          = {10.48550/arXiv.2601.18044},
+  url          = {https://arxiv.org/abs/2601.18044}
+}
+
+% Added pages + DOI + publisher. ACL Anthology lists the 2nd author as "Robert Tang".
+@inproceedings{locagent2025,
+  title     = {{LocAgent}: Graph-Guided {LLM} Agents for Code Localization},
+  author    = {Chen, Zhaoling and Tang, Robert and Deng, Gangda and Wu, Fang and Wu, Jialong and Jiang, Zhiwei and Prasanna, Viktor and Cohan, Arman and Wang, Xingyao},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  address   = {Vienna, Austria},
+  publisher = {Association for Computational Linguistics},
+  pages     = {8697--8727},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.acl-long.426}
+}
+
+@misc{arise2026,
+  title        = {{ARISE}: A Repository-Level Graph Representation and Toolset for Agentic Program Repair and Fault Localization},
+  author       = {Seddik, Shahd and Seddik, Fahd and Esmaeili, Amirrezza and Sadatbenis, Mahdieh and Fard, Fatemeh},
+  year         = {2026},
+  howpublished = {arXiv:2605.03117v2},
+  doi          = {10.48550/arXiv.2605.03117},
+  url          = {https://arxiv.org/abs/2605.03117}
+}
+
+@misc{memfl2025,
+  title        = {Improving {LLM}-Based Fault Localization with External Memory and Project Context},
+  author       = {Yeo, Inseok and Ryu, Duksan and Baik, Jongmoon},
+  year         = {2025},
+  howpublished = {arXiv:2506.03585},
+  doi          = {10.48550/arXiv.2506.03585},
+  url          = {https://arxiv.org/abs/2506.03585}
+}
+
+@inproceedings{repomem2026,
+  title     = {Improving Code Localization with Repository Memory},
+  author    = {Wang, Boshi and Xu, Weijian and Li, Yunsheng and Gao, Mei and Xie, Yujia and Sun, Huan and Chen, Dongdong},
+  booktitle = {Proceedings of the 14th International Conference on Learning Representations (ICLR)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=8yjWLJy2eX}
+}
+
+@misc{forgetting2026,
+  title        = {Scaling Discovery Requires Forgetting},
+  author       = {Tan, Shangyin and Zhou, Ben and Agrawal, Lakshya A. and Zhang, Jialin and Chen, Yilin and Mang, Qiuyang and Lee, Donghyun and Jacob, Dennis and Sen, Koushik and Dimakis, Alex and Zaharia, Matei},
+  year         = {2026},
+  howpublished = {arXiv:2610.20563},
+  doi          = {10.48550/arXiv.2610.20563},
+  url          = {https://arxiv.org/abs/2610.20563}
+}
+
+@inproceedings{buglocator2012,
+  title     = {Where Should the Bugs Be Fixed? More Accurate Information Retrieval-Based Bug Localization Based on Bug Reports},
+  author    = {Zhou, Jian and Zhang, Hongyu and Lo, David},
+  booktitle = {Proceedings of the 34th International Conference on Software Engineering (ICSE)},
+  pages     = {14--24},
+  year      = {2012},
+  publisher = {IEEE},
+  doi       = {10.1109/ICSE.2012.6227210}
+}
+
+@inproceedings{deeprl4fl2021,
+  title     = {Fault Localization with Code Coverage Representation Learning},
+  author    = {Li, Yi and Wang, Shaohua and Nguyen, Tien N.},
+  booktitle = {Proceedings of the 43rd IEEE/ACM International Conference on Software Engineering (ICSE)},
+  pages     = {661--673},
+  year      = {2021},
+  publisher = {IEEE},
+  doi       = {10.1109/ICSE43902.2021.00067}
+}
+
+@inproceedings{reflexion2023,
+  title     = {Reflexion: Language Agents with Verbal Reinforcement Learning},
+  author    = {Shinn, Noah and Cassano, Federico and Gopinath, Ashwin and Narasimhan, Karthik and Yao, Shunyu},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS)},
+  pages     = {8634--8652},
+  year      = {2023},
+  doi       = {10.52202/075280-0377}
+}
+
+@misc{memgpt2024,
+  title        = {{MemGPT}: Towards {LLMs} as Operating Systems},
+  author       = {Packer, Charles and Wooders, Sarah and Lin, Kevin and Fang, Vivian and Patil, Shishir G. and Stoica, Ion and Gonzalez, Joseph E.},
+  year         = {2024},
+  howpublished = {arXiv:2310.08560v2},
+  doi          = {10.48550/arXiv.2310.08560},
+  url          = {https://arxiv.org/abs/2310.08560v2}
+}
+
+@article{reiter1987,
+  title   = {A Theory of Diagnosis from First Principles},
+  author  = {Reiter, Raymond},
+  journal = {Artificial Intelligence},
+  volume  = {32},
+  number  = {1},
+  pages   = {57--95},
+  year    = {1987},
+  doi     = {10.1016/0004-3702(87)90062-2}
+}
+
+@misc{prov2013,
+  title        = {{PROV-DM}: The {PROV} Data Model},
+  editor       = {Moreau, Luc and Missier, Paolo},
+  author       = {Moreau, Luc and Missier, Paolo},
+  howpublished = {W3C Recommendation},
+  note         = {Luc Moreau and Paolo Missier, Eds.},
+  year         = {2013},
+  url          = {https://www.w3.org/TR/2013/REC-prov-dm-20130430/}
+}
+
+@misc{ledger2026,
+  title        = {Turning Interaction History into Execution State: A Runtime Layer for Long-Horizon Coding Agents},
+  author       = {Wang, Zehao and Xu, Yisen and Li, Chenglin and Peng, Chao and Adams, Bram and Hassan, Ahmed E. and Chen, Tse-Hsun (Peter)},
+  year         = {2026},
+  howpublished = {arXiv:2608.00808},
+  doi          = {10.48550/arXiv.2608.00808},
+  url          = {https://arxiv.org/abs/2608.00808}
+}
+
+@misc{adarepair2026,
+  title        = {{AdaRepair-Mem}: Adaptive Experience Orchestration for Repository-Level Program Repair},
+  author       = {Luo, Zichen and Guo, Jiachen and He, Wenjun and Wang, Siyu and Yu, Jiongchi and Zhao, Fangming and Chen, Yuan and Cao, Te and Liu, Liqun and Zheng, Ning and Xu, Wei and Jiang, Jie and Zhao, Ziming},
+  year         = {2026},
+  howpublished = {arXiv:2609.20130},
+  doi          = {10.48550/arXiv.2609.20130},
+  url          = {https://arxiv.org/abs/2609.20130}
+}
+
+
+
+
+@inproceedings{swebench2024,
+  title={Swe-bench: Can language models resolve real-world github issues?},
+  author={Jimenez, Carlos E and Yang, John and Wettig, Alexander and Yao, Shunyu and Pei, Kexin and Press, Ofir and Narasimhan, Karthik},
+  booktitle={International Conference on Learning Representations},
+  volume={2024},
+  pages={54107--54157},
+  year={2024}
+}
+
+@article{smartfl2025,
+  title   = {{SmartFL}: Semantics Based Probabilistic Fault Localization},
+  author  = {Wu, Yiqian and Liu, Yujie and Yin, Yi and Zeng, Muhan and Ye, Zhentao and Zhang, Xin and Xiong, Yingfei and Zhang, Lu},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {51},
+  number  = {7},
+  pages   = {2161--2180},
+  year    = {2025},
+  doi     = {10.1109/TSE.2025.3574487}
+}
+
+@inproceedings{llmao2024,
+  title     = {Large Language Models for Test-Free Fault Localization},
+  author    = {Yang, Aidan Z. H. and Le Goues, Claire and Martins, Ruben and Hellendoorn, Vincent J.},
+  booktitle = {Proceedings of the 46th IEEE/ACM International Conference on Software Engineering (ICSE)},
+  pages     = {1--12},
+  year      = {2024},
+  publisher = {ACM},
+  doi       = {10.1145/3597503.3623342}
+}
+
+@article{kbl2025,
+  title   = {{KBL}: A Golden Keywords-Based Query Reformulation Approach for Bug Localization},
+  author  = {Cai, Biyu and Zou, Weiqin and Meng, Qianshuang and Xu, Hui and Zhang, Jingxuan},
+  journal = {Empirical Software Engineering},
+  volume  = {30},
+  number  = {5},
+  eid     = {135},
+  pages   = {135},
+  year    = {2025},
+  doi     = {10.1007/s10664-025-10694-2}
+}
+
+@article{mtanalysis2017,
+  title   = {Static Analysis of Model Transformations},
+  author  = {S{\'a}nchez Cuadrado, Jes{\'u}s and Guerra, Esther and de Lara, Juan},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {43},
+  number  = {9},
+  pages   = {868--897},
+  year    = {2017},
+  doi     = {10.1109/TSE.2016.2635137}
+}
+
+@inproceedings{lifting2014,
+  title     = {Lifting Model Transformations to Product Lines},
+  author    = {Salay, Rick and Famelis, Michalis and Rubin, Julia and Di Sandro, Alessio and Chechik, Marsha},
+  booktitle = {Proceedings of the 36th International Conference on Software Engineering (ICSE)},
+  pages     = {117--128},
+  year      = {2014},
+  publisher = {ACM},
+  doi       = {10.1145/2568225.2568267}
+}
+
+@article{performance2011,
+  title   = {From Monolithic to Component-Based Performance Evaluation of Software Architectures},
+  author  = {Martens, Anne and Koziolek, Heiko and Prechelt, Lutz and Reussner, Ralf},
+  journal = {Empirical Software Engineering},
+  volume  = {16},
+  number  = {5},
+  pages   = {587--622},
+  year    = {2011},
+  doi     = {10.1007/s10664-010-9142-8}
+}
+
+@article{mttrace2024,
+  title   = {Traceability and Reuse Mechanisms, the Most Important Properties of Model Transformation Languages},
+  author  = {H{\"o}ppner, Stefan and Tichy, Matthias},
+  journal = {Empirical Software Engineering},
+  volume  = {29},
+  number  = {2},
+  eid     = {52},
+  pages   = {52},
+  year    = {2024},
+  doi     = {10.1007/s10664-023-10428-2}
+}
+
+@article{simfl2016,
+  title   = {{Simulink} Fault Localization: An Iterative Statistical Debugging Approach},
+  author  = {Liu, Bing and {Lucia} and Nejati, Shiva and Briand, Lionel C. and Bruckmann, Thomas},
+  journal = {Software Testing, Verification and Reliability},
+  volume  = {26},
+  number  = {6},
+  pages   = {431--459},
+  year    = {2016},
+  doi     = {10.1002/stvr.1605}
+}
+
+@article{mtstaticfl2015,
+  title   = {Static Fault Localization in Model Transformations},
+  author  = {Burgue{\~n}o, Loli and Troya, Javier and Wimmer, Manuel and Vallecillo, Antonio},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {41},
+  number  = {5},
+  pages   = {490--506},
+  year    = {2015},
+  doi     = {10.1109/TSE.2014.2375201}
+}
+
+@article{mtspectrum2018,
+  title   = {Spectrum-Based Fault Localization in Model Transformations},
+  author  = {Troya, Javier and Segura, Sergio and Parejo, Jos{\'e} Antonio and Ruiz-Cort{\'e}s, Antonio},
+  journal = {ACM Transactions on Software Engineering and Methodology},
+  volume  = {27},
+  number  = {3},
+  pages   = {13:1--13:50},
+  year    = {2018},
+  doi     = {10.1145/3241744}
+}
+
+
+@article{mthybrid2022,
+  title={Revisiting Fault Localization Techniques for Model Transformations: Towards A Hybrid Approach.},
+  author={Mu{\~n}oz, Paula and Troya, Javier and Wimmer, Manuel and Kappel, Gerti},
+  journal={J. Object Technol.},
+  volume={21},
+  number={4},
+  pages={4--1},
+  year={2022}
+}
+
+@article{mtsymbolic2024,
+  title   = {Fault Localization in {DSLTrans} Model Transformations by Combining Symbolic Execution and Spectrum-Based Analysis},
+  author  = {Oakes, Bentley James and Troya, Javier and Galasso, Jessie and Wimmer, Manuel},
+  journal = {Software and Systems Modeling},
+  volume  = {23},
+  number  = {3},
+  pages   = {737--763},
+  year    = {2024},
+  doi     = {10.1007/s10270-023-01123-3}
+}
+
+@article{modelsruntime2009,
+  title   = {Models@run.time},
+  author  = {Blair, Gordon and Bencomo, Nelly and France, Robert B.},
+  journal = {Computer},
+  volume  = {42},
+  number  = {10},
+  pages   = {22--27},
+  year    = {2009},
+  doi     = {10.1109/MC.2009.326}
+}
+
+@article{mapek2003,
+  title   = {The Vision of Autonomic Computing},
+  author  = {Kephart, Jeffrey O. and Chess, David M.},
+  journal = {Computer},
+  volume  = {36},
+  number  = {1},
+  pages   = {41--50},
+  year    = {2003},
+  doi     = {10.1109/MC.2003.1160055}
+}
+
+@article{lostmiddle2024,
+  title   = {Lost in the Middle: How Language Models Use Long Contexts},
+  author  = {Liu, Nelson F. and Lin, Kevin and Hewitt, John and Paranjape, Ashwin and Bevilacqua, Michele and Petroni, Fabio and Liang, Percy},
+  journal = {Transactions of the Association for Computational Linguistics},
+  volume  = {12},
+  pages   = {157--173},
+  year    = {2024},
+  doi     = {10.1162/tacl_a_00638}
+}
+
+
+
+@inproceedings{selfcorrect2024,
+  title={Large language models cannot self-correct reasoning yet},
+  author={Huang, Jie and Chen, Xinyun and Mishra, Swaroop and Zheng, Huaixiu Steven and Yu, Adams and Song, Xinying and Zhou, Denny},
+  booktitle={International conference on learning representations},
+  volume={2024},
+  pages={32808--32824},
+  year={2024}
+}
+
+@book{zeller2009,
+  title     = {Why Programs Fail: A Guide to Systematic Debugging},
+  author    = {Zeller, Andreas},
+  edition   = {2},
+  publisher = {Morgan Kaufmann},
+  address   = {Burlington, MA, USA},
+  isbn      = {9780123745156},
+  url       = {https://www.whyprogramsfail.com/},
+  year      = {2009}
+}
+
+% ---------------------------------------------------------------------
+% PART B -- NEW ENTRIES
+% ---------------------------------------------------------------------
+
+% ---- MUST-CITE ----------------------------------------------------------
+
+@article{autosd2023,
+  title   = {Explainable Automated Debugging via Large Language Model-Driven Scientific Debugging},
+  author  = {Kang, Sungmin and Chen, Bei and Yoo, Shin and Lou, Jian-Guang},
+  journal = {Empirical Software Engineering},
+  volume  = {30},
+  number  = {2},
+  eid     = {45},
+  pages   = {45},
+  year    = {2025},
+  doi     = {10.1007/s10664-024-10594-x}
+}
+
+@article{gde1987,
+  title   = {Diagnosing Multiple Faults},
+  author  = {de Kleer, Johan and Williams, Brian C.},
+  journal = {Artificial Intelligence},
+  volume  = {32},
+  number  = {1},
+  pages   = {97--130},
+  year    = {1987},
+  doi     = {10.1016/0004-3702(87)90063-4}
+}
+
+@article{flsurvey2016,
+  title   = {A Survey on Software Fault Localization},
+  author  = {Wong, W. Eric and Gao, Ruizhi and Li, Yihao and Abreu, Rui and Wotawa, Franz},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {42},
+  number  = {8},
+  pages   = {707--740},
+  year    = {2016},
+  doi     = {10.1109/TSE.2016.2521368}
+}
+
+@inproceedings{sweagent2024,
+  title     = {{SWE}-agent: Agent-Computer Interfaces Enable Automated Software Engineering},
+  author    = {Yang, John and Jimenez, Carlos E. and Wettig, Alexander and Lieret, Kilian and Yao, Shunyu and Narasimhan, Karthik and Press, Ofir},
+  booktitle = {Advances in Neural Information Processing Systems 37 (NeurIPS)},
+  pages     = {50528--50652},
+  year      = {2024},
+  doi       = {10.52202/079017-1601}
+}
+
+@inproceedings{autocoderover2024,
+  title     = {{AutoCodeRover}: Autonomous Program Improvement},
+  author    = {Zhang, Yuntong and Ruan, Haifeng and Fan, Zhiyu and Roychoudhury, Abhik},
+  booktitle = {Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA)},
+  pages     = {1592--1604},
+  year      = {2024},
+  publisher = {ACM},
+  doi       = {10.1145/3650212.3680384}
+}
+
+@inproceedings{restarts1998,
+  title     = {Boosting Combinatorial Search Through Randomization},
+  author    = {Gomes, Carla P. and Selman, Bart and Kautz, Henry},
+  booktitle = {Proceedings of the 15th National Conference on Artificial Intelligence ({AAAI})},
+  publisher = {AAAI Press},
+  pages     = {431--437},
+  year      = {1998}
+}
+
+@inproceedings{mmr1998,
+  title     = {The Use of {MMR}, Diversity-Based Reranking for Reordering Documents and Producing Summaries},
+  author    = {Carbonell, Jaime and Goldstein, Jade},
+  booktitle = {Proceedings of the 21st Annual International ACM SIGIR Conference on Research and Development in Information Retrieval},
+  pages     = {335--336},
+  year      = {1998},
+  publisher = {ACM},
+  doi       = {10.1145/290941.291025}
+}
+
+@article{mde2006,
+  title   = {Guest Editor's Introduction: Model-Driven Engineering},
+  author  = {Schmidt, Douglas C.},
+  journal = {Computer},
+  volume  = {39},
+  number  = {2},
+  pages   = {25--31},
+  year    = {2006},
+  doi     = {10.1109/MC.2006.58}
+}
+
+@inproceedings{complexitytrap2025,
+  title        = {The Complexity Trap: Simple Observation Masking Is as Efficient as {LLM} Summarization for Agent Context Management},
+  author       = {Lindenbauer, Tobias and Slinko, Igor and Felder, Ludwig and Bogomolov, Egor and Zharov, Yaroslav},
+  booktitle    = {Proceedings of the 4th Deep Learning for Code (DL4C) Workshop at NeurIPS},
+  year         = {2025},
+  note         = {arXiv:2508.21433},
+  url          = {https://arxiv.org/abs/2508.21433}
+}
+
+@inproceedings{acon2026,
+  title     = {{ACON}: Optimizing Context Compression for Long-Horizon {LLM} Agents},
+  author    = {Kang, Minki and Chen, Wei-Ning and Han, Dongge and Inan, Huseyin A. and Wutschitz, Lukas and Chen, Yanzhi and Sim, Robert and Rajmohan, Saravan},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
+  year      = {2026},
+  note      = {arXiv:2510.00615},
+  url       = {https://arxiv.org/abs/2510.00615}
+}
+
+@article{flexfl2025,
+  title   = {{FlexFL}: Flexible and Effective Fault Localization With Open-Source Large Language Models},
+  author  = {Xu, Chuyang and Liu, Zhongxin and Ren, Xiaoxue and Zhang, Gehao and Liang, Ming and Lo, David},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {51},
+  number  = {5},
+  pages   = {1455--1471},
+  year    = {2025},
+  doi     = {10.1109/TSE.2025.3553363}
+}
+
+@article{soapfl2025,
+  title   = {{SoapFL}: A Standard Operating Procedure for {LLM}-Based Method-Level Fault Localization},
+  author  = {Qin, Yihao and Wang, Shangwen and Lou, Yiling and Dong, Jinhao and Wang, Kaixin and Li, Xiaoling and Mao, Xiaoguang},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {51},
+  number  = {4},
+  pages   = {1173--1187},
+  year    = {2025},
+  doi     = {10.1109/TSE.2025.3543187}
+}
+
+@inproceedings{orcaloca2025,
+  title     = {{OrcaLoca}: An {LLM} Agent Framework for Software Issue Localization},
+  author    = {Yu, Zhongming and Zhang, Hejia and Zhao, Yujie and Huang, Hanxian and Yao, Matrix and Ding, Ke and Zhao, Jishen},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {267},
+  pages     = {73416--73436},
+  year      = {2025},
+  url       = {https://proceedings.mlr.press/v267/yu25x.html}
+}
+
+@inproceedings{cosil2025,
+  title     = {Issue Localization via {LLM}-Driven Iterative Code Graph Searching},
+  author    = {Jiang, Zhonghao and Ren, Xiaoxue and Yan, Meng and Jiang, Wei and Li, Yong and Liu, Zhongxin},
+  booktitle = {Proceedings of the 40th IEEE/ACM International Conference on Automated Software Engineering (ASE)},
+  pages     = {3034--3045},
+  year      = {2025},
+  publisher = {IEEE},
+  doi       = {10.1109/ASE63991.2025.00249}
+}
+
+@inproceedings{swerank2026,
+  title     = {{SweRank}: Software Issue Localization with Code Ranking},
+  author    = {Reddy, Revanth Gangi and Suresh, Tarun and Doo, JaeHyeok and Liu, Ye and Nguyen, Xuan-Phi and Zhou, Yingbo and Yavuz, Semih and Xiong, Caiming and Ji, Heng and Joty, Shafiq},
+  booktitle = {Proceedings of the 14th International Conference on Learning Representations (ICLR)},
+  year      = {2026},
+  note      = {arXiv:2505.07849},
+  url       = {https://arxiv.org/abs/2505.07849}
+}
+
+
+@misc{qwen25coder2024,
+  title        = {{Qwen2.5-Coder} Technical Report},
+  author       = {Hui, Binyuan and Yang, Jian and Cui, Zeyu and Yang, Jiaxi and Liu, Dayiheng and Zhang, Lei and Liu, Tianyu and Zhang, Jiajun and Yu, Bowen and Lu, Keming and Dang, Kai and Fan, Yang and Zhang, Yichang and Yang, An and Men, Rui and Huang, Fei and Zheng, Bo and Miao, Yibo and Quan, Shanghaoran and Feng, Yunlong and Ren, Xingzhang and Ren, Xuancheng and Zhou, Jingren and Lin, Junyang},
+  year         = {2024},
+  howpublished = {arXiv:2409.12186},
+  doi          = {10.48550/arXiv.2409.12186},
+  url          = {https://arxiv.org/abs/2409.12186}
+}
+
+@misc{deepseekcoder2024,
+  title        = {{DeepSeek-Coder}: When the Large Language Model Meets Programming -- The Rise of Code Intelligence},
+  author       = {Guo, Daya and Zhu, Qihao and Yang, Dejian and Xie, Zhenda and Dong, Kai and Zhang, Wentao and Chen, Guanting and Bi, Xiao and Wu, Y. and Li, Y. K. and Luo, Fuli and Xiong, Yingfei and Liang, Wenfeng},
+  year         = {2024},
+  howpublished = {arXiv:2401.14196},
+  doi          = {10.48550/arXiv.2401.14196},
+  url          = {https://arxiv.org/abs/2401.14196}
+}
+
+
+
+@article{bm25_2009,
+  title={The probabilistic relevance framework: BM25 and beyond},
+  author={Robertson, Stephen and Zaragoza, Hugo},
+  journal={Foundations and trends{\textregistered} in information retrieval},
+  volume={4},
+  number={1-2},
+  pages={1--174},
+  year={2009},
+  publisher={Emerald Publishing Limited}
+}
+
+@misc{swebenchverified2024,
+  title        = {Introducing {SWE-bench Verified}},
+  author       = {Chowdhury, Neil and Aung, James and Shern, Chan Jun and Jaffe, Oliver and Sherburn, Dane and Starace, Giulio and Mays, Evan and Dias, Rachel and Aljubeh, Marwan and Glaese, Mia and Jimenez, Carlos E. and Yang, John and Ho, Leyton and Patwardhan, Tejal and Liu, Kevin and Madry, Aleksander},
+  howpublished = {OpenAI Blog},
+  year         = {2024},
+  month        = aug,
+  url          = {https://openai.com/index/introducing-swe-bench-verified/}
+}
+
+% ---- SHOULD-CITE --------------------------------------------------------
+
+@inproceedings{openhands2025,
+  title     = {{OpenHands}: An Open Platform for {AI} Software Developers as Generalist Agents},
+  author    = {Wang, Xingyao and Li, Boxuan and Song, Yufan and Xu, Frank F. and Tang, Xiangru and Zhuge, Mingchen and Pan, Jiayi and Song, Yueqi and Li, Bowen and Singh, Jaskirat and Tran, Hoang H. and Li, Fuqiang and Ma, Ren and Zheng, Mingzhang and Qian, Bill and Shao, Yanjun and Muennighoff, Niklas and Zhang, Yizhe and Hui, Binyuan and Lin, Junyang and Brennan, Robert and Peng, Hao and Ji, Heng and Neubig, Graham},
+  booktitle = {Proceedings of the 13th International Conference on Learning Representations (ICLR)},
+  year      = {2025},
+  note      = {arXiv:2407.16741},
+  url       = {https://arxiv.org/abs/2407.16741}
+}
+
+
+@inproceedings{codeact2024,
+  title     = {Executable Code Actions Elicit Better {LLM} Agents},
+  author    = {Wang, Xingyao and Chen, Yangyi and Yuan, Lifan and Zhang, Yizhe and Li, Yunzhu and Peng, Hao and Ji, Heng},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {235},
+  pages     = {50208--50232},
+  year      = {2024},
+  url       = {https://proceedings.mlr.press/v235/wang24h.html}
+}
+
+@inproceedings{repairagent2025,
+  title     = {{RepairAgent}: An Autonomous, {LLM}-Based Agent for Program Repair},
+  author    = {Bouzenia, Islem and Devanbu, Premkumar and Pradel, Michael},
+  booktitle = {Proceedings of the 47th IEEE/ACM International Conference on Software Engineering (ICSE)},
+  pages     = {2188--2200},
+  year      = {2025},
+  publisher = {IEEE},
+  doi       = {10.1109/ICSE55347.2025.00157}
+}
+
+@misc{llm4fl2024,
+  title        = {A Multi-Agent Approach to Fault Localization via Graph-Based Retrieval and Reflexion},
+  author       = {Rafi, Md Nakhla and Kim, Dong Jae and Chen, Tse-Hsun and Wang, Shaowei},
+  year         = {2024},
+  howpublished = {arXiv:2409.13642},
+  doi          = {10.48550/arXiv.2409.13642},
+  url          = {https://arxiv.org/abs/2409.13642}
+}
+
+@misc{bugcerberus2025,
+  title        = {Bridging Bug Localization and Issue Fixing: A Hierarchical Localization Framework Leveraging Large Language Models},
+  author       = {Chang, Jianming and Zhou, Xin and Wang, Lulu and Lo, David and Li, Bixin},
+  year         = {2025},
+  howpublished = {arXiv:2502.15292},
+  doi          = {10.48550/arXiv.2502.15292},
+  url          = {https://arxiv.org/abs/2502.15292}
+}
+
+@misc{masai2024,
+  title        = {{MASAI}: Modular Architecture for Software-Engineering {AI} Agents},
+  author       = {Arora, Daman and Sonwane, Atharv and Wadhwa, Nalin and Mehrotra, Abhav and Utpala, Saiteja and Bairi, Ramakrishna and Kanade, Aditya and Natarajan, Nagarajan},
+  year         = {2024},
+  howpublished = {arXiv:2406.11638},
+  doi          = {10.48550/arXiv.2406.11638},
+  url          = {https://arxiv.org/abs/2406.11638}
+}
+
+@inproceedings{llmlingua2023,
+  title     = {{LLMLingua}: Compressing Prompts for Accelerated Inference of Large Language Models},
+  author    = {Jiang, Huiqiang and Wu, Qianhui and Lin, Chin-Yew and Yang, Yuqing and Qiu, Lili},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages     = {13358--13376},
+  year      = {2023},
+  publisher = {Association for Computational Linguistics},
+  doi       = {10.18653/v1/2023.emnlp-main.825}
+}
+
+@inproceedings{generativeagents2023,
+  title     = {Generative Agents: Interactive Simulacra of Human Behavior},
+  author    = {Park, Joon Sung and O'Brien, Joseph and Cai, Carrie Jun and Morris, Meredith Ringel and Liang, Percy and Bernstein, Michael S.},
+  booktitle = {Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology (UIST)},
+  pages     = {1--22},
+  year      = {2023},
+  publisher = {ACM},
+  doi       = {10.1145/3586183.3606763}
+}
+
+@inproceedings{amem2025,
+  title     = {{A-Mem}: Agentic Memory for {LLM} Agents},
+  author    = {Xu, Wujiang and Liang, Zujie and Mei, Kai and Gao, Hang and Tan, Juntao and Zhang, Yongfeng},
+  booktitle = {Advances in Neural Information Processing Systems 38 (NeurIPS)},
+  year      = {2025},
+  note      = {arXiv:2502.12110},
+  url       = {https://arxiv.org/abs/2502.12110}
+}
+
+
+@inproceedings{memorybank2024,
+  title     = {{MemoryBank}: Enhancing Large Language Models with Long-Term Memory},
+  author    = {Zhong, Wanjun and Guo, Lianghong and Gao, Qiqi and Ye, He and Wang, Yanlin},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {38},
+  number    = {17},
+  pages     = {19724--19731},
+  year      = {2024},
+  doi       = {10.1609/aaai.v38i17.29946}
+}
+
+@techreport{contextrot2025,
+  title       = {Context Rot: How Increasing Input Tokens Impacts {LLM} Performance},
+  author      = {Hong, Kelly and Troynikov, Anton and Huber, Jeff},
+  institution = {Chroma},
+  year        = {2025},
+  month       = jul,
+  url         = {https://research.trychroma.com/context-rot}
+}
+
+@inproceedings{tarantula2005,
+  title     = {Empirical Evaluation of the {Tarantula} Automatic Fault-Localization Technique},
+  author    = {Jones, James A. and Harrold, Mary Jean},
+  booktitle = {Proceedings of the 20th IEEE/ACM International Conference on Automated Software Engineering (ASE)},
+  pages     = {273--282},
+  year      = {2005},
+  publisher = {ACM},
+  doi       = {10.1145/1101908.1101949}
+}
+
+@inproceedings{ochiai2007,
+  title     = {On the Accuracy of Spectrum-Based Fault Localization},
+  author    = {Abreu, Rui and Zoeteweij, Peter and van Gemund, Arjan J. C.},
+  booktitle = {Testing: Academic and Industrial Conference Practice and Research Techniques -- MUTATION (TAICPART-MUTATION)},
+  pages     = {89--98},
+  year      = {2007},
+  publisher = {IEEE},
+  doi       = {10.1109/TAIC.PART.2007.13}
+}
+
+@article{wilson1927,
+  title   = {Probable Inference, the Law of Succession, and Statistical Inference},
+  author  = {Wilson, Edwin B.},
+  journal = {Journal of the American Statistical Association},
+  volume  = {22},
+  number  = {158},
+  pages   = {209--212},
+  year    = {1927},
+  doi     = {10.1080/01621459.1927.10502953}
+}
+
+@article{clusterbootstrap2007,
+  title   = {Bootstrapping Clustered Data},
+  author  = {Field, C. A. and Welsh, A. H.},
+  journal = {Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
+  volume  = {69},
+  number  = {3},
+  pages   = {369--390},
+  year    = {2007},
+  doi     = {10.1111/j.1467-9868.2007.00593.x}
+}
+
+% ---- OPTIONAL -----------------------------------------------------------
+
+@inproceedings{cornstack2025,
+  title     = {{CoRNStack}: High-Quality Contrastive Data for Better Code Retrieval and Reranking},
+  author    = {Suresh, Tarun and Reddy, Revanth Gangi and Xu, Yifei and Nussbaum, Zach and Mulyar, Andriy and Duderstadt, Brandon and Ji, Heng},
+  booktitle = {Proceedings of the 13th International Conference on Learning Representations (ICLR)},
+  year      = {2025},
+  note      = {arXiv:2412.01007},
+  url       = {https://arxiv.org/abs/2412.01007}
+}
+
+
+@inproceedings{cosmosfl2025,
+  title     = {{COSMosFL}: Ensemble of Small Language Models for Fault Localisation},
+  author    = {Cho, Hyunjoon and Kang, Sungmin and An, Gabin and Yoo, Shin},
+  booktitle = {Proceedings of the 2025 IEEE/ACM International Workshop on Large Language Models for Code (LLM4Code)},
+  pages     = {17--24},
+  year      = {2025},
+  publisher = {IEEE},
+  doi       = {10.1109/LLM4Code66737.2025.00007}
+}
+
+@inproceedings{llmflsurvey2025,
+  title     = {Large Language Models for Software Fault Localization: A Survey},
+  author    = {Chang, Xiaohui and Li, Dongcheng and Wong, W. Eric},
+  booktitle = {Proceedings of the 12th International Conference on Dependable Systems and Their Applications (DSA)},
+  pages     = {111--120},
+  year      = {2025},
+  publisher = {IEEE},
+  doi       = {10.1109/DSA66321.2025.00024}
+}
+
+@book{efron1993,
+  title     = {An Introduction to the Bootstrap},
+  author    = {Efron, Bradley and Tibshirani, Robert J.},
+  publisher = {Springer US},
+  year      = {1993},
+  doi       = {10.1007/978-1-4899-4541-9}
+}
+
+@inproceedings{multiturn2025,
+  title     = {{LLMs} Get Lost In Multi-Turn Conversation},
+  author    = {Laban, Philippe and Hayashi, Hiroaki and Zhou, Yingbo and Neville, Jennifer},
+  booktitle = {Proceedings of the 14th International Conference on Learning Representations (ICLR)},
+  year      = {2026},
+  note      = {arXiv:2505.06120},
+  url       = {https://arxiv.org/abs/2505.06120}
+}
+
+
+@inproceedings{distract2023,
+  title     = {Large Language Models Can Be Easily Distracted by Irrelevant Context},
+  author    = {Shi, Freda and Chen, Xinyun and Misra, Kanishka and Scales, Nathan and Dohan, David and Chi, Ed H. and Sch{\"a}rli, Nathanael and Zhou, Denny},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {202},
+  pages     = {31210--31227},
+  year      = {2023},
+  url       = {https://proceedings.mlr.press/v202/shi23a.html}
+}
+
+@inproceedings{formatrestrict2024,
+  title     = {Let Me Speak Freely? {A} Study on the Impact of Format Restrictions on Large Language Model Performance},
+  author    = {Tam, Zhi Rui and Wu, Cheng-Kuang and Tsai, Yi-Lin and Lin, Chieh-Yen and Lee, Hung-yi and Chen, Yun-Nung},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing: Industry Track},
+  address   = {Miami, FL, USA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1218--1236},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.emnlp-industry.91}
+}
+
+@inproceedings{swebenchillusion2025,
+  title        = {The {SWE-Bench} Illusion: When State-of-the-Art {LLMs} Remember Instead of Reason},
+  author       = {Liang, Shanchao and Garg, Spandan and Zilouchian Moghaddam, Roshanak},
+  booktitle    = {Proceedings of the IEEE/ACM 48th International Conference on Software Engineering: Software Engineering in Practice},
+  year         = {2026},
+  note         = {arXiv:2506.12286},
+  pages        = {395--405},
+  publisher    = {ACM},
+  doi          = {10.1145/3786583.3786882},
+  url          = {https://doi.org/10.1145/3786583.3786882}
+}
+
+@misc{swebenchplus2024,
+  title        = {{SWE-bench+}: Enhanced Coding Benchmark for {LLMs}},
+  author       = {Aleithan, Reem and Xue, Haoran and Mohajer, Mohammad Mahdi and Nnorom, Elijah and Uddin, Gias and Wang, Song},
+  year         = {2024},
+  howpublished = {arXiv:2410.06992},
+  doi          = {10.48550/arXiv.2410.06992},
+  url          = {https://arxiv.org/abs/2410.06992}
+}
+
+@inproceedings{swerebench2025,
+  title     = {{SWE-rebench}: An Automated Pipeline for Task Collection and Decontaminated Evaluation of Software Engineering Agents},
+  author    = {Badertdinov, Ibragim and Golubev, Alexander and Nekrashevich, Maksim and Shevtsov, Anton and Karasik, Simon and Andriushchenko, Andrei and Trofimova, Maria and Litvintseva, Daria and Yangel, Boris},
+  booktitle = {Advances in Neural Information Processing Systems 38 (NeurIPS), Datasets and Benchmarks Track},
+  year      = {2025},
+  note      = {arXiv:2505.20411},
+  url       = {https://arxiv.org/abs/2505.20411}
+}
+
+
+@inproceedings{selfcondition2025,
+  title     = {The Illusion of Diminishing Returns: Measuring Long Horizon Execution in {LLMs}},
+  author    = {Sinha, Akshit and Arun, Arvindh and Goel, Shashwat and Staab, Steffen and Geiping, Jonas},
+  booktitle = {Proceedings of the 14th International Conference on Learning Representations (ICLR)},
+  year      = {2026},
+  note      = {arXiv:2509.09677},
+  url       = {https://arxiv.org/abs/2509.09677}
+}
+
+
+@inproceedings{hiagent2025,
+  title     = {{HiAgent}: Hierarchical Working Memory Management for Solving Long-Horizon Agent Tasks with Large Language Model},
+  author    = {Hu, Mengkang and Chen, Tianxing and Chen, Qiguang and Mu, Yao and Shao, Wenqi and Luo, Ping},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  address   = {Vienna, Austria},
+  publisher = {Association for Computational Linguistics},
+  pages     = {32779--32798},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.acl-long.1575}
+}
+
+@inproceedings{ace2025,
+  title     = {Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models},
+  author    = {Zhang, Qizheng and Hu, Changran and Upasani, Shubhangi and Ma, Boyuan and Hong, Fenglu and Kamanuru, Vamsidhar and Rainton, Jay and Wu, Chen and Ji, Mengmeng and Li, Hanchen and Thakker, Urmish and Zou, James and Olukotun, Kunle},
+  booktitle = {Proceedings of the 14th International Conference on Learning Representations (ICLR)},
+  year      = {2026},
+  note      = {arXiv:2510.04618},
+  url       = {https://arxiv.org/abs/2510.04618}
+}
+
+
+@article{atms1986,
+  author  = {de Kleer, Johan},
+  title   = {An Assumption-Based {TMS}},
+  journal = {Artificial Intelligence},
+  volume  = {28},
+  number  = {2},
+  pages   = {127--162},
+  year    = {1986},
+  doi     = {10.1016/0004-3702(86)90080-9}
+}
+
+@article{hearsay1980,
+  author  = {Erman, Lee D. and Hayes-Roth, Frederick and Lesser, Victor R. and Reddy, D. Raj},
+  title   = {The {Hearsay-II} Speech-Understanding System: Integrating Knowledge to Resolve Uncertainty},
+  journal = {ACM Computing Surveys},
+  volume  = {12},
+  number  = {2},
+  pages   = {213--253},
+  year    = {1980},
+  doi     = {10.1145/356810.356816}
+}
+
+@article{xu2026novice,
+  author  = {Xu, Hexiang and Liu, Hengyuan and Wu, Yonghao and Kang, Xiaolan and Chen, Xiang and Liu, Yong},
+  title   = {Exploring the Potential and Limitations of Large Language Models for Novice Program Fault Localization},
+  journal = {Journal of Systems and Software},
+  volume  = {234},
+  eid     = {112731},
+  pages   = {112731},
+  year    = {2026},
+  doi     = {10.1016/j.jss.2025.112731}
+}
+
+
+@article{wu2026sharerag,
+  title={SHARE-RAG: A structure-aware and hypothesis-guided retrieval-augmented framework for fault localization in novice programs},
+  author={Wu, Li and Wei, Jiqing and Wu, Yonghao and Du, Bin and Zhao, Ruilian and Liu, Yong},
+  journal={Journal of Systems and Software},
+  pages={113057},
+  year={2026},
+  publisher={Elsevier}
+}

@@ -1,0 +1,21 @@
+# DGXSpark local pilot
+
+This pilot uses real local Ollama generation on three SWE-bench Lite **development** cases and three separately selected **held-out test** cases. Repositories do not overlap between splits. Selection uses public case IDs only and is recorded in `protocol.json` before inference. Model weights are preinstalled Q4_K_M Qwen coder 7B and 30B. Cloud-backed entries are excluded.
+
+Six conditions: BM25, graph, LLM rerank, stateless evidence summary, continuous-context/no-forgetting, and MORPH-FL. All inference conditions share model, seed, source/probe permissions and a 16,000-token ceiling. Two rounds keep this a small debugging/efficiency pilot; **adaptive forgetting is not exercised**, so this study cannot establish forgetting effectiveness. Source versions are frozen under ignored artifacts/local/revisions/. All attempted development versions are retained, including regressions. Held-out inference starts only after the final source hash is locked in the protocol.
+
+The unmodified implementation is measured first. Development traces motivate compact graph context, trace-function resolution despite line-number drift and revisiting live hypotheses. These are general source/context corrections; no gold patch or labels enter model prompts. File/function labels are unreviewed patch-change proxies. Three cases and one seed cannot support a statistical significance or state-of-the-art superiority claim. Human causal review and larger repeated benchmark runs remain necessary.
+
+## Reproduce
+
+Install `python -m pip install -e '.[ollama,local-eval,dev]'` locally. This is a DGXSpark workflow; use Alliance modules/wheelhouse on Nibi instead. Download the pinned dev/test parquet files into artifacts/local/data/, then run `PYTHONPATH=src python experiments/local/prepare.py`. The downloader URL is the public dataset's pinned `data/{dev,test}-00000-of-00001.parquet` at the revision in protocol.json; preparation exports pre-fix snapshots and separate evaluator-only labels.
+
+Freeze the source directory, then invoke `python experiments/local/run.py --source <frozen-src-directory> --phase dev --out <output-directory> --models qwen2.5-coder:7b,qwen3-coder:30b`. Re-run with phase test only after locking the source. `pipeline.py` serializes the recorded frozen final version's development and test runs. It uses Linux pidfd to await an earlier pilot without overlapping GPU measurements.
+
+The CLI also supports `morph-fl run --backend ollama --model qwen2.5-coder:7b` with the usual cases/output arguments. The adapter renders verified Qwen ChatML explicitly, uses a matching tokenizer before generation, requests a JSON schema through Ollama's local raw-generation API, then verifies and records server token counts. Tokenizer revision/checksum, model digest, quantization, generation settings, server version and source hash are retained. A tokenizer/accounting mismatch fails the run rather than entering a matched-budget comparison. This adapter intentionally supports the verified Qwen templates; it does not silently use arbitrary models or cloud services.
+
+Use `report.py --runs <run-directories> --out experiments/local/results` to collect CSVs, provenance and Markdown results. Full prompts, responses, observations and audits remain in ignored artifacts/local/. Published system reproductions are separate from these controlled baselines. Ollama quantization/structured decoding and Nibi BF16 Transformers require separate validation.
+
+## Completed pilot artifacts
+
+See [interpretation](results/interpretation.md), the complete [measurement table](results/report.md), CSVs and standalone PNG/PDF figures. Exact source archives for original/intermediate/validated versions are under `source-versions/`; archive and source SHA-256 values are recorded there. Per-cell backend configurations preserve model digest, tokenizer provenance, generation settings and token limits. `verify.py` gates a small HPC runtime smoke on completed valid inference, MORPH hypotheses/evidence and matching source—not on a desired accuracy. Baseline invalid-location abstentions remain measured outcomes with retrieval fallback. The separate longer development diagnostic exercised a real reset but is not a generalization test.
