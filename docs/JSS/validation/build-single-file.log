@@ -1,0 +1,1459 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-04>
+(cas-sc.cls
+Document Class: cas-sc 2024/05/04, 2.4: Formatting class for CAS single column 
+articles
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fleqn.clo)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.
+cfg)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.de
+f)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pd
+ftex.def))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpar
+se.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/makecell\makecell.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\colortbl.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+))) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\dcolumn.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/sttools\stfloats.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xstring\xstring.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/xstring\xstring.tex)
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/footmisc\footmisc.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/footmisc\footmisc-2022
+-02-14.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+)) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\svgnam.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\dvipsnam.def)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.
+sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.st
+y)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefin
+ekeys.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.
+sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmd
+s.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/letltxmacro\letltxmacr
+o.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\getti
+tlestring.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.st
+y)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcal
+c.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty)
+) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfi
+lecheck.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\unique
+counter.sty))) (cas-common.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/moreverb\moreverb.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/wrapfig\wrapfig.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\stix.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)
+)) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\t1stix.fd))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.s
+ty (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algpseudo
+code.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algorithm
+icx.sty
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.s
+ty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-common.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-latex.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs
+.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex
+)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+slibraryfiltered.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.
+cfg)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-pdftex.def
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-common-pdf.def)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+yssoftpath.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ysprotocol.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+re.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil
+.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathpars
+er.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.basic.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.trigonometric.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.random.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.comparison.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.base.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.round.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.misc.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.integerarithmetics.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc
+.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloa
+t.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code
+.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repoints.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathconstruct.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathusage.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rescopes.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+regraphicstate.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransformations.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+requick.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reobjects.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathprocessing.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rearrows.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reshade.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reimage.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reexternal.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+relayers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransparency.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repatterns.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rerdf.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eshapes.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eplot.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-0-65.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-1-18.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.s
+ty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.
+sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor
+.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz\tikz.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryplothandlers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+ematrix.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarytopaths.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgfplots\pgfplots.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.re
+vision.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.co
+de.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscor
+e.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgfplot
+ssysgeneric.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgfplo
+tslibrary.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompa
+tib\pgfplotsoldpgfsupp_loader.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryfpu.code.tex)
+Package pgfplots: loading complementary utilities for your pgf version...
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompa
+tib\pgfplotsoldpgfsupp_pgfutil-common-lists.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsutil.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsliststructure.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsliststructureext.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsarray.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsmatrix.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pg
+fplotstableshared.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsdeque.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsbinary.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsbinary.data.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsutil.verb.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgflib
+rarypgfplots.surfshading.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgflibr
+arypgfplots.surfshading.pgfsys-pdftex.def)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tscolormap.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tscolor.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotssta
+ckedplots.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsplo
+thandlers.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmes
+hplothandler.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmes
+hplotimage.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.sc
+aling.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscoo
+rdprocessing.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.er
+rorbars.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.ma
+rkers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotstic
+ks.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.pa
+ths.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+edecorations.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.pathmorphing.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decora
+tions\pgflibrarydecorations.pathmorphing.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.pathreplacing.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decora
+tions\pgflibrarydecorations.pathreplacing.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzli
+brarypgfplots.contourlua.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryplotmarks.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryplotmarks.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg)
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolorbox.st
+y (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/trimspaces\trimspaces.
+sty)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/seqsplit\seqsplit.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/needspace\needspace.st
+y)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/placeins\placeins.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarypositioning.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryarrows.meta.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryfit.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarybackgrounds.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryshapes.multipart.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes
+\pgflibraryshapes.multipart.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarycalc.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistings.
+code.tex
+Library (tcolorbox): 'tcblistings.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistingsc
+ore.code.tex
+Library (tcolorbox): 'tcblistingscore.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbprocessin
+g.code.tex
+Library (tcolorbox): 'tcbprocessing.code.tex' version '6.2.0'
+)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskins.cod
+e.tex
+Library (tcolorbox): 'tcbskins.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfill.imag
+e.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzlibraryfi
+ll.image.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskinsjigs
+aw.code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '6.2.0'
+)) (main.aux)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stix.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stix.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
+kii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-
+base.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.
+cfg)) (main.out) (main.out)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+Package pgfplots notification 'compat/show suggested version=true': you might b
+enefit from \pgfplotsset{compat=1.18} (current compat level: 1.17).
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixscr.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixex.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixfrak.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixbb.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixcal.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixsf.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixtt.fd)
+Overfull \hbox (117.0831pt too wide) detected at line 55
+[]
+(main.abs)
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd)
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmss.fd)
+[1{C:/Users/babaei/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/b
+abaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/stix/stix-t1.enc}{C:/Users/
+babaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-super/cm-super-t1.enc} 
+<./thumbnails/cas-email.jpeg>]
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ts1stix.fd)
+[2{C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/stix/stix-ts1.
+enc}]
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty)
+[3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
+[19] [20] [21] [22] [23]
+
+LaTeX Font Warning: Font shape `T1/cmss/m/sc' in size <9> not available
+(Font)              Font shape `T1/cmr/m/sc' tried instead on input line 722.
+
+[24] [25]
+Underfull \hbox (badness 10000) in paragraph at lines 798--799
+[]|\T1/cmss/m/n/9 controller,
+
+Underfull \hbox (badness 10000) in paragraph at lines 799--800
+[]|\T1/cmss/m/n/9 config,
+
+Underfull \hbox (badness 1688) in paragraph at lines 806--807
+[]|\T1/cmss/m/n/9 pipeline, poli-
+[26] [27] (main.bbl [28] [29] [30]) [31] (main.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ )
+(see the transcript file for additional information)<C:/Users/babaei/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/public/stix/STIXGeneral-Bold.pfb><C:/Users/baba
+ei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/STIXGeneral-Italic.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/STIXGen
+eral-Regular.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/cm-super/sfcc0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/cm-super/sfit0800.pfb><C:/Users/babaei/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/cm-super/sfsi0800.pfb><C:/Users/babaei/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/cm-super/sfsi0900.pfb><C:/Users/babaei/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/cm-super/sfss0800.pfb><C:/Users/babaei/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfss0900.pfb><C:/User
+s/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfsx0800.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfs
+x0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-
+super/sftt0800.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/cm-super/sftt0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/font
+s/type1/public/cm-super/sftt1000.pfb><C:/Users/babaei/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/stix/stix-mathbb.pfb><C:/Users/babaei/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/stix/stix-mathcal.pfb><C:/Users/babaei/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathex.pfb><C:/Users/babaei/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathfrak.pfb><C:/Use
+rs/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathit.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-ma
+thrm-bold.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/stix/stix-mathrm.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/stix/stix-mathscr.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/stix/stix-mathsf.pfb>
+Output written on main.pdf (31 pages, 724018 bytes).
+Transcript written on main.log.
+pdflatex: major issue: So far, you have not checked for MiKTeX updates.
+This is BibTeX, Version 0.99d (MiKTeX 24.1)
+The top-level auxiliary file: main.aux
+The style file: cas-model2-names.bst
+Database file #1: references.bib
+Warning--empty pages in swerebench2025
+Warning--empty pages in swebench2024
+Warning--empty pages in acon2026
+Warning--empty pages in multiturn2025
+Warning--empty pages in complexitytrap2025
+Warning--empty pages in swerank2026
+Warning--empty pages in repomem2026
+Warning--empty pages in openhands2025
+Warning--empty pages in amem2025
+(There were 9 warnings)
+bibtex: major issue: So far, you have not checked for MiKTeX updates.
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-04>
+(cas-sc.cls
+Document Class: cas-sc 2024/05/04, 2.4: Formatting class for CAS single column 
+articles
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fleqn.clo)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.
+cfg)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.de
+f)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pd
+ftex.def))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpar
+se.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/makecell\makecell.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\colortbl.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+))) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\dcolumn.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/sttools\stfloats.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xstring\xstring.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/xstring\xstring.tex)
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/footmisc\footmisc.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/footmisc\footmisc-2022
+-02-14.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+)) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\svgnam.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\dvipsnam.def)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.
+sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.st
+y)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefin
+ekeys.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.
+sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmd
+s.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/letltxmacro\letltxmacr
+o.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\getti
+tlestring.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.st
+y)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcal
+c.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty)
+) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfi
+lecheck.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\unique
+counter.sty))) (cas-common.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/moreverb\moreverb.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/wrapfig\wrapfig.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\stix.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)
+)) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\t1stix.fd))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.s
+ty (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algpseudo
+code.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algorithm
+icx.sty
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.s
+ty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-common.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-latex.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs
+.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex
+)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+slibraryfiltered.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.
+cfg)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-pdftex.def
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-common-pdf.def)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+yssoftpath.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ysprotocol.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+re.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil
+.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathpars
+er.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.basic.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.trigonometric.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.random.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.comparison.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.base.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.round.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.misc.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.integerarithmetics.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc
+.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloa
+t.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code
+.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repoints.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathconstruct.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathusage.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rescopes.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+regraphicstate.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransformations.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+requick.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reobjects.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathprocessing.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rearrows.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reshade.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reimage.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reexternal.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+relayers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransparency.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repatterns.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rerdf.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eshapes.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eplot.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-0-65.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-1-18.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.s
+ty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.
+sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor
+.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz\tikz.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryplothandlers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+ematrix.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarytopaths.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgfplots\pgfplots.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.re
+vision.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.co
+de.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscor
+e.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgfplot
+ssysgeneric.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgfplo
+tslibrary.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompa
+tib\pgfplotsoldpgfsupp_loader.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryfpu.code.tex)
+Package pgfplots: loading complementary utilities for your pgf version...
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompa
+tib\pgfplotsoldpgfsupp_pgfutil-common-lists.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsutil.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsliststructure.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsliststructureext.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsarray.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsmatrix.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pg
+fplotstableshared.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsdeque.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsbinary.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsbinary.data.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsutil.verb.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgflib
+rarypgfplots.surfshading.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgflibr
+arypgfplots.surfshading.pgfsys-pdftex.def)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tscolormap.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tscolor.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotssta
+ckedplots.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsplo
+thandlers.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmes
+hplothandler.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmes
+hplotimage.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.sc
+aling.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscoo
+rdprocessing.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.er
+rorbars.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.ma
+rkers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotstic
+ks.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.pa
+ths.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+edecorations.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.pathmorphing.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decora
+tions\pgflibrarydecorations.pathmorphing.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.pathreplacing.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decora
+tions\pgflibrarydecorations.pathreplacing.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzli
+brarypgfplots.contourlua.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryplotmarks.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryplotmarks.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg)
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolorbox.st
+y (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/trimspaces\trimspaces.
+sty)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/seqsplit\seqsplit.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/needspace\needspace.st
+y)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/placeins\placeins.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarypositioning.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryarrows.meta.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryfit.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarybackgrounds.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryshapes.multipart.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes
+\pgflibraryshapes.multipart.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarycalc.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistings.
+code.tex
+Library (tcolorbox): 'tcblistings.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistingsc
+ore.code.tex
+Library (tcolorbox): 'tcblistingscore.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbprocessin
+g.code.tex
+Library (tcolorbox): 'tcbprocessing.code.tex' version '6.2.0'
+)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskins.cod
+e.tex
+Library (tcolorbox): 'tcbskins.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfill.imag
+e.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzlibraryfi
+ll.image.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskinsjigs
+aw.code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '6.2.0'
+)) (main.aux)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stix.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stix.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
+kii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-
+base.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.
+cfg)) (main.out) (main.out)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+Package pgfplots notification 'compat/show suggested version=true': you might b
+enefit from \pgfplotsset{compat=1.18} (current compat level: 1.17).
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixscr.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixex.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixfrak.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixbb.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixcal.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixsf.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixtt.fd)
+Overfull \hbox (117.0831pt too wide) detected at line 55
+[]
+(main.abs)
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd)
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmss.fd)
+[1{C:/Users/babaei/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/b
+abaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/stix/stix-t1.enc}{C:/Users/
+babaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-super/cm-super-t1.enc} 
+<./thumbnails/cas-email.jpeg>]
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ts1stix.fd)
+[2{C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/stix/stix-ts1.
+enc}]
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty)
+[3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
+[19] [20] [21] [22] [23]
+
+LaTeX Font Warning: Font shape `T1/cmss/m/sc' in size <9> not available
+(Font)              Font shape `T1/cmr/m/sc' tried instead on input line 722.
+
+[24] [25]
+Underfull \hbox (badness 10000) in paragraph at lines 798--799
+[]|\T1/cmss/m/n/9 controller,
+
+Underfull \hbox (badness 10000) in paragraph at lines 799--800
+[]|\T1/cmss/m/n/9 config,
+
+Underfull \hbox (badness 1688) in paragraph at lines 806--807
+[]|\T1/cmss/m/n/9 pipeline, poli-
+[26] [27] (main.bbl [28] [29] [30]) [31] (main.aux) )
+(see the transcript file for additional information)<C:/Users/babaei/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/public/stix/STIXGeneral-Bold.pfb><C:/Users/baba
+ei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/STIXGeneral-Italic.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/STIXGen
+eral-Regular.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/cm-super/sfcc0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/cm-super/sfit0800.pfb><C:/Users/babaei/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/cm-super/sfsi0800.pfb><C:/Users/babaei/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/cm-super/sfsi0900.pfb><C:/Users/babaei/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/cm-super/sfss0800.pfb><C:/Users/babaei/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfss0900.pfb><C:/User
+s/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfsx0800.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfs
+x0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-
+super/sftt0800.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/cm-super/sftt0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/font
+s/type1/public/cm-super/sftt1000.pfb><C:/Users/babaei/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/stix/stix-mathbb.pfb><C:/Users/babaei/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/stix/stix-mathcal.pfb><C:/Users/babaei/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathex.pfb><C:/Users/babaei/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathfrak.pfb><C:/Use
+rs/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathit.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-ma
+thrm-bold.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/stix/stix-mathrm.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/stix/stix-mathscr.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/stix/stix-mathsf.pfb>
+Output written on main.pdf (31 pages, 724018 bytes).
+Transcript written on main.log.
+pdflatex: major issue: So far, you have not checked for MiKTeX updates.
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-04>
+(cas-sc.cls
+Document Class: cas-sc 2024/05/04, 2.4: Formatting class for CAS single column 
+articles
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fleqn.clo)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.
+cfg)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.de
+f)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pd
+ftex.def))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpar
+se.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/makecell\makecell.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\colortbl.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+))) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\dcolumn.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/sttools\stfloats.sty)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xstring\xstring.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/xstring\xstring.tex)
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/footmisc\footmisc.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/footmisc\footmisc-2022
+-02-14.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+)) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\svgnam.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\dvipsnam.def)
+ (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.
+sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.st
+y)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefin
+ekeys.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.
+sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmd
+s.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/letltxmacro\letltxmacr
+o.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\getti
+tlestring.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.st
+y)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcal
+c.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty)
+) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfi
+lecheck.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\unique
+counter.sty))) (cas-common.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/moreverb\moreverb.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/wrapfig\wrapfig.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\stix.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)
+)) (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\t1stix.fd))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/natbib\natbib.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.s
+ty (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algpseudo
+code.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/algorithmicx\algorithm
+icx.sty
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.s
+ty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-common.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-latex.def)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs
+.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex
+)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys
+.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+slibraryfiltered.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.
+cfg)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-pdftex.def
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-common-pdf.def)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+yssoftpath.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ysprotocol.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+re.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil
+.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathpars
+er.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.basic.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.trigonometric.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.random.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.comparison.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.base.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.round.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.misc.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.integerarithmetics.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc
+.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloa
+t.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code
+.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repoints.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathconstruct.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathusage.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rescopes.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+regraphicstate.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransformations.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+requick.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reobjects.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathprocessing.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rearrows.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reshade.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reimage.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reexternal.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+relayers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransparency.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repatterns.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rerdf.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eshapes.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eplot.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-0-65.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-1-18.sty))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.s
+ty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.
+sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor
+.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz\tikz.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryplothandlers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+ematrix.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarytopaths.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/pgfplots\pgfplots.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.re
+vision.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.co
+de.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscor
+e.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgfplot
+ssysgeneric.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgfplo
+tslibrary.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompa
+tib\pgfplotsoldpgfsupp_loader.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryfpu.code.tex)
+Package pgfplots: loading complementary utilities for your pgf version...
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompa
+tib\pgfplotsoldpgfsupp_pgfutil-common-lists.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsutil.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsliststructure.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsliststructureext.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsarray.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsmatrix.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pg
+fplotstableshared.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructu
+re\pgfplotsdeque.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsbinary.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsbinary.data.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tsutil.verb.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgflib
+rarypgfplots.surfshading.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgflibr
+arypgfplots.surfshading.pgfsys-pdftex.def)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tscolormap.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplo
+tscolor.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotssta
+ckedplots.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsplo
+thandlers.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmes
+hplothandler.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmes
+hplotimage.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.sc
+aling.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscoo
+rdprocessing.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.er
+rorbars.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.ma
+rkers.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotstic
+ks.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.pa
+ths.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+edecorations.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.pathmorphing.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decora
+tions\pgflibrarydecorations.pathmorphing.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarydecorations.pathreplacing.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decora
+tions\pgflibrarydecorations.pathreplacing.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzli
+brarypgfplots.contourlua.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryplotmarks.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryplotmarks.code.tex)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg)
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolorbox.st
+y (C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/trimspaces\trimspaces.
+sty)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/seqsplit\seqsplit.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/needspace\needspace.st
+y)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/placeins\placeins.sty)
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarypositioning.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryarrows.meta.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryfit.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarybackgrounds.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryshapes.multipart.code.tex
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes
+\pgflibraryshapes.multipart.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarycalc.code.tex)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistings.
+code.tex
+Library (tcolorbox): 'tcblistings.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistingsc
+ore.code.tex
+Library (tcolorbox): 'tcblistingscore.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbprocessin
+g.code.tex
+Library (tcolorbox): 'tcbprocessing.code.tex' version '6.2.0'
+)))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskins.cod
+e.tex
+Library (tcolorbox): 'tcbskins.code.tex' version '6.2.0'
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfill.imag
+e.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzlibraryfi
+ll.image.code.tex))
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskinsjigs
+aw.code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '6.2.0'
+)) (main.aux)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stix.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stix.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
+kii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-
+base.sty
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.
+cfg)) (main.out) (main.out)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+Package pgfplots notification 'compat/show suggested version=true': you might b
+enefit from \pgfplotsset{compat=1.18} (current compat level: 1.17).
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixscr.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixex.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixfrak.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixbb.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixcal.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls1stixsf.fd)
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ls2stixtt.fd)
+Overfull \hbox (117.0831pt too wide) detected at line 55
+[]
+(main.abs)
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd)
+
+Package hyperref Warning: Ignoring empty anchor on input line 55.
+
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmss.fd)
+[1{C:/Users/babaei/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/b
+abaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/stix/stix-t1.enc}{C:/Users/
+babaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-super/cm-super-t1.enc} 
+<./thumbnails/cas-email.jpeg>]
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/stix\ts1stix.fd)
+[2{C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/stix/stix-ts1.
+enc}]
+(C:\Users\babaei\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty)
+[3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
+[19] [20] [21] [22] [23]
+
+LaTeX Font Warning: Font shape `T1/cmss/m/sc' in size <9> not available
+(Font)              Font shape `T1/cmr/m/sc' tried instead on input line 722.
+
+[24] [25]
+Underfull \hbox (badness 10000) in paragraph at lines 798--799
+[]|\T1/cmss/m/n/9 controller,
+
+Underfull \hbox (badness 10000) in paragraph at lines 799--800
+[]|\T1/cmss/m/n/9 config,
+
+Underfull \hbox (badness 1688) in paragraph at lines 806--807
+[]|\T1/cmss/m/n/9 pipeline, poli-
+[26] [27] (main.bbl [28] [29] [30]) [31] (main.aux) )
+(see the transcript file for additional information)<C:/Users/babaei/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/public/stix/STIXGeneral-Bold.pfb><C:/Users/baba
+ei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/STIXGeneral-Italic.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/STIXGen
+eral-Regular.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/cm-super/sfcc0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/cm-super/sfit0800.pfb><C:/Users/babaei/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/cm-super/sfsi0800.pfb><C:/Users/babaei/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/cm-super/sfsi0900.pfb><C:/Users/babaei/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/cm-super/sfss0800.pfb><C:/Users/babaei/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfss0900.pfb><C:/User
+s/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfsx0800.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfs
+x0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-
+super/sftt0800.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/cm-super/sftt0900.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/font
+s/type1/public/cm-super/sftt1000.pfb><C:/Users/babaei/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/stix/stix-mathbb.pfb><C:/Users/babaei/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/stix/stix-mathcal.pfb><C:/Users/babaei/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathex.pfb><C:/Users/babaei/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathfrak.pfb><C:/Use
+rs/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-mathit.pfb
+><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public/stix/stix-ma
+thrm-bold.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/stix/stix-mathrm.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/stix/stix-mathscr.pfb><C:/Users/babaei/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/stix/stix-mathsf.pfb>
+Output written on main.pdf (31 pages, 724018 bytes).
+Transcript written on main.log.
+pdflatex: major issue: So far, you have not checked for MiKTeX updates.

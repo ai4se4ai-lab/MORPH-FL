@@ -1,0 +1,46 @@
+\section{Results}\label{sec:results}
+\subsection{RQ1: ranking outcomes}\label{sec:rq1}\label{sec:coverage}
+With Qwen, adaptive, continuous and fixed reset each place a patch file first on 21/50 issues (42\%). Observation-only reaches 25/50 (50\%), file MRR 0.645 versus 0.561 for adaptive, and function Top-1 of 11/48 versus 8/48. Its Top-10 also rises from 86\% to 90\%; the difference is not confined to first rank (Table~\ref{tab:eval-ranking}).
+\input{generated/ranking.tex}
+
+With DeepSeek all four conditions reach 20/50 file Top-1 (40\%). Adaptive, continuous and fixed reset also share file Top-5/10 and MRR, equal to BM25's reported values. Observation-only reaches 72\% Top-5 and 88\% Top-10 versus 70\% and 86\%, and yields six function Top-1 hits instead of zero. Aggregate equality with retrieval does not establish identical ranked paths.
+
+Full, continuous and fixed reset have identical per-issue Top-1 hit indicators under each model, not merely equal means. Their full rankings need not match: Qwen Top-5 and MRR differ. Observation-only gains five Qwen hits that adaptive misses and loses one, a net four issues or 8\,pp; with DeepSeek it gains four and loses four (Table~\ref{tab:paired}).
+\input{generated/paired.tex}
+
+The full-minus-observation-only intervals are $[-16,0]$\,pp with Qwen and $[-9.8,+12.0]$\,pp with DeepSeek. The $[0,0]$ intervals against continuous and fixed reset reflect zero discordance in this fixed sample, not population precision or equivalence. These descriptive intervals and few discordances do not establish confirmatory superiority. Both retrieval controls supply 20/50 Top-1 hits: the full workflow adds one net hit with Qwen and none with DeepSeek.
+
+\noindent\textbf{Answer to RQ1.} Observation-only has the highest observed Qwen ranking scores and the only nonzero DeepSeek function Top-1. Reset workflows gain no Top-1 hits over continuous context in this sample. No whole-benchmark or state-of-the-art claim follows.
+
+\subsection{RQ2: reset exposure and rank-one hits}\label{sec:rq2}
+Adaptive reset acts in 8/50 Qwen runs, with nine events (mean 0.18), and 29/50 DeepSeek runs, with thirty events (mean 0.60). Fixed reset acts in all fifty Qwen runs with 52 events and 45/50 DeepSeek runs with 72 events (Table~\ref{tab:eval-mechanisms}). Invalid attempts and budget termination can prevent a scheduled reset.
+\input{generated/process.tex}
+
+Adaptive exposure is limited with Qwen but covers a majority of DeepSeek investigations. The absence of extra Top-1 hits cannot be explained simply by no resets occurring. It also does not prove each reset was ineffective: other ranks and trajectories may change, and triggering on evolving state does not randomly assign intervention to a stalled trajectory.
+
+Diversity is zero for fewer than two hypotheses. The monitor can therefore act on an empty, zero-gain investigation, subject to other readiness/budget gates. A reset event is not evidence of recovery from a wrong explanation. An identifier-preservation assertion checks record retention, not reasoning quality.
+
+\noindent\textbf{Answer to RQ2.} Adaptive resets affect 16\% of Qwen and 58\% of DeepSeek runs; fixed reset acts more often. Neither reset workflow gains file Top-1 hits over continuous context. This is a negative result for the tested configurations, not proof that resetting is universally unnecessary.
+
+\subsection{RQ3: tokens and elapsed time}\label{sec:rq3}
+Adaptive uses 28,257 versus 27,573 tokens with Qwen and 29,197 versus 27,912 with DeepSeek compared with continuous context. Mean times are 93.6 versus 89.5 seconds and 55.0 versus 48.3 seconds. There is no positive file-Top-1 difference to offset these larger means (Table~\ref{tab:eval-cost}).
+\input{generated/cost.tex}
+
+Observation-only uses 29,325 tokens and 140.3 seconds with Qwen and 29,920 tokens and 111.5 seconds with DeepSeek. Relative to adaptive, time is approximately $1.50\times$ and $2.03\times$. Mean output tokens rise from 3,138 to 5,150 with Qwen and 920 to 2,506 with DeepSeek. More usable output and proposals are compatible with higher time, but no phase-level causal timing attribution is established.
+
+A common ceiling does not equalize actual consumption, output volume or time. Retrieval uses zero LLM tokens but nonzero computation. These means do not establish total savings, budget scaling or developer productivity.
+
+\noindent\textbf{Answer to RQ3.} Adaptive reset has no demonstrated token/time benefit over continuous context at this ceiling. Observation-only's favorable output outcomes accompany greater mean time with both models.
+
+\subsection{RQ4: output beyond file accuracy}\label{sec:rq4}
+DeepSeek finishes with hypotheses on 6/50 adaptive and continuous runs, 7/50 fixed runs and 47/50 observation-only runs (Table~\ref{tab:eval-mechanisms}). Observation-only's net difference from adaptive is 41 runs or 82\,pp. Paired by issue, 43 cases gain a pool under observation-only and two have a pool only under adaptive; four have both and one neither. This is not a claim that every adaptive output survives.
+
+Qwen has pools in 49/50 runs for each richer view and 50/50 for observation-only. Groundability does not certify correctness. The two models share subjects and must not be pooled into one general accuracy estimate.
+
+Table~\ref{tab:eval-pilot} separates DeepSeek events from run outcomes. Adaptive has 218 accepted responses and 22 hypothesis events; observation-only has 293 and 259. Invalid-response counts are 68 and 50. Accepted responses can therefore yield no grounded hypothesis; malformed JSON alone does not explain the final pools.
+\input{generated/funnel.tex}
+
+Hypothesis events may repeat proposals and are not correct explanations. Request counts need not equal accepted plus invalid responses because a request can terminate at a context/token limit. We do not infer a response-level conversion probability from heterogeneous event totals.
+
+\noindent\textbf{Answer to RQ4.} File accuracy can mask failure to produce hypothesis-based investigations. Pool availability, response diagnostics and function hits distinguish workflows even where file Top-1 is equal. This finding concerns recorded output; its cause remains confounded by bundled changes and the ambiguity defect.
+

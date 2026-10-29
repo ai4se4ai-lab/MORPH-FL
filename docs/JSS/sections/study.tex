@@ -1,0 +1,52 @@
+\section{Evaluation}\label{sec:study}
+\subsection{Design and subjects}
+An experimental unit is one issue investigated by one workflow with one LLM and seed. The same 50 issues receive four context configurations with two LLMs, giving $50\times4\times2=400$ investigations. Two deterministic retrieval controls run once per issue, giving 100 additional records. All specified keys are present; there is no workflow-dependent case exclusion.
+
+Subjects come from the 707 unique issues in the union of SWE-bench Lite and Verified~\citep{swebench2024,swebenchverified2024}. The splits contain 300 and 500 issues and share 93; an issue in both enters our sample once. Selection proceeds round-robin across twelve repositories, in deterministic hash order within each repository, after excluding thirteen previously inspected development IDs. The selected IDs were fixed before opening predictions or labels for this selection. Balancing limits domination by a large project but changes the benchmark mixture; the sample is not randomly representative of either split.
+
+Table~\ref{tab:eval-coverage} gives repository composition. All fifty issues have file targets and 48 have function targets. Investigators receive public reports and pre-fix source. Reference patches remain evaluator-only and supply changed-file/function targets. These are unreviewed localization proxies, not adjudicated root causes.
+\input{generated/subjects.tex}
+
+\subsection{Workflow contrasts}\label{sec:variants}
+The four LLM conditions share grounding, source/probe validation, evidence processing, scoring, source-excerpt construction rules, role instructions and ranking machinery. Within each model, they use the same checkpoint and resource ceilings. Evolving hypotheses can change which files are displayed, so downstream source visibility need not be identical across workflows.
+\begin{table}[t]
+\caption{Evaluated configurations. Dialogue and hypothesis-pool retention are part of the treatment.}\label{tab:variants}
+\centering\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{.20\textwidth}p{.24\textwidth}p{.48\textwidth}@{}}\toprule
+Workflow & Artifact name & Memory and reset policy\\\midrule
+Full adaptive & \code{morph} & Project model state plus role dialogue; reset and prune on stagnation\\
+Continuous & \code{no_forgetting} & Keep dialogue and all live hypotheses; no resets\\
+Fixed reset & \code{fixed_reset} & Same reset/pruning operation every third attempt if that attempt is accepted\\
+Observation-only & \code{stateless_summary} & Report and compact observations as memory; no dialogue, resets or pruning\\
+BM25 / Graph & \code{bm25}, \code{graph} & File retrieval; no LLM or function ranking\\\bottomrule
+\end{tabular*}
+\end{table}
+
+Observation-only retains common numbered source excerpts, retrieval ranks, revision and instructions. It omits hypotheses, interpreted behavior, unresolved predictions, relations, displayed budget and detailed provenance from its memory view. Its historical name does not refer to an LLM-written summary. It still retains hypotheses internally, grounds/checks proposals and uses scores to rank locations. Its unpruned pool can affect final ranking.
+
+This bundled contrast cannot isolate removing dialogue, hypotheses or any individual field. All workflows retain evidence externally, so none identifies the benefit of preserving observations against deleting them. The scope is controlled context-policy comparison within one implementation, not competition against complete external localization systems.
+
+\subsection{Runtime and provenance}\label{sec:implementation}
+The checkpoints are Qwen2.5-Coder-7B-Instruct~\citep{qwen25coder2024} and DeepSeek-Coder-6.7B-Instruct~\citep{deepseekcoder2024}. Runs use seed 1, BF16, a cumulative 32,000 input-plus-output token ceiling, at most 16 attempts and a 16,384-token per-request limit. Generation is capped at 1,536 output tokens per request. Sampling uses temperature 0.2, top-$p$ 0.95 and top-$k$ 50. Each model runs on one NVIDIA A30 GPU (24\,GB) according to pinned allocation. Roles are sequential, not four concurrent models. Invalid generations consume their actual tokens. Library defaults in Table~\ref{tab:defaults} differ from study settings.
+
+The evaluated runtime is frozen v12 from 20 October 2026. The manifest records selection/protocol digests; Appendix~\ref{app:reproduction} records model/dataset pins. Of the 400 predictions, 132 Qwen records were imported from earlier collection after identity validation and 268 were newly collected. Reused records were not regenerated or counted twice. The selected sample excludes the recorded development IDs, but reuse and outcome-informed interpretation mean it is not untouched confirmation.
+
+Archived finalization verified 400 investigation and 100 control records on 25 October. Subsequent checker hardening addressed protocol, revision and shard-identity checks; metadata inspection found saved configurations consistent with those identities. It did not freshly revalidate all raw contents under the hardened checker. Our local analysis checks score-table coverage and aggregates; complete raw audit release remains an artifact requirement.
+
+All evaluated probes are source-only. Source/AST agreement is not execution-based causal validation. The frozen behavior transformation has a demonstrated prompt-growth defect: repeated unresolved ambiguities can be appended and displayed again. Richer requests show these duplicates; observation-only omits the field. Prevalence and accuracy impact remain unquantified. A later regression-tested correction is outside the evaluated runtime and supplies no new inference result.
+
+\subsection{Measures and analysis}
+For an eligible issue $i$, let $r_i$ be the first patch target's rank in a deduplicated ranking, with $r_i=\infty$ if absent:
+\begin{equation}\label{eq:metrics}
+\mathrm{Top}\mbox{-}k=\frac{1}{M}\sum_{i=1}^{M}\mathbb{1}[r_i\le k],
+\qquad
+\mathrm{MRR}=\frac{1}{M}\sum_{i=1}^{M}1/r_i,\quad 1/\infty=0.
+\end{equation}
+File metrics use $M=50$, function metrics $M=48$. Class-only entries are not exact function hits. Empty outputs are misses, not removed. File/function outputs are independently ranked. Source grounding establishes admissibility, not diagnostic correctness.
+
+We also measure final nonempty pools, runs with at least one reset, total/mean resets, actual tokens and elapsed seconds. Empty pools use retrieval order for files and supply no hypothesis-derived function ranking. Resources include calls within the recorded completed investigation but exclude interrupted/retried attempts, setup, energy and developer effort. Different tokenizers limit cross-model token comparisons.
+
+Paired file-Top-1 effects are full adaptive minus comparator in percentage points (pp). We report discordances in both directions. Saved descriptive 95\% repository-cluster intervals use 2,000 draws, Python random seed 20261024, resampling twelve repository groups with replacement while retaining all their issues~\citep{efron1993,clusterbootstrap2007}. These unadjusted intervals are not confirmatory superiority or equivalence tests. We do not retrofit significance testing to inspected outcomes.
+
+Reset exposure and paired pool analyses are descriptive analyses of saved scores added during revision. Interpreting observation-only as preferable is post hoc. We preserve the manifest, scores, original bootstrap report and diagnostics; generated manuscript tables are separate analysis artifacts. Smoke/preflight records and other issue cohorts are excluded.
+

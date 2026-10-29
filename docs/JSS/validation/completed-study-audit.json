@@ -1,0 +1,366 @@
+{
+  "status": "passed",
+  "scope": "Completed 50-issue score-table and generated-table audit only. Does not validate inaccessible raw signatures, original source execution or stored bootstrap intervals.",
+  "selection": {
+    "issues": 50,
+    "repositories": 12,
+    "function_eligible": 48,
+    "models": 2,
+    "workflows": 4,
+    "seed": 1
+  },
+  "primary_records": 400,
+  "control_records": 100,
+  "reused": 132,
+  "new": 268,
+  "inputs": [
+    {
+      "path": "experiments/pilot/results/analysis/scores.csv",
+      "sha256": "016138f5c1e35344116016aa92befb8fd869aae8e58601766964fbf79f6ff841"
+    },
+    {
+      "path": "experiments/pilot/results/analysis/report.md",
+      "sha256": "4eeae1a98d77445b7aee00f7f26a8b6f6d16b6daa0ae323ade6ed798fe48e819"
+    },
+    {
+      "path": "experiments/pilot/results/analysis/summary.json",
+      "sha256": "c817899047756a5fb9ab188b2e4bd45cd0f911f45c3d6a920d66bec9bae47fe5"
+    },
+    {
+      "path": "experiments/pilot/results/analysis/controls.json",
+      "sha256": "ae44950a5dab30d6802385b2f281e03ca37b37433b427060782a63a942ac06b6"
+    },
+    {
+      "path": "experiments/pilot/results/analysis/completeness.json",
+      "sha256": "936b3196225cfdb3e378d392d7b258c2d7c2daed43369a3a90c48b9419974744"
+    },
+    {
+      "path": "experiments/pilot/results/analysis/quality.json",
+      "sha256": "b6f27b9b4bc99d26c7ba419ea2010797ab4cc37ec624ac5f28997183d49da172"
+    },
+    {
+      "path": "experiments/pilot/results/analysis/final-verification.json",
+      "sha256": "440f11bd4d7073297f5b53df2564fc9e9204b7cfbb1ab2e9910827d3b83ef213"
+    },
+    {
+      "path": "experiments/pilot/results/pilot.json",
+      "sha256": "041e396f642178f078d9d781f5c32e763df4cd7f51645ea997518b389d45dbeb"
+    }
+  ],
+  "groups": [
+    {
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "name": "Qwen",
+      "variant": "morph",
+      "workflow": "Full adaptive",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.42,
+      "top5": 0.72,
+      "top10": 0.86,
+      "mrr": 0.5609041873159519,
+      "function_top1": 0.16666666666666666,
+      "function_mrr": 0.17708333333333334,
+      "tokens": 28256.82,
+      "output_tokens": 3138.12,
+      "seconds": 93.60189335832372,
+      "resets": 0.18,
+      "reset_runs": 8,
+      "total_resets": 9,
+      "final_pools": 49
+    },
+    {
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "name": "Qwen",
+      "variant": "no_forgetting",
+      "workflow": "Continuous",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.42,
+      "top5": 0.74,
+      "top10": 0.86,
+      "mrr": 0.5720152984270631,
+      "function_top1": 0.16666666666666666,
+      "function_mrr": 0.17708333333333334,
+      "tokens": 27573.48,
+      "output_tokens": 3025.28,
+      "seconds": 89.51558920596726,
+      "resets": 0,
+      "reset_runs": 0,
+      "total_resets": 0,
+      "final_pools": 49
+    },
+    {
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "name": "Qwen",
+      "variant": "fixed_reset",
+      "workflow": "Fixed reset",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.42,
+      "top5": 0.76,
+      "top10": 0.88,
+      "mrr": 0.5771435035552682,
+      "function_top1": 0.14583333333333334,
+      "function_mrr": 0.17013888888888892,
+      "tokens": 29114.44,
+      "output_tokens": 3222.24,
+      "seconds": 94.70196912667248,
+      "resets": 1.04,
+      "reset_runs": 50,
+      "total_resets": 52,
+      "final_pools": 49
+    },
+    {
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "name": "Qwen",
+      "variant": "stateless_summary",
+      "workflow": "Observation-only",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.5,
+      "top5": 0.78,
+      "top10": 0.9,
+      "mrr": 0.6450781440781441,
+      "function_top1": 0.22916666666666666,
+      "function_mrr": 0.2708333333333333,
+      "tokens": 29325.22,
+      "output_tokens": 5149.68,
+      "seconds": 140.28292443880812,
+      "resets": 0,
+      "reset_runs": 0,
+      "total_resets": 0,
+      "final_pools": 50
+    },
+    {
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "name": "DeepSeek",
+      "variant": "morph",
+      "workflow": "Full adaptive",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.4,
+      "top5": 0.7,
+      "top10": 0.86,
+      "mrr": 0.5465708539826186,
+      "function_top1": 0,
+      "function_mrr": 0,
+      "tokens": 29196.76,
+      "output_tokens": 919.7,
+      "seconds": 54.97392359734047,
+      "resets": 0.6,
+      "reset_runs": 29,
+      "total_resets": 30,
+      "final_pools": 6
+    },
+    {
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "name": "DeepSeek",
+      "variant": "no_forgetting",
+      "workflow": "Continuous",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.4,
+      "top5": 0.7,
+      "top10": 0.86,
+      "mrr": 0.5465708539826186,
+      "function_top1": 0,
+      "function_mrr": 0,
+      "tokens": 27911.72,
+      "output_tokens": 812.22,
+      "seconds": 48.319297582418656,
+      "resets": 0,
+      "reset_runs": 0,
+      "total_resets": 0,
+      "final_pools": 6
+    },
+    {
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "name": "DeepSeek",
+      "variant": "fixed_reset",
+      "workflow": "Fixed reset",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.4,
+      "top5": 0.7,
+      "top10": 0.86,
+      "mrr": 0.5465708539826186,
+      "function_top1": 0,
+      "function_mrr": 0,
+      "tokens": 29553.08,
+      "output_tokens": 960.72,
+      "seconds": 53.75050514773931,
+      "resets": 1.44,
+      "reset_runs": 45,
+      "total_resets": 72,
+      "final_pools": 7
+    },
+    {
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "name": "DeepSeek",
+      "variant": "stateless_summary",
+      "workflow": "Observation-only",
+      "n": 50,
+      "function_n": 48,
+      "top1": 0.4,
+      "top5": 0.72,
+      "top10": 0.88,
+      "mrr": 0.5499212813330461,
+      "function_top1": 0.125,
+      "function_mrr": 0.13541666666666666,
+      "tokens": 29920.38,
+      "output_tokens": 2505.72,
+      "seconds": 111.47428197915666,
+      "resets": 0,
+      "reset_runs": 0,
+      "total_resets": 0,
+      "final_pools": 47
+    }
+  ],
+  "paired": [
+    {
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "comparator": "no_forgetting",
+      "left_only": 0,
+      "right_only": 0,
+      "delta_pp": 0,
+      "pool_left_only": 0,
+      "pool_right_only": 0,
+      "interval": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "comparator": "fixed_reset",
+      "left_only": 0,
+      "right_only": 0,
+      "delta_pp": 0,
+      "pool_left_only": 0,
+      "pool_right_only": 0,
+      "interval": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "comparator": "stateless_summary",
+      "left_only": 1,
+      "right_only": 5,
+      "delta_pp": -8,
+      "pool_left_only": 0,
+      "pool_right_only": 1,
+      "interval": [
+        -16,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "comparator": "no_forgetting",
+      "left_only": 0,
+      "right_only": 0,
+      "delta_pp": 0,
+      "pool_left_only": 0,
+      "pool_right_only": 0,
+      "interval": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "comparator": "fixed_reset",
+      "left_only": 0,
+      "right_only": 0,
+      "delta_pp": 0,
+      "pool_left_only": 0,
+      "pool_right_only": 1,
+      "interval": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "comparator": "stateless_summary",
+      "left_only": 4,
+      "right_only": 4,
+      "delta_pp": 0,
+      "pool_left_only": 2,
+      "pool_right_only": 43,
+      "interval": [
+        -9.8,
+        12
+      ]
+    }
+  ],
+  "repositories": [
+    {
+      "repo": "astropy/astropy",
+      "issues": 5
+    },
+    {
+      "repo": "django/django",
+      "issues": 5
+    },
+    {
+      "repo": "matplotlib/matplotlib",
+      "issues": 5
+    },
+    {
+      "repo": "mwaskom/seaborn",
+      "issues": 4
+    },
+    {
+      "repo": "pallets/flask",
+      "issues": 3
+    },
+    {
+      "repo": "psf/requests",
+      "issues": 4
+    },
+    {
+      "repo": "pydata/xarray",
+      "issues": 4
+    },
+    {
+      "repo": "pylint-dev/pylint",
+      "issues": 4
+    },
+    {
+      "repo": "pytest-dev/pytest",
+      "issues": 4
+    },
+    {
+      "repo": "scikit-learn/scikit-learn",
+      "issues": 4
+    },
+    {
+      "repo": "sphinx-doc/sphinx",
+      "issues": 4
+    },
+    {
+      "repo": "sympy/sympy",
+      "issues": 4
+    }
+  ],
+  "generated_tables": [
+    "subjects.tex",
+    "ranking.tex",
+    "paired.tex",
+    "process.tex",
+    "cost.tex",
+    "funnel.tex"
+  ],
+  "manuscript_files": [
+    {
+      "path": "docs/JSS/main.tex",
+      "sha256": "698feacfaa43f0841aceb4918f8d53cc1f10a071e4d85902d61c486271e16b6f"
+    }
+  ],
+  "citation_keys": 71,
+  "highlights": 5
+}

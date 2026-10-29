@@ -1,0 +1,24 @@
+\section{Discussion}\label{sec:discussion}
+\subsection{Does forgetting help?}
+The answer depends on the intervention and outcome. Resetting on stagnation does not yield extra Top-1 hits over continuous context with either model. Observation-only yields higher observed Qwen scores and much greater DeepSeek final-pool availability, while taking more time. These findings answer a bounded engineering question, not a universal claim that less context is better.
+
+The architecture distinguishes retention from effectiveness. Observations remain inspectable after a reset, but every tested condition stores evidence externally, so its accuracy benefit is not isolated. Omitting hypotheses from requests while retaining them internally differs from pruning them, which changes ranking inputs. The term forgetting needs this explicit state boundary.
+
+\subsection{Alternative explanations}
+Earlier hypotheses could anchor later proposals; compact observations and omitted fields could reduce prompt burden; removing dialogue could change valid-empty output; omitting the defective behavior field could avoid artificial growth; an unpruned pool could alter rankings. The data do not separate these explanations. Shared JSON output requirements do not remove input-complexity effects~\citep{formatrestrict2024}.
+
+Observation-only is consequently a candidate configuration for corrected controlled replication, not a retrospectively validated causal treatment. Correcting ambiguity duplication alone will not isolate other changes. A stronger design varies fields, serialization, dialogue and pruning while controlling inference and source exposure.
+
+\subsection{Implications for engineering and evaluation}
+The intended output is an unverified shortlist with source-check provenance:
+\begin{itemize}
+\item Report fallback and exact-function scores beside file accuracy. A useful retrieval rank should not be credited as demonstrated causal reasoning.
+\item Record reset-exposed runs separately from event totals. The mean hides low Qwen exposure and majority DeepSeek exposure; neither demonstrates recovery.
+\item Distinguish accepted-empty output, invalid responses, source grounding and final retention. A schema-valid response need not be a usable investigation.
+\item Compare actual tokens, output volume and time. Observation-only is slower here; deployment recommendations require costs and inspection outcomes for the intended use.
+\end{itemize}
+No industrial deployment, developer time saved, repair success or correct causal explanations were measured. Real repositories supply relevant code context but do not establish those outcomes. Larger models may process rich views differently. The contribution is reproducible negative and diagnostic evidence for tested configurations and a precise architecture for defining subsequent experiments.
+
+\subsection{Next validation}
+First quantify ambiguity duplication and the output funnel on development traces, then evaluate a separately versioned correction under matched settings. Confirmation requires subjects untouched by outcome-informed prompt changes. Repeated-reset recovery needs explicit plateau opportunities and incorrect initial leads, not merely more ordinary runs. A complete upstream localizer and independent unstructured tool agent would test competitiveness beyond this harness. These extensions are not counted among the study's 400 investigations.
+

@@ -1,0 +1,309 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\orcidauthor{0000-0002-1394-4030}{Majid Babaei}
+\csgdef{mark@corau1}{1}
+\emailauthor{majid.babaei@ufv.ca}{Majid Babaei}
+\citation{autofl2024,soapfl2025,agentless2025}
+\citation{lostmiddle2024,distract2023,multiturn2025,contextrot2025}
+\citation{memgpt2024,sweagent2024,complexitytrap2025,forgetting2026}
+\citation{modelsruntime2009}
+\citation{zeller2009}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\citation{swebench2024,swebenchverified2024}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background and Motivating Example}{3}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{2}{3}{Background and Motivating Example}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Report-Based Fault Localization}{3}{subsection.3}\protected@file@percent }
+\newlabel{sec:problem}{{2.1}{3}{Report-Based Fault Localization}{subsection.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Motivating Example}{3}{subsection.4}\protected@file@percent }
+\newlabel{sec:example}{{2.2}{3}{Motivating Example}{subsection.4}{}}
+\newlabel{lst:example}{{1}{3}{Motivating Example}{lstlisting.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Two AST checks on Listing~\ref {lst:example}.}}{3}{table.17}\protected@file@percent }
+\newlabel{tab:example_checks}{{1}{3}{Two AST checks on Listing~\ref {lst:example}}{table.17}{}}
+\citation{mde2006}
+\citation{modelsruntime2009}
+\citation{mapek2003}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Models at Runtime}{4}{subsection.18}\protected@file@percent }
+\newlabel{sec:mde_background}{{2.3}{4}{Models at Runtime}{subsection.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}The MORPH-FL Approach}{4}{section.19}\protected@file@percent }
+\newlabel{sec:approach}{{3}{4}{The MORPH-FL Approach}{section.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Overview}{4}{subsection.20}\protected@file@percent }
+\newlabel{sec:overview}{{3.1}{4}{Overview}{subsection.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overview of MORPH-FL{}. The top row shows one round of the investigation; the bottom panel shows the investigation state and what a context reset does to each part. A reset prunes the hypothesis pool to the portfolio and clears all role dialogues and the progress window; every other part of the state, including budget use, is kept, and the next round projects its request from what remains.}}{4}{figure.22}\protected@file@percent }
+\newlabel{fig:flow}{{1}{4}{Overview of \tool {}. The top row shows one round of the investigation; the bottom panel shows the investigation state and what a context reset does to each part. A reset prunes the hypothesis pool to the portfolio and clears all role dialogues and the progress window; every other part of the state, including budget use, is kept, and the next round projects its request from what remains}{figure.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}The Investigation Metamodel}{5}{subsection.23}\protected@file@percent }
+\newlabel{sec:metamodel}{{3.2}{5}{The Investigation Metamodel}{subsection.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The investigation metamodel. A stereotype abbreviates a status attribute set at creation and never changed: LLM-derived elements are conjectured, extracted relations are derived, and probe results are observed. Diamonds denote containment. The associations from Probe, Assessment and Observation to hypotheses, observations and probes, and the dashed support and contradiction links, are references by identifier; the others hold the referenced objects. Role dialogues are not part of the metamodel.}}{5}{figure.25}\protected@file@percent }
+\newlabel{fig:metamodel}{{2}{5}{The investigation metamodel. A stereotype abbreviates a status attribute set at creation and never changed: LLM-derived elements are conjectured, extracted relations are derived, and probe results are observed. Diamonds denote containment. The associations from Probe, Assessment and Observation to hypotheses, observations and probes, and the dashed support and contradiction links, are references by identifier; the others hold the referenced objects. Role dialogues are not part of the metamodel}{figure.25}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The four models of an investigation and their lifetime at a context reset.}}{6}{table.27}\protected@file@percent }
+\newlabel{tab:models}{{2}{6}{The four models of an investigation and their lifetime at a context reset}{table.27}{}}
+\citation{bm25_2009}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Model Operations}{7}{subsection.28}\protected@file@percent }
+\newlabel{sec:operations}{{3.3}{7}{Model Operations}{subsection.28}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Model operations of MORPH-FL{}.}}{8}{table.30}\protected@file@percent }
+\newlabel{tab:operations}{{3}{8}{Model operations of \tool {}}{table.30}{}}
+\newlabel{eq:score}{{1}{8}{Model Operations}{equation.31}{}}
+\citation{mmr1998}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}The Investigation Loop}{9}{subsection.32}\protected@file@percent }
+\newlabel{sec:procedure}{{3.4}{9}{The Investigation Loop}{subsection.32}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces The MORPH-FL{} investigation loop}}{9}{algorithm.33}\protected@file@percent }
+\newlabel{alg:controller}{{1}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:prep-start}{{1}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:behavior}{{2}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:pool}{{3}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:prep-end}{{4}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:admit}{{6}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:select}{{8}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:project}{{10}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:ask}{{11}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:reject}{{12}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:accept}{{14}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:ground}{{16}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:run}{{17}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:record}{{18}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:stagnated}{{20}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:reset}{{21}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:stop}{{22}{9}{The Investigation Loop}{algorithm.33}{}}
+\newlabel{alg:rank}{{24}{9}{The Investigation Loop}{algorithm.33}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}The Hypothesis Portfolio}{9}{subsection.34}\protected@file@percent }
+\newlabel{sec:portfolio}{{3.5}{9}{The Hypothesis Portfolio}{subsection.34}{}}
+\newlabel{eq:distance}{{2}{10}{The Hypothesis Portfolio}{equation.35}{}}
+\newlabel{eq:portfolio}{{3}{10}{The Hypothesis Portfolio}{equation.36}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Stagnation Detection and Context Reset}{10}{subsection.37}\protected@file@percent }
+\newlabel{sec:reset}{{3.6}{10}{Stagnation Detection and Context Reset}{subsection.37}{}}
+\newlabel{eq:reset}{{4}{10}{Stagnation Detection and Context Reset}{equation.38}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Producing the Ranking}{11}{subsection.39}\protected@file@percent }
+\newlabel{sec:output}{{3.7}{11}{Producing the Ranking}{subsection.39}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}The Running Example, End to End}{11}{subsection.40}\protected@file@percent }
+\newlabel{sec:trace}{{3.8}{11}{The Running Example, End to End}{subsection.40}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.9}Scope and Assumptions}{11}{subsection.43}\protected@file@percent }
+\newlabel{sec:scope}{{3.9}{11}{Scope and Assumptions}{subsection.43}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Study Design}{11}{section.44}\protected@file@percent }
+\newlabel{sec:study}{{4}{11}{Study Design}{section.44}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces The running example traced through MORPH-FL{}, with hypotheses $h_b$ (bypass) and $h_d$ (defaulting).}}{12}{table.42}\protected@file@percent }
+\newlabel{tab:trace}{{4}{12}{The running example traced through \tool {}, with hypotheses $h_b$ (bypass) and $h_d$ (defaulting)}{table.42}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Design Rationale}{12}{subsection.45}\protected@file@percent }
+\newlabel{sec:rationale}{{4.1}{12}{Design Rationale}{subsection.45}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Context Workflows}{12}{subsection.46}\protected@file@percent }
+\newlabel{sec:variants}{{4.2}{12}{Context Workflows}{subsection.46}{}}
+\citation{swebench2024,swebenchverified2024}
+\citation{qwen25coder2024}
+\citation{deepseekcoder2024}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Evaluated configurations. Dialogue and hypothesis-pool retention are part of the treatment.}}{13}{table.48}\protected@file@percent }
+\newlabel{tab:variants}{{5}{13}{Evaluated configurations. Dialogue and hypothesis-pool retention are part of the treatment}{table.48}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Subjects}{13}{subsection.49}\protected@file@percent }
+\newlabel{sec:subjects}{{4.3}{13}{Subjects}{subsection.49}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}LLMs, Budget and Evidence}{13}{subsection.52}\protected@file@percent }
+\newlabel{sec:runtime}{{4.4}{13}{LLMs, Budget and Evidence}{subsection.52}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Repository composition of the fixed 50-issue sample. Function eligibility is determined separately by nonempty patch-derived targets.}}{14}{table.51}\protected@file@percent }
+\newlabel{tab:eval-coverage}{{6}{14}{Repository composition of the fixed 50-issue sample. Function eligibility is determined separately by nonempty patch-derived targets}{table.51}{}}
+\citation{efron1993,clusterbootstrap2007}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Measures and Analysis}{15}{subsection.53}\protected@file@percent }
+\newlabel{sec:measures}{{4.5}{15}{Measures and Analysis}{subsection.53}{}}
+\newlabel{eq:metrics}{{5}{15}{Measures and Analysis}{equation.54}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{15}{section.55}\protected@file@percent }
+\newlabel{sec:results}{{5}{15}{Results}{section.55}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}RQ1: Ranking Outcomes}{15}{subsection.56}\protected@file@percent }
+\newlabel{sec:rq1}{{5.1}{15}{RQ1: Ranking Outcomes}{subsection.56}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Ranking outcomes on all 50 study issues per workflow and LLM (seed 1). Top-5 and Top-10 are percentages; Top-1 cells show exact hits and denominators. Retrieval controls run once per issue and produce no function ranking.}}{15}{table.58}\protected@file@percent }
+\newlabel{tab:eval-ranking}{{7}{15}{Ranking outcomes on all 50 study issues per workflow and LLM (seed 1). Top-5 and Top-10 are percentages; Top-1 cells show exact hits and denominators. Retrieval controls run once per issue and produce no function ranking}{table.58}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Paired file Top-1 contrasts: full adaptive minus comparator. Counts concern whether a target is ranked first, not the identity of the top-ranked path. Intervals are descriptive repository-cluster intervals from the saved 2,000-draw analysis.}}{16}{table.60}\protected@file@percent }
+\newlabel{tab:paired}{{8}{16}{Paired file Top-1 contrasts: full adaptive minus comparator. Counts concern whether a target is ranked first, not the identity of the top-ranked path. Intervals are descriptive repository-cluster intervals from the saved 2,000-draw analysis}{table.60}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}RQ2: Reset Exposure}{16}{subsection.61}\protected@file@percent }
+\newlabel{sec:rq2}{{5.2}{16}{RQ2: Reset Exposure}{subsection.61}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Reset exposure and final-pool availability. An empty pool returns the retrieval file order. A nonempty pool establishes source-valid proposals, not correct causal explanations.}}{17}{table.63}\protected@file@percent }
+\newlabel{tab:eval-mechanisms}{{9}{17}{Reset exposure and final-pool availability. An empty pool returns the retrieval file order. A nonempty pool establishes source-valid proposals, not correct causal explanations}{table.63}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}RQ3: Tokens and Elapsed Time}{17}{subsection.64}\protected@file@percent }
+\newlabel{sec:rq3}{{5.3}{17}{RQ3: Tokens and Elapsed Time}{subsection.64}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Mean resources per completed investigation. Tokens include input and output; elapsed seconds exclude interrupted or retried attempts. Different tokenizers limit cross-model token comparisons.}}{17}{table.66}\protected@file@percent }
+\newlabel{tab:eval-cost}{{10}{17}{Mean resources per completed investigation. Tokens include input and output; elapsed seconds exclude interrupted or retried attempts. Different tokenizers limit cross-model token comparisons}{table.66}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}RQ4: Investigation Output Beyond Accuracy}{17}{subsection.67}\protected@file@percent }
+\newlabel{sec:rq4}{{5.4}{17}{RQ4: Investigation Output Beyond Accuracy}{subsection.67}{}}
+\citation{formatrestrict2024}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces DeepSeek output diagnostics from archived audit counts. Events may exceed case counts; hypothesis events are not distinct final hypotheses or correct explanations.}}{18}{table.69}\protected@file@percent }
+\newlabel{tab:eval-pilot}{{11}{18}{DeepSeek output diagnostics from archived audit counts. Events may exceed case counts; hypothesis events are not distinct final hypotheses or correct explanations}{table.69}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{18}{section.70}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{18}{Discussion}{section.70}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Does Forgetting Help?}{18}{subsection.71}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Why Might the Observation-Only View Help?}{19}{subsection.72}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Implications}{19}{subsection.73}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Next Steps}{19}{subsection.74}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Threats to Validity}{19}{section.75}\protected@file@percent }
+\newlabel{sec:threats}{{7}{19}{Threats to Validity}{section.75}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Construct Validity}{19}{subsection.76}\protected@file@percent }
+\citation{swebenchillusion2025,swebenchplus2024}
+\citation{swerebench2025}
+\citation{autofl2024}
+\citation{soapfl2025}
+\citation{agentless2025,rgfl2026}
+\citation{locagent2025,arise2026}
+\citation{memfl2025,repomem2026,adarepair2026}
+\citation{orcaloca2025}
+\citation{ledger2026}
+\citation{reflexion2023,memgpt2024}
+\citation{forgetting2026}
+\citation{flsurvey2016,llmflsurvey2025}
+\citation{tarantula2005,ochiai2007}
+\citation{buglocator2012}
+\citation{kbl2025}
+\citation{deeprl4fl2021}
+\citation{smartfl2025}
+\citation{llmao2024}
+\citation{swerank2026}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Internal Validity}{20}{subsection.77}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}External Validity}{20}{subsection.78}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Conclusion Validity and Reproducibility}{20}{subsection.79}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Related Work}{20}{section.80}\protected@file@percent }
+\newlabel{sec:related}{{8}{20}{Related Work}{section.80}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Ranking from Reports, Executions and Learned Representations}{20}{subsection.83}\protected@file@percent }
+\citation{autofl2024}
+\citation{soapfl2025}
+\citation{flexfl2025}
+\citation{llm4fl2024}
+\citation{agentless2025}
+\citation{autocoderover2024}
+\citation{sweagent2024,openhands2025,codeact2024}
+\citation{masai2024}
+\citation{rgfl2026}
+\citation{locagent2025,cosil2025,arise2026}
+\citation{orcaloca2025}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces State and context policies of closely related approaches, as described in the examined versions.}}{21}{table.82}\protected@file@percent }
+\newlabel{tab:closest}{{12}{21}{State and context policies of closely related approaches, as described in the examined versions}{table.82}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}LLM-Based Localization Agents}{21}{subsection.84}\protected@file@percent }
+\citation{xu2026novice}
+\citation{wu2026sharerag}
+\citation{zeller2009}
+\citation{autosd2023}
+\citation{repairagent2025}
+\citation{reiter1987}
+\citation{gde1987}
+\citation{hearsay1980}
+\citation{atms1986}
+\citation{prov2013}
+\citation{lostmiddle2024,contextrot2025}
+\citation{llmlingua2023}
+\citation{memgpt2024}
+\citation{acon2026}
+\citation{generativeagents2023,memorybank2024,amem2025}
+\citation{reflexion2023}
+\citation{ledger2026}
+\citation{sweagent2024}
+\citation{complexitytrap2025}
+\citation{hiagent2025}
+\citation{memfl2025}
+\citation{repomem2026}
+\citation{adarepair2026}
+\citation{restarts1998}
+\citation{forgetting2026}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Hypothesis-Driven Debugging and Diagnosis}{22}{subsection.85}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Memory and Context Management for LLM Agents}{22}{subsection.86}\protected@file@percent }
+\citation{simfl2016,mtspectrum2018}
+\citation{modelsruntime2009}
+\citation{mapek2003}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Models in Fault Localization and at Runtime}{23}{subsection.87}\protected@file@percent }
+\newlabel{sec:related_mde}{{8.5}{23}{Models in Fault Localization and at Runtime}{subsection.87}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion}{23}{section.88}\protected@file@percent }
+\newlabel{sec:conclusion}{{9}{23}{Conclusion}{section.88}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Implementation Details}{23}{appendix.89}\protected@file@percent }
+\newlabel{app:implementation}{{A}{23}{Implementation Details}{appendix.89}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Code Correspondence}{23}{subsection.90}\protected@file@percent }
+\newlabel{app:code-correspondence}{{A.1}{23}{Code Correspondence}{subsection.90}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Where each step of Algorithm~\ref {alg:controller} is realized in the implementation. Paths are relative to \texttt  {src/morph_fl/}; all steps execute inside \texttt  {LocalizationController.run} (\texttt  {search/controller.py}).}}{24}{table.92}\protected@file@percent }
+\newlabel{tab:impl}{{13}{24}{Where each step of Algorithm~\ref {alg:controller} is realized in the implementation. Paths are relative to \code {src/morph_fl/}; all steps execute inside \code {LocalizationController.run} (\code {search/controller.py})}{table.92}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Realization of the Ledger and Reset}{25}{subsection.93}\protected@file@percent }
+\newlabel{app:realization}{{A.2}{25}{Realization of the Ledger and Reset}{subsection.93}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Structure Extraction and Requests}{25}{subsection.94}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Grounding, Identity and Reuse}{25}{subsection.95}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Probe Ordering}{25}{subsection.96}\protected@file@percent }
+\newlabel{app:ordering}{{A.5}{25}{Probe Ordering}{subsection.96}{}}
+\newlabel{eq:utility}{{6}{25}{Probe Ordering}{equation.97}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Assessment Rules}{25}{subsection.98}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Reset Conditions and Variants}{25}{subsection.99}\protected@file@percent }
+\newlabel{app:reset}{{A.7}{25}{Reset Conditions and Variants}{subsection.99}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Constructed reset calculation for the running example.}}{26}{table.101}\protected@file@percent }
+\newlabel{tab:synthetic}{{14}{26}{Constructed reset calculation for the running example}{table.101}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}Termination and Output}{26}{subsection.102}\protected@file@percent }
+\newlabel{app:termination}{{A.8}{26}{Termination and Output}{subsection.102}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.9}Library Defaults and Configuration Scope}{26}{subsection.103}\protected@file@percent }
+\newlabel{app:configuration-catalog}{{A.9}{26}{Library Defaults and Configuration Scope}{subsection.103}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Evidence and Reproduction Map}{26}{appendix.106}\protected@file@percent }
+\newlabel{app:reproduction}{{B}{26}{Evidence and Reproduction Map}{appendix.106}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Library defaults. All values are chosen, not tuned or calibrated; study settings override some of them.}}{27}{table.105}\protected@file@percent }
+\newlabel{tab:defaults}{{15}{27}{Library defaults. All values are chosen, not tuned or calibrated; study settings override some of them}{table.105}{}}
+\bibstyle{cas-model2-names}
+\bibdata{references}
+\bibcite{ochiai2007}{{1}{2007}{{Abreu et~al.}}{{Abreu, Zoeteweij and van Gemund}}}
+\bibcite{swebenchplus2024}{{2}{2024}{{Aleithan et~al.}}{{Aleithan, Xue, Mohajer, Nnorom, Uddin and Wang}}}
+\bibcite{masai2024}{{3}{2024}{{Arora et~al.}}{{Arora, Sonwane, Wadhwa, Mehrotra, Utpala, Bairi, Kanade and Natarajan}}}
+\bibcite{swerebench2025}{{4}{2025}{{Badertdinov et~al.}}{{Badertdinov, Golubev, Nekrashevich, Shevtsov, Karasik, Andriushchenko, Trofimova, Litvintseva and Yangel}}}
+\bibcite{modelsruntime2009}{{5}{2009}{{Blair et~al.}}{{Blair, Bencomo and France}}}
+\bibcite{repairagent2025}{{6}{2025}{{Bouzenia et~al.}}{{Bouzenia, Devanbu and Pradel}}}
+\bibcite{kbl2025}{{7}{2025}{{Cai et~al.}}{{Cai, Zou, Meng, Xu and Zhang}}}
+\bibcite{mmr1998}{{8}{1998}{{Carbonell and Goldstein}}{{}}}
+\bibcite{llmflsurvey2025}{{9}{2025}{{Chang et~al.}}{{Chang, Li and Wong}}}
+\bibcite{locagent2025}{{10}{2025}{{Chen et~al.}}{{Chen, Tang, Deng, Wu, Wu, Jiang, Prasanna, Cohan and Wang}}}
+\bibcite{swebenchverified2024}{{11}{2024}{{Chowdhury et~al.}}{{Chowdhury, Aung, Shern, Jaffe, Sherburn, Starace, Mays, Dias, Aljubeh, Glaese, Jimenez, Yang, Ho, Patwardhan, Liu and Madry}}}
+\bibcite{efron1993}{{12}{1993}{{Efron and Tibshirani}}{{}}}
+\bibcite{hearsay1980}{{13}{1980}{{Erman et~al.}}{{Erman, Hayes-Roth, Lesser and Reddy}}}
+\bibcite{clusterbootstrap2007}{{14}{2007}{{Field and Welsh}}{{}}}
+\bibcite{restarts1998}{{15}{1998}{{Gomes et~al.}}{{Gomes, Selman and Kautz}}}
+\bibcite{deepseekcoder2024}{{16}{2024}{{Guo et~al.}}{{Guo, Zhu, Yang, Xie, Dong, Zhang, Chen, Bi, Wu, Li, Luo, Xiong and Liang}}}
+\bibcite{contextrot2025}{{17}{2025}{{Hong et~al.}}{{Hong, Troynikov and Huber}}}
+\bibcite{hiagent2025}{{18}{2025}{{Hu et~al.}}{{Hu, Chen, Chen, Mu, Shao and Luo}}}
+\bibcite{qwen25coder2024}{{19}{2024}{{Hui et~al.}}{{Hui, Yang, Cui, Yang, Liu, Zhang, Liu, Zhang, Yu, Lu, Dang, Fan, Zhang, Yang, Men, Huang, Zheng, Miao, Quan, Feng, Ren, Ren, Zhou and Lin}}}
+\bibcite{llmlingua2023}{{20}{2023}{{Jiang et~al.}}{{Jiang, Wu, Lin, Yang and Qiu}}}
+\bibcite{cosil2025}{{21}{2025}{{Jiang et~al.}}{{Jiang, Ren, Yan, Jiang, Li and Liu}}}
+\bibcite{swebench2024}{{22}{2024}{{Jimenez et~al.}}{{Jimenez, Yang, Wettig, Yao, Pei, Press and Narasimhan}}}
+\bibcite{tarantula2005}{{23}{2005}{{Jones and Harrold}}{{}}}
+\bibcite{acon2026}{{24}{2026}{{Kang et~al.}}{{Kang, Chen, Han, Inan, Wutschitz, Chen, Sim and Rajmohan}}}
+\bibcite{autofl2024}{{25}{2024}{{Kang et~al.}}{{Kang, An and Yoo}}}
+\bibcite{autosd2023}{{26}{2025}{{Kang et~al.}}{{Kang, Chen, Yoo and Lou}}}
+\bibcite{mapek2003}{{27}{2003}{{Kephart and Chess}}{{}}}
+\bibcite{atms1986}{{28}{1986}{{de~Kleer}}{{}}}
+\bibcite{gde1987}{{29}{1987}{{de~Kleer and Williams}}{{}}}
+\bibcite{multiturn2025}{{30}{2026}{{Laban et~al.}}{{Laban, Hayashi, Zhou and Neville}}}
+\bibcite{deeprl4fl2021}{{31}{2021}{{Li et~al.}}{{Li, Wang and Nguyen}}}
+\bibcite{swebenchillusion2025}{{32}{2026}{{Liang et~al.}}{{Liang, Garg and Zilouchian~Moghaddam}}}
+\bibcite{complexitytrap2025}{{33}{2025}{{Lindenbauer et~al.}}{{Lindenbauer, Slinko, Felder, Bogomolov and Zharov}}}
+\bibcite{simfl2016}{{34}{2016}{{Liu et~al.}}{{Liu, {Lucia}, Nejati, Briand and Bruckmann}}}
+\bibcite{lostmiddle2024}{{35}{2024}{{Liu et~al.}}{{Liu, Lin, Hewitt, Paranjape, Bevilacqua, Petroni and Liang}}}
+\bibcite{adarepair2026}{{36}{2026}{{Luo et~al.}}{{Luo, Guo, He, Wang, Yu, Zhao, Chen, Cao, Liu, Zheng, Xu, Jiang and Zhao}}}
+\bibcite{prov2013}{{37}{2013}{{Moreau and Missier}}{{}}}
+\bibcite{memgpt2024}{{38}{2024}{{Packer et~al.}}{{Packer, Wooders, Lin, Fang, Patil, Stoica and Gonzalez}}}
+\bibcite{generativeagents2023}{{39}{2023}{{Park et~al.}}{{Park, O'Brien, Cai, Morris, Liang and Bernstein}}}
+\bibcite{soapfl2025}{{40}{2025}{{Qin et~al.}}{{Qin, Wang, Lou, Dong, Wang, Li and Mao}}}
+\bibcite{llm4fl2024}{{41}{2024}{{Rafi et~al.}}{{Rafi, Kim, Chen and Wang}}}
+\bibcite{swerank2026}{{42}{2026}{{Reddy et~al.}}{{Reddy, Suresh, Doo, Liu, Nguyen, Zhou, Yavuz, Xiong, Ji and Joty}}}
+\bibcite{reiter1987}{{43}{1987}{{Reiter}}{{}}}
+\bibcite{bm25_2009}{{44}{2009}{{Robertson and Zaragoza}}{{}}}
+\bibcite{mde2006}{{45}{2006}{{Schmidt}}{{}}}
+\bibcite{arise2026}{{46}{2026}{{Seddik et~al.}}{{Seddik, Seddik, Esmaeili, Sadatbenis and Fard}}}
+\bibcite{rgfl2026}{{47}{2026}{{Sepidband et~al.}}{{Sepidband, Taherkhani, Pham and Hemmati}}}
+\bibcite{distract2023}{{48}{2023}{{Shi et~al.}}{{Shi, Chen, Misra, Scales, Dohan, Chi, Sch{\"a}rli and Zhou}}}
+\bibcite{reflexion2023}{{49}{2023}{{Shinn et~al.}}{{Shinn, Cassano, Gopinath, Narasimhan and Yao}}}
+\bibcite{formatrestrict2024}{{50}{2024}{{Tam et~al.}}{{Tam, Wu, Tsai, Lin, Lee and Chen}}}
+\bibcite{forgetting2026}{{51}{2026}{{Tan et~al.}}{{Tan, Zhou, Agrawal, Zhang, Chen, Mang, Lee, Jacob, Sen, Dimakis and Zaharia}}}
+\bibcite{mtspectrum2018}{{52}{2018}{{Troya et~al.}}{{Troya, Segura, Parejo and Ruiz-Cort{\'e}s}}}
+\bibcite{repomem2026}{{53}{2026a}{{Wang et~al.}}{{Wang, Xu, Li, Gao, Xie, Sun and Chen}}}
+\bibcite{codeact2024}{{54}{2024}{{Wang et~al.}}{{Wang, Chen, Yuan, Zhang, Li, Peng and Ji}}}
+\bibcite{openhands2025}{{55}{2025}{{Wang et~al.}}{{Wang, Li, Song, Xu, Tang, Zhuge, Pan, Song, Li, Singh, Tran, Li, Ma, Zheng, Qian, Shao, Muennighoff, Zhang, Hui, Lin, Brennan, Peng, Ji and Neubig}}}
+\bibcite{ledger2026}{{56}{2026b}{{Wang et~al.}}{{Wang, Xu, Li, Peng, Adams, Hassan and Chen}}}
+\bibcite{flsurvey2016}{{57}{2016}{{Wong et~al.}}{{Wong, Gao, Li, Abreu and Wotawa}}}
+\bibcite{wu2026sharerag}{{58}{2026}{{Wu et~al.}}{{Wu, Wei, Wu, Du, Zhao and Liu}}}
+\bibcite{smartfl2025}{{59}{2025}{{Wu et~al.}}{{Wu, Liu, Yin, Zeng, Ye, Zhang, Xiong and Zhang}}}
+\bibcite{agentless2025}{{60}{2025}{{Xia et~al.}}{{Xia, Deng, Dunn and Zhang}}}
+\bibcite{flexfl2025}{{61}{2025a}{{Xu et~al.}}{{Xu, Liu, Ren, Zhang, Liang and Lo}}}
+\bibcite{xu2026novice}{{62}{2026}{{Xu et~al.}}{{Xu, Liu, Wu, Kang, Chen and Liu}}}
+\bibcite{amem2025}{{63}{2025b}{{Xu et~al.}}{{Xu, Liang, Mei, Gao, Tan and Zhang}}}
+\bibcite{llmao2024}{{64}{2024a}{{Yang et~al.}}{{Yang, Le~Goues, Martins and Hellendoorn}}}
+\bibcite{sweagent2024}{{65}{2024b}{{Yang et~al.}}{{Yang, Jimenez, Wettig, Lieret, Yao, Narasimhan and Press}}}
+\bibcite{memfl2025}{{66}{2025}{{Yeo et~al.}}{{Yeo, Ryu and Baik}}}
+\bibcite{orcaloca2025}{{67}{2025}{{Yu et~al.}}{{Yu, Zhang, Zhao, Huang, Yao, Ding and Zhao}}}
+\bibcite{zeller2009}{{68}{2009}{{Zeller}}{{}}}
+\bibcite{autocoderover2024}{{69}{2024}{{Zhang et~al.}}{{Zhang, Ruan, Fan and Roychoudhury}}}
+\bibcite{memorybank2024}{{70}{2024}{{Zhong et~al.}}{{Zhong, Guo, Gao, Ye and Wang}}}
+\bibcite{buglocator2012}{{71}{2012}{{Zhou et~al.}}{{Zhou, Zhang and Lo}}}
+\csxdef{lastpage}{30}
+\gdef \@abspage@last{30}
